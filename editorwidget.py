@@ -54,7 +54,7 @@ class RecipeEditorWidget(QWidget):
         self.listWidget.clear()
         for step in steps:
             item = QListWidgetItem()
-            item.setText(step['{}type'.format(RecipeEditorWidget.xsi)])
+            item.setText(step.type)
             item.setData(Qt.UserRole,step)
             self.listWidget.addItem(item)
 
