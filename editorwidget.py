@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem
+from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
 from PyQt5.QtGui import QKeySequence
-
+from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 class StepItemModel(QAbstractListModel):
     def __init__(self,parent = None):
         super().__init__(parent)
@@ -25,42 +25,45 @@ class RecipeEditorWidget(QWidget):
         super().__init__(parent)
 
         self.layout = QVBoxLayout()
-        #self.listView = QListView()
-        self.listWidget= QListWidget()
+        self.listView = QListWidgetView(self)
+        #self.listWidget= QListWidget()
         #self.model = StepItemModel(self.listView)
 
         #self.listView.setModel(self.model)
-        self.listWidget.setMovement(QListView.Free)
-        self.listWidget.setDragDropMode(QAbstractItemView.InternalMove)
+        self.listView.setMovement(QListWidget.Free)
+        self.listView.setDragDropMode(QAbstractItemView.InternalMove)
 
-        self.layout.addWidget(self.listWidget)
+        self.layout.addWidget(self.listView)
         self.setLayout(self.layout)
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+C"),self,self.CopySelected)
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+V"),self,self.PasteSelected)
 
     def CopySelected(self):
-        self.pasteBin = self.listWidget.selectedItems()
+        self.pasteBin = self.listView.selectedItems()
     def PasteSelected(self):
         items = []
         for it in self.pasteBin:
-            item = QListWidgetItem()
-            item.setText(it.text())
-            item.setData(Qt.UserRole,it.data(Qt.UserRole))
+            item = QExpandableWidget(it.title)
+            #item.setText(it.text())
+            item.setData(it.getData())
             items.append(item)
         for index,item in enumerate(items):
-            self.listWidget.insertItem(self.listWidget.currentRow()+index,item)
+            self.listView.insertItem(self.listView.currentRow()+index,item)
     
     def PopulateList(self,steps):
-        self.listWidget.clear()
+        self.listView.clear()
         for step in steps:
-            item = QListWidgetItem()
-            item.setText(step.type)
-            item.setData(Qt.UserRole,step)
-            self.listWidget.addItem(item)
+            
+            item = QExpandableWidget(step.type,animated=False)
+            
+            b=QLabel()
+            b.setText("test")
+            item.setContents(b)
+            self.listView.addWidget(item)
 
     def GetListItemData(self):
         res = []
-        count = self.listWidget.count()
+        count = self.listView.count()
         for i in range(count):
-            res.append(self.listWidget.item(i).data(Qt.UserRole))
+            res.append(self.listView.item(i).widget.getData())
         return res
