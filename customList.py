@@ -1,39 +1,41 @@
+from PyQt5.QtWidgets import QListView
+from PyQt5.QtGui import QStandardItem,QDragEnterEvent,QDragMoveEvent,QDropEvent,QMouseEvent,QDrag
+from PyQt5.QtCore import Qt,QModelIndex
+class MyListView(QListView):
 
-from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QStyledItemDelegate,QStyleOptionViewItem
-from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
-from PyQt5.QtGui import QKeySequence,QPainter
 
-#Model
-class StepItemModel(QAbstractListModel):
-    def __init__(self,parent = None):
+    def __init__(self,parent=None):
         super().__init__(parent)
-        self.list=[]
-    
-    def rowCount(self,parent=QModelIndex()):
-        return len(self.list)
-    
-    def data(self,index,role=Qt.ItemDataRole.DisplayRole):
+        self.current = None
 
-        return self.list[index.row()]
+    def currentChanged(self,current,previous):
+        self.current = current
+    def dropEvent(self,event:QDropEvent):
+        if event.keyboardModifiers() == Qt.ControlModifier:
+            event.setDropAction(Qt.CopyAction)
+        if event.source() == self and (Qt.MoveAction and event.possibleActions()):
+            #Drag and Drop within widget
+            if(event.proposedAction() == Qt.MoveAction):
+                print("MoveAction")
+                event.acceptProposedAction()
+                insertPos   = event.pos()
+                fromList    = event.source()
+                #insertRow   = fromList.model().itemFromIndex(fromList.indexAt( insertPos ))
+                insertRow   = self.indexAt( insertPos ).row()
+                mimeData = event.mimeData()
+                self.model().dropMimeData(event.mimeData(),Qt.MoveAction,insertRow+1,0,QModelIndex())
+            elif event.proposedAction() == Qt.CopyAction:
+                print("CopyAction")
+                event.acceptProposedAction()
+                insertPos   = event.pos()
+                fromList    = event.source()
+                #insertRow   = fromList.model().itemFromIndex(fromList.indexAt( insertPos ))
+                insertRow   = self.indexAt( insertPos ).row()
+                mimeData = event.mimeData()
+                self.model().dropMimeData(event.mimeData(),Qt.MoveAction,insertRow+1,0,QModelIndex())
+            else:
+                return
 
-    def insertRows(self,row,count,parent=QModelIndex()):
-        self.beginInsertRows(parent,row,row+count)
-        end = self.list.copy()[row:]
-        beginning = self.list.copy()[:row]
-        self.list = beginning+[None]*count+end
-        self.endInsertRows()
-
-    def insertItems(self,row,items):
-        self.insertRows(row,len(items))
-        for index,item in enumerate(items):
-            self.list[row+index] = item
-
-#ItemDelegate
-class StepItemDelegate(QStyledItemDelegate):
-    def __init__(self,parent = None):
+class MyItem(QStandardItem):
+    def __init__(self,parent=None):
         super().__init__(parent)
-    
-    def paint(self,painter : QPainter,option:QStyleOptionViewItem,index:QModelIndex):
-        super(StyledItemDelegate, self).paint(painter,option,index)
-    def sizeHint(self,option:QStyleOptionViewItem,index:QModelIndex):
-        return super().sizeHint(option,index)

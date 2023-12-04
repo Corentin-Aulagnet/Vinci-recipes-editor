@@ -25,7 +25,7 @@ class ActionsWidget(QWidget):
 
     @pyqtSlot()
     def CreateRecipe(self):
-        raise NotImplementedError
+        self.editor.clear()
     
     @pyqtSlot()
     def OpenRecipe(self):

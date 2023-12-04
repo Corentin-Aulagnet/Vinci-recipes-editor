@@ -11,6 +11,7 @@ class LibraryWidget(QWidget):
 
         self.layout = QVBoxLayout()
         self.listWidget= QListWidget()
+        self.listWidget.setDragDropMode(QAbstractItemView.DragOnly)
         self.listWidget.setSortingEnabled(True)
         
         self.PopulateList()

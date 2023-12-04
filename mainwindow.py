@@ -8,8 +8,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.height = height
         self.width = width
-        self.left = 300
-        self.top = 300
+        self.left = 100
+        self.top = 100
         self.setWindowTitle("Vinci Recipe Editor")
         self.setGeometry(self.left, self.top, self.width, self.height)
 
