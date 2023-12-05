@@ -65,9 +65,9 @@ class QExpandableWidget(QWidget) :
     
     def clearContents(self):
         if(self.animated):
-            self.toggleAnimation = nullptr
+            self.toggleAnimation = None
         
-        self.title = toggle.text()
+        self.title = self.toggle.text()
 
         self.init_toggle(self.title)
 

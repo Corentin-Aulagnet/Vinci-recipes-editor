@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QLabel,QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
-from vincirecipereader import XMLReader,Step
+from vincirecipereader import XMLReader,Step,Recipe
 import os
 import xml.etree.ElementTree as ET
 class ActionsWidget(QWidget):
@@ -33,9 +33,12 @@ class ActionsWidget(QWidget):
     
     @pyqtSlot()
     def OpenRecipe(self):
-        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',os.getcwd())[0]
-        recipe = XMLReader.ReadRecipe(filePath)
-        self.editor.PopulateList(recipe.steps)
+        try :
+            filePath =  QFileDialog.getOpenFileName (None,'Recipe File',os.getcwd())[0]
+            recipe = XMLReader.ReadRecipe(filePath)
+            self.editor.PopulateList(recipe.steps)
+        except FileNotFoundError:
+            pass
     
     @pyqtSlot()
     def SaveRecipe(self):
@@ -54,15 +57,21 @@ class ActionsWidget(QWidget):
             scriptName.text = name
 
             for step in steps:
-                _type = step.type
-                attr = step.attr
-                print(_type)
-                sub = ET.SubElement(root,'CollecStep')
-                sub.set(xsi+'type',_type)
+                if(type(step) == Step):
+                    #Is a real step
+                    _type = step.type
+                    attr = step.attr
+                    print(_type)
+                    sub = ET.SubElement(root,'CollecStep')
+                    sub.set(xsi+'type',_type)
 
-                for key in attr.keys():
-                    subsub = ET.SubElement(sub,key)
-                    subsub.text = attr[key]
+                    for key in attr.keys():
+                        subsub = ET.SubElement(sub,key)
+                        subsub.text = attr[key]
+                elif(type(step)==Recipe):
+                    #Is a subrecipe, add a XML mark to remember
+                    sub = ET.SubElement(root,'CollecStep')
+                    sub.set('subrecipe',step.path)
                         
             tree.write(name, encoding="utf-8", xml_declaration=True) 
         #else:
@@ -85,15 +94,30 @@ class ActionsWidget(QWidget):
             scriptName.text = name
 
             for step in steps:
-                _type = step.type
-                attr = step.attr
-                print(_type)
-                sub = ET.SubElement(root,'CollecStep')
-                sub.set(xsi+'type',_type)
+                if(type(step) == Step):
+                    #Is a real step
+                    _type = step.type
+                    attr = step.attr
+                    print(_type)
+                    sub = ET.SubElement(root,'CollecStep')
+                    sub.set(xsi+'type',_type)
 
-                for key in attr.keys():
-                    subsub = ET.SubElement(sub,key)
-                    subsub.text = attr[key]
+                    for key in attr.keys():
+                        subsub = ET.SubElement(sub,key)
+                        subsub.text = attr[key]
+                elif(type(step)==Recipe):
+                    #Is a subrecipe, find all steps and write them
+                    for substep in step.steps:
+                        #Is a real step
+                        _type = substep.type
+                        attr = substep.attr
+                        print(_type)
+                        sub = ET.SubElement(root,'CollecStep')
+                        sub.set(xsi+'type',_type)
+
+                        for key in attr.keys():
+                            subsub = ET.SubElement(sub,key)
+                            subsub.text = attr[key]
                         
             tree.write(name, encoding="utf-8", xml_declaration=True) 
         #else:

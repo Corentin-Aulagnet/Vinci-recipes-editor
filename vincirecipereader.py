@@ -31,9 +31,14 @@ class XMLReader:
         recipe = Recipe(xmlFile)
         steps = []
         for neighbor in root.iter('CollecStep'):
-            step = Step(neighbor.attrib[xsi+'type'])
-            for child in neighbor:
-                step.Add_attr(child.tag,child.text)
+            if(xsi+'type' in neighbor.attrib.keys()):
+                #Is a real step
+                step = Step(neighbor.attrib[xsi+'type'])
+                for child in neighbor:
+                    step.Add_attr(child.tag,child.text)
+            elif 'subrecipe' in  neighbor.attrib.keys():
+                #Is a subrecipe
+                step = XMLReader.ReadRecipe(neighbor.attrib['subrecipe'])
             steps.append(step)
         recipe.AddSteps(steps)
         return recipe

@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import QListView
-from PyQt5.QtGui import QStandardItem,QDragEnterEvent,QDragMoveEvent,QDropEvent,QMouseEvent,QDrag
+from PyQt5.QtWidgets import QListView,QStyledItemDelegate,QStyleOptionViewItem
+from PyQt5.QtGui import QStandardItem,QDragEnterEvent,QDragMoveEvent,QDropEvent,QMouseEvent,QDrag,QPainter
 from PyQt5.QtCore import Qt,QModelIndex
+from vincirecipereader import Recipe
 class MyListView(QListView):
-
-
     def __init__(self,parent=None):
         super().__init__(parent)
         self.current = None
@@ -39,7 +38,17 @@ class MyListView(QListView):
             insertPos   = event.pos()
             fromList    = event.source()
             insertitem  = fromList.itemFromIndex(fromList.indexAt( insertPos ))
+            insertRow   = self.indexAt( insertPos ).row()
+            mimeData = event.mimeData()
+            self.model().dropMimeData(mimeData,Qt.MoveAction,insertRow+1,0,QModelIndex())
 
 class MyItem(QStandardItem):
     def __init__(self,parent=None):
         super().__init__(parent)
+
+class MyStyledDelegate(QStyledItemDelegate):
+    def __init__(self,parent= None):
+        super().__init__(parent)
+    
+    def paint(self,painter:QPainter, option:QStyleOptionViewItem, index:QModelIndex):
+        super().paint(painter,option,index)

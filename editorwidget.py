@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractI
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
-from customList import MyListView,MyItem
+from customList import MyListView,MyItem,MyStyledDelegate
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -17,6 +17,8 @@ class RecipeEditorWidget(QWidget):
         self.listView.viewport().setAcceptDrops(True)
         self.listView.setDefaultDropAction(Qt.MoveAction)
         self.listView.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
+        self.listView.setItemDelegate(MyStyledDelegate(self))
         #self.listView.setMovement(QListView.Free)
         #self.listView.setDragDropMode(QAbstractItemView.DragDrop)
         #self.listWidget.setItemDelegate(StepItemDelegate())
