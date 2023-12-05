@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
-from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel
+from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem
 class RecipeEditorWidget(QWidget):
@@ -32,10 +32,8 @@ class RecipeEditorWidget(QWidget):
     def PasteSelected(self):
         items = []
         for it in self.pasteBin:
-            item = MyItem()
             step = it.data(Qt.UserRole)
-            item.setText(step.type)
-            item.setData(step,Qt.UserRole)
+            item = self.CreateItem(step)
             items.append(item)
         for index,item in enumerate(items):
             self.model.insertRow(self.listView.current.row()+index,item)
@@ -44,12 +42,17 @@ class RecipeEditorWidget(QWidget):
         #self.listWidget.clear()
         self.model.clear()
         for step in steps:
-            item = MyItem()
-            item.setText(step.type)
-            item.setData(step,Qt.UserRole)
+            item = self.CreateItem(step)
             self.model.appendRow(item)
         
-
+    def CreateItem(self,step):
+        item = MyItem()
+        item.setText(step.type)
+        item.setData(step,Qt.UserRole)
+        icon = QIcon('res/step_512.png')
+        item.setIcon(icon)
+        return item
+    
     def GetListItemData(self):
         res = []
         count = self.model.rowCount()
