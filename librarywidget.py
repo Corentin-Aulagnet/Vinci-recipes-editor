@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog
-from PyQt5.QtCore import pyqtSlot,QObject,QSize
+from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QListWidgetItem
+from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
+
 import os
 from vincirecipereader import XMLReader
 class LibraryWidget(QWidget):
@@ -30,7 +31,7 @@ class LibraryWidget(QWidget):
             with open("SubRecipes.dat",'r') as file:
                 lines = file.readlines()
                 for line in lines:
-                    self.customSubRecipes.append(XMLReader.ReadRecipeName(line[:-1]))
+                    self.customSubRecipes.append(XMLReader.ReadRecipe(line[:-1]))
         except FileNotFoundError:
             print("file not found")
             f = open("SubRecipes.dat",'w')
@@ -39,16 +40,30 @@ class LibraryWidget(QWidget):
     @pyqtSlot()
     def AddToLibraryAction(self):
         filePath =  QFileDialog.getOpenFileName (None,'Recipe File',os.getcwd())[0]
-        recipeName = XMLReader.ReadRecipeName(filePath)
-        self.customSubRecipes.append(recipeName)
-        self.listWidget.addItem(recipeName)
+        recipe = XMLReader.ReadRecipe(filePath)
+        self.customSubRecipes.append(recipe)
+        item = QListWidgetItem()
+        item.setText(recipe.name)
+        item.setData(Qt.UserRole,recipe)
+        self.listWidget.addItem(item)
         with open("SubRecipes.dat",'a') as file:
             file.write(filePath+"\n")
         self.PopulateList()
+
     def PopulateList(self):
         self.listWidget.clear()
-        self.listWidget.addItems(self.customSubRecipes)
+        for sub in self.customSubRecipes:
+            item = QListWidgetItem()
+            item.setText(sub.name)
+            item.setData(Qt.UserRole,sub)
+            self.listWidget.addItem(item)
 
     def debugPopulateList(self):
         for i in range(2):
             self.listWidget.addItem("Item {}".format(i))
+
+
+
+class MyLibraryList(QListWidget):
+    def __init__(self,parent=None):
+        super().__init__(parent)

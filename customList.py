@@ -35,6 +35,10 @@ class MyListView(QListView):
                 self.model().dropMimeData(event.mimeData(),Qt.MoveAction,insertRow+1,0,QModelIndex())
             else:
                 return
+        else:
+            insertPos   = event.pos()
+            fromList    = event.source()
+            insertitem  = fromList.itemFromIndex(fromList.indexAt( insertPos ))
 
 class MyItem(QStandardItem):
     def __init__(self,parent=None):
