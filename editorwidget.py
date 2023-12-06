@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
-from stepeditorwidgets import MassflowSetpoint,VATValve,MaximPowerOff
+from stepeditorwidgets import MassflowSetpoint,VATValve,MaximPowerOff,MaximSetpoints
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -81,6 +81,10 @@ class RecipeEditorWidget(QWidget):
             case "CParamScript_Maxim_PowerOff":
                 self.popup = MaximPowerOff(step,self)
                 self.popup.exec()
+            case "CParamScript_Maxim_Setpoints":
+                self.popup = MaximSetpoints(step,self)
+                self.popup.exec()
+                
                 
         
         

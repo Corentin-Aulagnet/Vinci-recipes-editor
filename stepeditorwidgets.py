@@ -160,3 +160,72 @@ class MaximPowerOff(BaseStepEditor):
             if self.onRadio.isChecked() : self.step.attr['IsOn'] = 'true' 
             else: self.step.attr['IsOn'] = 'false'
             super().close()
+
+class MaximSetpoints(BaseStepEditor):
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.combo = QComboBox()
+                self.combo.addItems(["Maxim 1","Maxim 2","Maxim 3"])
+
+                match step.attr['Maxim_ID']:
+                    case 'MAXIM_1':
+                        self.combo.setCurrentIndex(0)
+                    case 'MAXIM_2':
+                        self.combo.setCurrentIndex(1)
+                    case 'MAXIM_3':
+                        self.combo.setCurrentIndex(2)
+
+                self.formLayout.addWidget(QLabel("Maxim name"),0,0)
+                self.formLayout.addWidget(self.combo,0,1)
+
+                self.powerEdit = QLineEdit()
+                self.powerEdit.setText(step.attr['Power'])
+                self.formLayout.addWidget(QLabel("Power setpoint"),1,0)
+                self.formLayout.addWidget(self.powerEdit,1,1)
+                self.formLayout.addWidget(QLabel("Watts"),1,2)
+
+                self.currentEdit = QLineEdit()
+                self.currentEdit.setText(step.attr['Current'])
+                self.formLayout.addWidget(QLabel("Current setpoint"),2,0)
+                self.formLayout.addWidget(self.currentEdit,2,1)
+                self.formLayout.addWidget(QLabel("Amps"),2,2)
+
+                self.voltageEdit = QLineEdit()
+                self.voltageEdit.setText(step.attr['Voltage'])
+                self.formLayout.addWidget(QLabel("Voltage setpoint"),3,0)
+                self.formLayout.addWidget(self.voltageEdit,3,1)
+                self.formLayout.addWidget(QLabel("Volts"),3,2)
+
+                self.rampTimeEdit = QLineEdit()
+                self.rampTimeEdit.setText(step.attr['RampTime'])
+                self.formLayout.addWidget(QLabel("RampTime setpoint"),4,0)
+                self.formLayout.addWidget(self.rampTimeEdit,4,1)
+                self.formLayout.addWidget(QLabel("s"),4,2)
+
+                self.arcDetectEdit = QLineEdit()
+                self.arcDetectEdit.setText(step.attr['ArcDetectDelayTime'])
+                self.formLayout.addWidget(QLabel("Arc detect delay time setpoint"),5,0)
+                self.formLayout.addWidget(self.arcDetectEdit,5,1)
+                self.formLayout.addWidget(QLabel("µs"),5,2)
+
+                self.arcOffEdit = QLineEdit()
+                self.arcOffEdit.setText(step.attr['ArcOffTime'])
+                self.formLayout.addWidget(QLabel("Arc off time setpoint"),6,0)
+                self.formLayout.addWidget(self.arcOffEdit,6,1)
+                self.formLayout.addWidget(QLabel("µs"),6,2)
+
+        def close(self):
+            match self.combo.currentIndex():
+                    case 0:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_1'
+                    case 1:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_2'
+                    case 2:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_3'
+            self.step.attr['Power'] = self.powerEdit.text()
+            self.step.attr['Current'] = self.currentEdit.text()
+            self.step.attr['Voltage'] = self.voltageEdit.text()
+            self.step.attr['RampTime'] = self.rampTimeEdit.text()
+            self.step.attr['ArcDetectDelayTime'] = self.arcDetectEdit.text()
+            self.step.attr['ArcOffTime'] = self.arcOffEdit.text()
+            super().close()
