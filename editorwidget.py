@@ -3,6 +3,7 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
+from stepeditorwidgets import MassflowSetpoint
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -17,7 +18,7 @@ class RecipeEditorWidget(QWidget):
         self.listView.viewport().setAcceptDrops(True)
         self.listView.setDefaultDropAction(Qt.MoveAction)
         self.listView.setSelectionMode(QAbstractItemView.ExtendedSelection)
-
+        self.listView.doubleClicked.connect(self.openStepEditor)
         self.listView.setItemDelegate(MyStyledDelegate(self))
         #self.listView.setMovement(QListView.Free)
         #self.listView.setDragDropMode(QAbstractItemView.DragDrop)
@@ -27,10 +28,13 @@ class RecipeEditorWidget(QWidget):
         self.setLayout(self.layout)
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+C"),self,self.CopySelected)
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+V"),self,self.PasteSelected)
+        self.popup = None
     def clear(self):
         self.model.clear()
+
     def CopySelected(self):
         self.pasteBin = self.listView.selectedIndexes()
+
     def PasteSelected(self):
         items = []
         for it in self.pasteBin:
@@ -61,5 +65,12 @@ class RecipeEditorWidget(QWidget):
         for i in range(count):
             res.append(self.model.item(i).data(Qt.UserRole))
         return res
+    @pyqtSlot(QModelIndex)
+    def openStepEditor(self,index:QModelIndex):
+        step = index.data(Qt.UserRole)
+        match step.type:
+            case "CParamScript_MassflowSetpoint":
+                self.popup = MassflowSetpoint(step,self)
+                self.popup.exec()
         
         

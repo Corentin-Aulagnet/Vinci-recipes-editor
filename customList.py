@@ -45,6 +45,7 @@ class MyListView(QListView):
 class MyItem(QStandardItem):
     def __init__(self,parent=None):
         super().__init__(parent)
+        self.setFlags(self.flags() ^ Qt.ItemIsEditable)
 
 class MyStyledDelegate(QStyledItemDelegate):
     def __init__(self,parent= None):
