@@ -19,19 +19,12 @@ class BaseStepEditor(QDialog):
     def close(self):
         #Communicate Step back to parent
         #Close widget
-        match self.combo.currentIndex():
-                    case 0:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_1'
-                    case 1:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_2'
-                    case 2:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_3'
-        self.step.attr['SetPoint_sccm'] = self.edit.text()
+        
         self.done(1)
 
 
 class MassflowSetpoint(BaseStepEditor):
-       def __init__(self,step,parent=None):
+        def __init__(self,step,parent=None):
               super().__init__(step,parent)
               self.combo = QComboBox()
               self.combo.addItems(["Massflow 1","Massflow 2","Massflow 3"])
@@ -51,3 +44,14 @@ class MassflowSetpoint(BaseStepEditor):
               self.edit.setText(step.attr['SetPoint_sccm'])
               self.formLayout.addWidget(QLabel("Setpoint"),1,0)
               self.formLayout.addWidget(self.edit,1,1)
+
+        def close(self):
+            match self.combo.currentIndex():
+                    case 0:
+                        self.step.attr['Massflow_ID'] = 'MASSFLOW_1'
+                    case 1:
+                        self.step.attr['Massflow_ID'] = 'MASSFLOW_2'
+                    case 2:
+                        self.step.attr['Massflow_ID'] = 'MASSFLOW_3'
+            self.step.attr['SetPoint_sccm'] = self.edit.text()
+            super().close()
