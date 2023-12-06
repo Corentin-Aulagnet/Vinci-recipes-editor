@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
-from stepeditorwidgets import MassflowSetpoint
+from stepeditorwidgets import MassflowSetpoint,VATValve
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -29,6 +29,9 @@ class RecipeEditorWidget(QWidget):
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+C"),self,self.CopySelected)
         self.copyShortcut = QShortcut(QKeySequence("Ctrl+V"),self,self.PasteSelected)
         self.popup = None
+
+    def ChangeTitle(self,name):
+        self.parent().setWindowTitle('Editor - '+name)
     def clear(self):
         self.model.clear()
 
@@ -71,6 +74,9 @@ class RecipeEditorWidget(QWidget):
         match step.type:
             case "CParamScript_MassflowSetpoint":
                 self.popup = MassflowSetpoint(step,self)
+                self.popup.exec()
+            case "CParamScript_VatValve":
+                self.popup = VATValve(step,self)
                 self.popup.exec()
         
         

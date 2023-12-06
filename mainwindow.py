@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
         self.libDock.setWidget(self.libraryWidget)
         self.addDockWidget(Qt.LeftDockWidgetArea,self.libDock)
 
-        self.editorDock = QDockWidget("Editor")
+        self.editorDock = QDockWidget("Editor -")
         self.editorDock.setWidget(self.recipeEditorWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea,self.editorDock)
 

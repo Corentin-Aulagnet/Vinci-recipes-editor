@@ -26,10 +26,11 @@ class ActionsWidget(QWidget):
         self.layout.addWidget(self.exportButton)
 
         self.setLayout(self.layout)
-
+    
     @pyqtSlot()
     def CreateRecipe(self):
         self.editor.clear()
+        self.editor.ChangeTitle('')
     
     @pyqtSlot()
     def OpenRecipe(self):
@@ -37,6 +38,7 @@ class ActionsWidget(QWidget):
             filePath =  QFileDialog.getOpenFileName (None,'Recipe File',os.getcwd())[0]
             recipe = XMLReader.ReadRecipe(filePath)
             self.editor.PopulateList(recipe.steps)
+            self.editor.ChangeTitle(recipe.name)
         except FileNotFoundError:
             pass
     
