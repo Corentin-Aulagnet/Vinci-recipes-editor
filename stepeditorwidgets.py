@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLineEdit,QComboBox,QWidget,QListWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QDialog
+from PyQt5.QtWidgets import QRadioButton,QButtonGroup,QLineEdit,QComboBox,QWidget,QListWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QDialog
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex,QRect
 from vincirecipereader import Step,Recipe
 
@@ -89,7 +89,6 @@ class VATValve(BaseStepEditor):
                
                 self.redrawform(self.combo.currentIndex())
                 self.formLayout.addLayout(self.setpointLayout,1,0,1,-1)
-                
         
         @pyqtSlot(int)
         def redrawform(self,index):
@@ -117,4 +116,47 @@ class VATValve(BaseStepEditor):
                         self.step.attr['Mode'] = 'PressureControl'
             
             self.step.attr['Setpoint'] = self.edit.text()
+            super().close()
+
+class MaximPowerOff(BaseStepEditor):
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.combo = QComboBox()
+                self.combo.addItems(["Maxim 1","Maxim 2","Maxim 3"])
+
+                match step.attr['Maxim_ID']:
+                    case 'MAXIM_1':
+                        self.combo.setCurrentIndex(0)
+                    case 'MAXIM_2':
+                        self.combo.setCurrentIndex(1)
+                    case 'MAXIM_3':
+                        self.combo.setCurrentIndex(2)
+
+                self.formLayout.addWidget(QLabel("Maxim name"),0,0)
+                self.formLayout.addWidget(self.combo,0,1)
+
+                self.buttonGroup = QButtonGroup()
+                self.offRadio = QRadioButton('Off')
+                self.onRadio = QRadioButton('On')
+                self.buttonGroup.addButton(self.onRadio)
+                self.buttonGroup.addButton(self.offRadio)
+                match self.step.attr['IsOn']:
+                    case 'true':
+                        self.onRadio.setChecked(True)
+                    case 'false':
+                        self.offRadio.setChecked(True)
+                self.formLayout.addWidget(QLabel("State"),1,0)
+                self.formLayout.addWidget(self.onRadio,1,1)
+                self.formLayout.addWidget(self.offRadio,1,2)
+
+        def close(self):
+            match self.combo.currentIndex():
+                    case 0:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_1'
+                    case 1:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_2'
+                    case 2:
+                        self.step.attr['Maxim_ID'] = 'MAXIM_3'
+            if self.onRadio.isChecked() : self.step.attr['IsOn'] = 'true' 
+            else: self.step.attr['IsOn'] = 'false'
             super().close()
