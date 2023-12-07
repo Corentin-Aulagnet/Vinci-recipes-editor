@@ -229,3 +229,155 @@ class MaximSetpoints(BaseStepEditor):
             self.step.attr['ArcDetectDelayTime'] = self.arcDetectEdit.text()
             self.step.attr['ArcOffTime'] = self.arcOffEdit.text()
             super().close()
+
+
+class Sleep(BaseStepEditor):
+        def __init__(self,step,parent=None):
+              super().__init__(step,parent)
+
+              self.edit = QLineEdit()
+              self.edit.setText(step.attr['WaitTime_Sec'])
+              self.formLayout.addWidget(QLabel("Wait time"),1,0)
+              self.formLayout.addWidget(self.edit,1,1)
+              self.formLayout.addWidget(QLabel("s"),1,2)
+
+        def close(self):
+            self.step.attr['WaitTime_Sec'] = self.edit.text()
+            super().close()
+
+class SubstrateHeating(BaseStepEditor):
+        def __init__(self,step,parent=None):
+              super().__init__(step,parent)
+
+              self.edit = QLineEdit()
+              self.edit.setText(step.attr['SetPoint_Deg'])
+              self.formLayout.addWidget(QLabel("Temperature setpoint"),1,0)
+              self.formLayout.addWidget(self.edit,1,1)
+              self.formLayout.addWidget(QLabel("°C"),1,2)
+
+        def close(self):
+            self.step.attr['SetPoint_Deg'] = self.edit.text()
+            super().close()
+
+class PowerSwitcher(BaseStepEditor):
+        switcher_supply = {
+             'Power switcher 1':['Seren 2','Maxim 1'],
+             'Power switcher 2':['Maxim 2','Maxim 3']
+
+        }
+        supply_cathodes= {
+             'SEREN 2' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
+             'Maxim 1' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
+             'Maxim 2' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8'],
+             'Maxim 3' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8']         
+            }
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.switcherCombo = QComboBox()
+                self.switcherCombo.addItems(PowerSwitcher.switcher_supply.keys())
+
+                match step.attr['PowerSwitcher_ID']:
+                    case 'SWITCHER_1':
+                        self.switcherCombo.setCurrentIndex(0)
+                    case 'SWITCHER_2':
+                        self.switcherCombo.setCurrentIndex(1)
+                self.switcherCombo.currentIndexChanged.connect(self.redrawSupplyLayout)
+                self.formLayout.addWidget(QLabel("Power switcher"),0,0)
+                self.formLayout.addWidget(self.switcherCombo,0,1)
+
+
+                self.supplyLayout = QHBoxLayout()
+                self.supplyCombo = QComboBox()
+                self.supplyLayout.addWidget(QLabel("Power supply"))
+                self.supplyLayout.addWidget(self.supplyCombo)
+                self.formLayout.addLayout(self.supplyLayout,1,0,1,-1)
+                self.redrawSupplyLayout(self.switcherCombo.currentIndex())
+
+                self.cathodesLayout = QHBoxLayout()
+                self.cathodesCombo = QComboBox()
+                self.cathodesLayout.addWidget(QLabel("Cathode"))
+                self.cathodesLayout.addWidget(self.cathodesCombo)
+                self.formLayout.addLayout(self.cathodesLayout,2,0,1,-1)
+                self.redrawCathodesLayout(self.supplyCombo.currentIndex())
+
+                
+
+        @pyqtSlot(int)
+        def redrawSupplyLayout(self,index):
+            self.supplyCombo.clear()
+            match index:
+                case 0:
+                      self.supplyCombo.addItems(self.switcher_supply['Power switcher 1'])
+                case 1:
+                      self.supplyCombo.addItems(self.switcher_supply['Power switcher 2'])
+            
+            match self.step.attr['PowerSwitcher_InputID']:
+                    case 'IN_1':
+                        self.supplyCombo.setCurrentIndex(0)
+                    case 'IN_2':
+                        self.supplyCombo.setCurrentIndex(1)
+
+            self.supplyCombo.currentIndexChanged.connect(self.redrawCathodesLayout)
+            
+
+        @pyqtSlot(int)
+        def redrawCathodesLayout(self,index):
+            self.cathodesCombo.clear()
+            match self.supplyCombo.itemText(index):
+                case 'SEREN 2':
+                      self.cathodesCombo.addItems(self.supply_cathodes['SEREN 2'])
+                case 'Maxim 1':
+                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
+                case 'Maxim 2':
+                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 2'])
+                case 'Maxim 3':
+                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 3'])
+
+            
+            match self.step.attr['PowerSwitcher_OutputID']:
+                    case 'NONE':
+                        self.cathodesCombo.setCurrentIndex(0)
+                    case 'OUT_1':
+                        self.cathodesCombo.setCurrentIndex(1)
+                    case 'OUT_2':
+                        self.cathodesCombo.setCurrentIndex(2)
+                    case 'OUT_3':
+                        self.cathodesCombo.setCurrentIndex(3)
+                    case 'OUT_4':
+                        self.cathodesCombo.setCurrentIndex(4)
+            
+        def close(self):
+            if self.switcherCombo.currentIndex() == 0:
+                #Switcher 1 is selected
+                self.step.attr["Command_VariableID"] = 'MW_SW1_DC_COMMAND' 
+                self.step.attr["State_VariableID"] = 'MW_SW1_DC_STATE'
+                self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_1'
+            else:
+                #Switcher 2 is selected
+                self.step.attr["Command_VariableID"] = 'MW_SW2_DC_COMMAND' 
+                self.step.attr["State_VariableID"] = 'MW_SW2_DC_STATE'
+                self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_2'
+            match self.supplyCombo.currentIndex():
+                case 1:
+                    #IN_1
+                    self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
+                case 2:
+                    #IN_2
+                    self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
+            match self.cathodesCombo.currentIndex():
+                case 0:
+                    #None
+                    self.step.attr["PowerSwitcher_OutputID"] = 'NONE'
+                case 1:
+                    #OUT_1
+                    self.step.attr["PowerSwitcher_OutputID"] = 'OUT_1'
+                case 2:
+                    #OUT_2
+                    self.step.attr["PowerSwitcher_OutputID"] = 'OUT_2'
+                case 3:
+                    #OUT_3
+                    self.step.attr["PowerSwitcher_OutputID"] = 'OUT_3'
+                case 4:
+                    #OUT_4
+                    self.step.attr["PowerSwitcher_OutputID"] = 'OUT_4'
+            super().close()
