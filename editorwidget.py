@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
-from stepeditorwidgets import MassflowSetpoint,VATValve,MaximPowerOff,MaximSetpoints,Sleep,SubstrateHeating,PowerSwitcher
+from stepeditorwidgets import MassflowSetpoint,VATValve,MaximPowerOff,MaximSetpoints,Sleep,SubstrateHeating,PowerSwitcher,ShutterOpenClose
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -92,6 +92,9 @@ class RecipeEditorWidget(QWidget):
                 self.popup.exec()
             case "CParamScript_Substrate_HeatingSetpoint":
                 self.popup = SubstrateHeating(step,self)
+                self.popup.exec()
+            case "CParamScript_Shutter_OpenClose":
+                self.popup = ShutterOpenClose(step,self)
                 self.popup.exec()
                 
                 
