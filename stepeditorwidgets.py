@@ -37,7 +37,7 @@ class MassflowSetpoint(BaseStepEditor):
         def __init__(self,step,parent=None):
               super().__init__(step,parent)
               self.combo = QComboBox()
-              self.combo.addItems(["Massflow 1","Massflow 2","Massflow 3"])
+              self.combo.addItems(["Massflow #1 Argon","Massflow #2 Oxygen","Massflow #3 Nitrogen"])
 
               match step.attr['Massflow_ID']:
                     case 'MASSFLOW_1':
