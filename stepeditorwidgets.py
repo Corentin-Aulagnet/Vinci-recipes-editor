@@ -452,3 +452,88 @@ class ShutterOpenClose(BaseStepEditor):
             if self.onRadio.isChecked() : self.step.attr['OpenState'] = 'true' 
             else: self.step.attr['OpenState'] = 'false'
             super().close()
+
+
+class ValveOpenClose(BaseStepEditor):
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.combo = QComboBox()
+                self.combo.addItems(["Deposit chamber Backing valve",
+                                     "Deposit chamber Gas injection valve",
+                                     "Deposit chamber Roughing valve",
+                                     "Deposit chamber Venting valve",
+                                     "Loadlock chamber Backing valve",
+                                     "Loadlock chamber Venting valve",
+                                     "Massflow #1 Gas injection valve",
+                                     "Massflow #2 Gas injection valve",
+                                     "Massflow #3 Gas injection valve"])
+
+                match step.attr['Command_VariableID']:
+                    case 'MX_DC_BackingValve_COMMAND':
+                        self.combo.setCurrentIndex(0)
+                    case 'MX_DC_GasInjectionValve_COMMAND':
+                        self.combo.setCurrentIndex(1)
+                    case 'MX_DC_RoughingValve_COMMAND':
+                        self.combo.setCurrentIndex(2)
+                    case 'MX_DC_VentingValve_COMMAND':
+                        self.combo.setCurrentIndex(3)
+                    case 'MX_LL_BackingValve_COMMAND':
+                        self.combo.setCurrentIndex(4)
+                    case 'MX_LL_VentingValve_COMMAND':
+                        self.combo.setCurrentIndex(5)
+                    case 'MX_DC_MF1_GasInjectionValve_COMMAND':
+                        self.combo.setCurrentIndex(6)
+                    case 'MX_DC_MF2_GasInjectionValve_COMMAND':
+                        self.combo.setCurrentIndex(7)
+                    case 'MX_DC_MF3_GasInjectionValve_COMMAND':
+                        self.combo.setCurrentIndex(8)
+
+                self.formLayout.addWidget(QLabel("Valve name"),0,0)
+                self.formLayout.addWidget(self.combo,0,1)
+
+                self.buttonGroup = QButtonGroup()
+                self.offRadio = QRadioButton('Closed')
+                self.onRadio = QRadioButton('Open')
+                self.buttonGroup.addButton(self.onRadio)
+                self.buttonGroup.addButton(self.offRadio)
+                match self.step.attr['OpenState']:
+                    case 'true':
+                        self.onRadio.setChecked(True)
+                    case 'false':
+                        self.offRadio.setChecked(True)
+                self.formLayout.addWidget(QLabel("State"),1,0)
+                self.formLayout.addWidget(self.onRadio,1,1)
+                self.formLayout.addWidget(self.offRadio,1,2)
+
+        def close(self):
+            match self.combo.currentIndex():
+                    case 0:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_BackingValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_BackingValve_STATE'
+                    case 1:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_GasInjectionValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_GasInjectionValve_STATE'
+                    case 2:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_RoughingValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_RoughingValve_STATE'
+                    case 3:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_VentingValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_VentingValve_STATE'
+                    case 4:
+                        self.step.attr['Command_VariableID'] = 'MX_LL_BackingValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_LL_BackingValve_STATE'
+                    case 5:
+                        self.step.attr['Command_VariableID'] = 'MX_LL_VentingValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_LL_VentingValve_STATE'
+                    case 6:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_MF1_GasInjectionValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_MF1_GasInjectionValve_STATE'
+                    case 7:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_MF2_GasInjectionValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_MF2_GasInjectionValve_STATE'
+                    case 8:
+                        self.step.attr['Command_VariableID'] = 'MX_DC_MF3_GasInjectionValve_COMMAND'
+                        self.step.attr['State_VariableID'] = 'MX_DC_MF3_GasInjectionValve_STATE'
+            if self.onRadio.isChecked() : self.step.attr['OpenState'] = 'true' 
+            else: self.step.attr['OpenState'] = 'false'
+            super().close()
