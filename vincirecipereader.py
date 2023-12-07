@@ -8,11 +8,14 @@ class Recipe():
     def AddSteps(self,steps):
         self.steps = steps
 class Step():
-    def __init__(self,_type):
+    def __init__(self,_type=None):
         self.type = _type
         self.attr = {}
     def Add_attr(self,key,value):
         self.attr[key]=value
+    def clear(self):
+        self.type=None
+        self.attr = {}
 class XMLReader:
     
     def __init__(self):

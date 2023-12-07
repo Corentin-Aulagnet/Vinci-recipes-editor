@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QRadioButton,QButtonGroup,QLineEdit,QComboBox,QWidget,QListWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QDialog
+from PyQt5.QtWidgets import QLayout,QRadioButton,QButtonGroup,QLineEdit,QComboBox,QWidget,QListWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QDialog
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex,QRect
 from vincirecipereader import Step,Recipe
 
@@ -10,8 +10,139 @@ def clearLayout(layout):
                 child.widget().deleteLater()
             elif child.layout():
                 clearLayout(child)
+def clearWidget(widget):
+    children = widget.findChildren(QWidget)
+    for child in children:
+        child.deleteLater()
+    children = widget.findChildren(QLayout)
+    for child in children:        
+        clearLayout(child)
 
+class StepAddPopUp(QDialog):
+    def __init__(self,step,parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Add a new step")
+        self.setGeometry(QRect(100, 100, 400, 200))
+        self.layout = QGridLayout()
+        self.okButton = QPushButton("Ok")
+        self.combo = QComboBox()
+        self.step = step
+        self.combo.addItems(["CParamScript_MassflowSetpoint",
+                             "CParamScript_VatValve",
+                             "CParamScript_Maxim_PowerOff",
+                             "CParamScript_Maxim_Setpoints",
+                             "CParamScript_PowerSwitcher",
+                             "CParamScript_Sleep",
+                             "CParamScript_Substrate_HeatingOff",
+                             "CParamScript_Substrate_HeatingOn",
+                             "CParamScript_Substrate_RotationOff",
+                             "CParamScript_Substrate_RotationOn",
+                             "CParamScript_Substrate_HeatingSetpoint",
+                             "CParamScript_Shutter_OpenClose",
+                             "CParamScript_Valve_OpenClose"])
+        self.combo.currentIndexChanged.connect(self.redrawForm)
+        self.okButton.clicked.connect(self.close)
+        self.editorLayout = QVBoxLayout()
+        self.editorWidget = QWidget()
+        self.editorLayout.addWidget(self.editorWidget)
+        self.redrawForm(0)
+        
+        self.layout.addWidget(QLabel("Step type"),0,0)
+        self.layout.addWidget(self.combo,0,1)
+        self.layout.addLayout(self.editorLayout,1,0,1,-1)
+        self.layout.addWidget(self.okButton,2,0,1,-1)
+        self.setLayout(self.layout)
+    @pyqtSlot(int)
+    def redrawForm(self,index):
+        self.step.clear()
+        clearLayout(self.editorLayout)
+        match self.combo.itemText(index):
+            case "CParamScript_MassflowSetpoint":
+                self.step.type = "CParamScript_MassflowSetpoint"
+                self.step.Add_attr("Massflow_ID",'0')
+                self.step.Add_attr("Measure_VariableID",'0')
+                self.step.Add_attr("Setpoint_VariableID",'0')
+                self.step.Add_attr("SetPoint_sccm",'0')
+                self.editorWidget = MassflowSetpoint(self.step,self)
 
+            case "CParamScript_VatValve":
+                self.step.type = "CParamScript_VatValve"
+                self.step.Add_attr("Mode",'0')
+                self.step.Add_attr("Setpoint",'0')
+                self.editorWidget = VATValve(self.step,self)
+
+            case "CParamScript_Maxim_PowerOff":
+                self.step.type = "CParamScript_Maxim_PowerOff"
+                self.step.Add_attr("Maxim_ID",'0')
+                self.step.Add_attr("IsOn",'0')
+                self.editorWidget = MaximPowerOff(self.step,self)
+
+            case "CParamScript_Maxim_Setpoints":
+                self.step.type = "CParamScript_Maxim_Setpoints"
+                self.step.Add_attr("Maxim_ID",'0')
+                self.step.Add_attr("Power",'0')
+                self.step.Add_attr("Current",'0')
+                self.step.Add_attr("Voltage",'0')
+                self.step.Add_attr("RampTime",'0')
+                self.step.Add_attr("ArcDetectDelayTime",'0')
+                self.step.Add_attr("ArcOffTime",'0')
+                self.editorWidget = MaximSetpoints(self.step,self)
+
+            case "CParamScript_PowerSwitcher":
+                self.step.type = "CParamScript_PowerSwitcher"
+                self.step.Add_attr("DeviceID","WAGO")
+                self.step.Add_attr("Command_VariableID",'0')
+                self.step.Add_attr("State_VariableID",'0')
+                self.step.Add_attr("PowerSwitcher_ID",'0')
+                self.step.Add_attr("PowerSwitcher_InputID",'0')
+                self.step.Add_attr("PowerSwitcher_OutputID",'0')
+                self.editorWidget = PowerSwitcher(self.step,self)
+
+            case "CParamScript_Sleep":
+                self.step.type = "CParamScript_Sleep"
+                self.step.Add_attr("WaitTime_Sec",'0')
+                self.editorWidget = Sleep(self.step,self)
+                
+            case "CParamScript_Substrate_HeatingOff":
+                self.step.type = "CParamScript_Substrate_HeatingOff"
+                self.editorWidget = QWidget()
+
+            case "CParamScript_Substrate_HeatingOn":
+                self.step.type = "CParamScript_Substrate_HeatingOn"
+                self.editorWidget = QWidget()
+
+            case "CParamScript_Substrate_RotationOff":
+                self.step.type = "CParaCParamScript_Substrate_RotationOffmScript_Sleep"
+                self.editorWidget = QWidget()
+
+            case "CParamScript_Substrate_RotationOn":
+                self.step.type = "CParamScript_Substrate_RotationOn"
+                self.editorWidget = QWidget()
+
+            case "CParamScript_Substrate_HeatingSetpoint":
+                self.step.type = "CParamScript_Substrate_HeatingSetpoint"
+                self.step.Add_attr("SetPoint_Deg",'0')
+                self.editorWidget = SubstrateHeating(self.step,self)
+
+            case "CParamScript_Shutter_OpenClose":
+                self.step.type = "CParamScript_Shutter_OpenClose"
+                self.step.Add_attr("DeviceID","WAGO")
+                self.step.Add_attr("Command_VariableID",'0')
+                self.step.Add_attr("State_VariableID",'0')
+                self.step.Add_attr("OpenState",'0')
+                self.editorWidget = ShutterOpenClose(self.step,self)
+
+            case "CParamScript_Valve_OpenClose":
+                self.step.type = "CParamScript_Valve_OpenClose"
+                self.step.Add_attr("DeviceID","WAGO")
+                self.step.Add_attr("Command_VariableID",'0')
+                self.step.Add_attr("State_VariableID",'0')
+                self.step.Add_attr("OpenState",'0')
+                self.editorWidget = ValveOpenClose(self.step,self)
+        self.editorLayout.addWidget(self.editorWidget)
+    def close(self):
+        self.editorWidget.close()
+        self.done(1)
 
 class StepEditorPopUp(QDialog):
     def __init__(self,step,parent=None):
@@ -85,10 +216,16 @@ class MassflowSetpoint(BaseStepEditor):
             match self.combo.currentIndex():
                     case 0:
                         self.step.attr['Massflow_ID'] = 'MASSFLOW_1'
+                        self.step.attr['Measure_VariableID'] = 'MDW_MF1_MES'
+                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF1_SP'
                     case 1:
                         self.step.attr['Massflow_ID'] = 'MASSFLOW_2'
+                        self.step.attr['Measure_VariableID'] = 'MDW_MF2_MES'
+                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF2_SP'
                     case 2:
                         self.step.attr['Massflow_ID'] = 'MASSFLOW_3'
+                        self.step.attr['Measure_VariableID'] = 'MDW_MF3_MES'
+                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF3_SP'
             self.step.attr['SetPoint_sccm'] = self.edit.text()
             super().close()
 

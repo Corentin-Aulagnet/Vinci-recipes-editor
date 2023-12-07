@@ -3,7 +3,8 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
-from stepeditorwidgets import StepEditorPopUp
+from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
+from vincirecipereader import Step
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -28,7 +29,8 @@ class RecipeEditorWidget(QWidget):
         self.setLayout(self.layout)
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_C),self,self.CopySelected)
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_V),self,self.PasteSelected)
-        #self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
+        self.tmpStep = Step()
+        self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
         self.popup = None
 
@@ -51,14 +53,16 @@ class RecipeEditorWidget(QWidget):
 
     def RemoveStep(self):
         indexes = self.listView.selectedIndexes()
-        self.model.removeRows(indexes[0].row(),len(indexes))
+        if len(indexes)> 0:self.model.removeRows(indexes[0].row(),len(indexes))
 
-    '''def AddStep(self):
-        popup = 
-        item = self.CreateItem(step)
-        items.append(item)
-        for index,item in enumerate(items):
-            self.model.insertRow(self.listView.current.row()+index,item)'''
+    def AddStep(self):
+        self.tmpStep = Step()
+        popup = StepAddPopUp(self.tmpStep,self)
+        popup.exec()
+        item = self.CreateItem(self.tmpStep)
+        row = self.listView.current.row()
+        if row == -1 : row = 0
+        self.model.insertRow(row,item)
     
     def PopulateList(self,steps):
         #self.listWidget.clear()
