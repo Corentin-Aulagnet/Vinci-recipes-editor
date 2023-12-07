@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelInde
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
-from stepeditorwidgets import MassflowSetpoint,VATValve,MaximPowerOff,MaximSetpoints,Sleep,SubstrateHeating,PowerSwitcher,ShutterOpenClose,ValveOpenClose
+from stepeditorwidgets import StepEditorPopUp
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -26,8 +26,10 @@ class RecipeEditorWidget(QWidget):
 
         self.layout.addWidget(self.listView)
         self.setLayout(self.layout)
-        self.copyShortcut = QShortcut(QKeySequence("Ctrl+C"),self,self.CopySelected)
-        self.copyShortcut = QShortcut(QKeySequence("Ctrl+V"),self,self.PasteSelected)
+        self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_C),self,self.CopySelected)
+        self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_V),self,self.PasteSelected)
+        #self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
+        self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
         self.popup = None
 
     def ChangeTitle(self,name):
@@ -46,6 +48,17 @@ class RecipeEditorWidget(QWidget):
             items.append(item)
         for index,item in enumerate(items):
             self.model.insertRow(self.listView.current.row()+index,item)
+
+    def RemoveStep(self):
+        indexes = self.listView.selectedIndexes()
+        self.model.removeRows(indexes[0].row(),len(indexes))
+
+    '''def AddStep(self):
+        popup = 
+        item = self.CreateItem(step)
+        items.append(item)
+        for index,item in enumerate(items):
+            self.model.insertRow(self.listView.current.row()+index,item)'''
     
     def PopulateList(self,steps):
         #self.listWidget.clear()
@@ -71,34 +84,9 @@ class RecipeEditorWidget(QWidget):
     @pyqtSlot(QModelIndex)
     def openStepEditor(self,index:QModelIndex):
         step = index.data(Qt.UserRole)
-        match step.type:
-            case "CParamScript_MassflowSetpoint":
-                self.popup = MassflowSetpoint(step,self)
-                self.popup.exec()
-            case "CParamScript_VatValve":
-                self.popup = VATValve(step,self)
-                self.popup.exec()
-            case "CParamScript_Maxim_PowerOff":
-                self.popup = MaximPowerOff(step,self)
-                self.popup.exec()
-            case "CParamScript_Maxim_Setpoints":
-                self.popup = MaximSetpoints(step,self)
-                self.popup.exec()
-            case "CParamScript_PowerSwitcher":
-                self.popup = PowerSwitcher(step,self)
-                self.popup.exec()
-            case "CParamScript_Sleep":
-                self.popup = Sleep(step,self)
-                self.popup.exec()
-            case "CParamScript_Substrate_HeatingSetpoint":
-                self.popup = SubstrateHeating(step,self)
-                self.popup.exec()
-            case "CParamScript_Shutter_OpenClose":
-                self.popup = ShutterOpenClose(step,self)
-                self.popup.exec()
-            case "CParamScript_Valve_OpenClose":
-                self.popup = ValveOpenClose(step,self)
-                self.popup.exec()
+        self.popup = StepEditorPopUp(step,self)
+        self.popup.exec()
+        
                 
                 
         

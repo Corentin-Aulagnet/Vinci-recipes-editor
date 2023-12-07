@@ -11,27 +11,53 @@ def clearLayout(layout):
             elif child.layout():
                 clearLayout(child)
 
-class BaseStepEditor(QDialog):
+
+
+class StepEditorPopUp(QDialog):
     def __init__(self,step,parent=None):
         super().__init__(parent)
         self.step = step
         self.setWindowTitle(step.type)
-        self.layout = QVBoxLayout()
         self.setGeometry(QRect(100, 100, 400, 200))
-        self.formLayout=QGridLayout()
+        self.layout = QVBoxLayout()
         self.okButton = QPushButton("Ok")
+        match step.type:
+            case "CParamScript_MassflowSetpoint":
+                self.editorWidget = MassflowSetpoint(step,self)
+            case "CParamScript_VatValve":
+                self.editorWidget = VATValve(step,self)
+            case "CParamScript_Maxim_PowerOff":
+                self.editorWidget = MaximPowerOff(step,self)
+            case "CParamScript_Maxim_Setpoints":
+                self.editorWidget = MaximSetpoints(step,self)
+            case "CParamScript_PowerSwitcher":
+                self.editorWidget = PowerSwitcher(step,self)
+            case "CParamScript_Sleep":
+                self.editorWidget = Sleep(step,self)
+            case "CParamScript_Substrate_HeatingSetpoint":
+                self.editorWidget = SubstrateHeating(step,self)
+            case "CParamScript_Shutter_OpenClose":
+                self.editorWidget = ShutterOpenClose(step,self)
+            case "CParamScript_Valve_OpenClose":
+                self.editorWidget = ValveOpenClose(step,self)
+
         self.okButton.clicked.connect(self.close)
-        self.layout.addLayout(self.formLayout)
+        self.layout.addWidget(self.editorWidget)
         self.layout.addWidget(self.okButton)
         self.setLayout(self.layout)
-
     def close(self):
-        #Communicate Step back to parent
-        #Close widget
+        self.editorWidget.close()
         self.done(1)
 
+class BaseStepEditor(QWidget):
+    def __init__(self,step,parent=None):
+        super().__init__(parent)
+        self.step = step
+        self.formLayout=QGridLayout()
+        self.setLayout(self.formLayout)
 
-
+    def close(self):
+        pass
 
 class MassflowSetpoint(BaseStepEditor):
         def __init__(self,step,parent=None):
@@ -230,7 +256,6 @@ class MaximSetpoints(BaseStepEditor):
             self.step.attr['ArcOffTime'] = self.arcOffEdit.text()
             super().close()
 
-
 class Sleep(BaseStepEditor):
         def __init__(self,step,parent=None):
               super().__init__(step,parent)
@@ -266,7 +291,7 @@ class PowerSwitcher(BaseStepEditor):
 
         }
         supply_cathodes= {
-             'SEREN 2' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
+             'Seren 2' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
              'Maxim 1' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
              'Maxim 2' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8'],
              'Maxim 3' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8']         
@@ -324,8 +349,8 @@ class PowerSwitcher(BaseStepEditor):
         def redrawCathodesLayout(self,index):
             self.cathodesCombo.clear()
             match self.supplyCombo.itemText(index):
-                case 'SEREN 2':
-                      self.cathodesCombo.addItems(self.supply_cathodes['SEREN 2'])
+                case 'Seren 2':
+                      self.cathodesCombo.addItems(self.supply_cathodes['Seren 2'])
                 case 'Maxim 1':
                       self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
                 case 'Maxim 2':
