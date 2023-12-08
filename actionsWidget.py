@@ -44,8 +44,10 @@ class ActionsWidget(QWidget):
     
     @pyqtSlot()
     def SaveRecipe(self):
-        name = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
-        if (name != ''):
+        path,extension = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
+        extension = extension.split('(')[1][1:-1]
+        name = path.split('/')[-1][:-len(extension)] 
+        if (path != ''):
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
             steps = self.editor.GetListItemData()
             print(steps)
@@ -75,14 +77,16 @@ class ActionsWidget(QWidget):
                     sub = ET.SubElement(root,'CollecStep')
                     sub.set('subrecipe',step.path)
                         
-            tree.write(name, encoding="utf-8", xml_declaration=True) 
+            tree.write(path, encoding="utf-8", xml_declaration=True) 
         #else:
         #Write to satus bar
 
     @pyqtSlot()
     def ExportRecipe(self):
-        name = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Recipe Files (*.RCP)"))[0]
-        if (name != ''):
+        path,extension = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Recipe Files (*.RCP)"))
+        extension = extension.split('(')[1][1:-1]
+        name = path.split('/')[-1][:-len(extension)]
+        if (path != ''):
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
             steps = self.editor.GetListItemData()
             print(steps)
@@ -121,7 +125,7 @@ class ActionsWidget(QWidget):
                             subsub = ET.SubElement(sub,key)
                             subsub.text = attr[key]
                         
-            tree.write(name, encoding="utf-8", xml_declaration=True) 
+            tree.write(path, encoding="utf-8", xml_declaration=True) 
         #else:
         #Write to satus bar
 
