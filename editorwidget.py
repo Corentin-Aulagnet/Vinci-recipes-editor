@@ -4,7 +4,7 @@ from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
 from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
-from vincirecipereader import Step
+from vincirecipereader import Step,Recipe
 class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
@@ -73,10 +73,16 @@ class RecipeEditorWidget(QWidget):
         
     def CreateItem(self,step):
         item = MyItem()
-        item.setText(step.type)
-        item.setData(step,Qt.UserRole)
-        icon = QIcon('res/step_512.png')
-        item.setIcon(icon)
+        if(type(step) == Step):
+            item.setText(step.type)
+            item.setData(step,Qt.UserRole)
+            icon = QIcon('res/step_512.png')
+            item.setIcon(icon)
+        elif(type(step) == Recipe):
+            item.setText(step.name)
+            item.setData(step,Qt.UserRole)
+            icon = QIcon('res/ass_512.png')
+            item.setIcon(icon)
         return item
     
     def GetListItemData(self):

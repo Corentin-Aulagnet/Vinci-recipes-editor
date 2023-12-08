@@ -35,7 +35,7 @@ class ActionsWidget(QWidget):
     @pyqtSlot()
     def OpenRecipe(self):
         try :
-            filePath =  QFileDialog.getOpenFileName (None,'Recipe File',os.getcwd())[0]
+            filePath =  QFileDialog.getOpenFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
             recipe = XMLReader.ReadRecipe(filePath)
             self.editor.PopulateList(recipe.steps)
             self.editor.ChangeTitle(recipe.name)
@@ -44,7 +44,7 @@ class ActionsWidget(QWidget):
     
     @pyqtSlot()
     def SaveRecipe(self):
-        name = QFileDialog.getSaveFileName (None,'Recipe File',os.getcwd(),("Recipe Files (*.RCP)"))[0]
+        name = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
         if (name != ''):
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
             steps = self.editor.GetListItemData()
@@ -81,7 +81,7 @@ class ActionsWidget(QWidget):
 
     @pyqtSlot()
     def ExportRecipe(self):
-        name = QFileDialog.getSaveFileName (None,'Recipe File',os.getcwd(),("Recipe Files (*.RCP)"))[0]
+        name = QFileDialog.getSaveFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Recipe Files (*.RCP)"))[0]
         if (name != ''):
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
             steps = self.editor.GetListItemData()
