@@ -49,7 +49,7 @@ class RecipeEditorWidget(QWidget):
             item = self.CreateItem(step)
             items.append(item)
         for index,item in enumerate(items):
-            self.model.insertRow(self.listView.current.row()+index+1,item)
+            if(self.listView.current != None): self.model.insertRow(self.listView.current.row()+index+1,item)
 
     def RemoveStep(self):
         indexes = self.listView.selectedIndexes()
@@ -60,7 +60,9 @@ class RecipeEditorWidget(QWidget):
         popup = StepAddPopUp(self.tmpStep,self)
         popup.exec()
         item = self.CreateItem(self.tmpStep)
-        row = self.listView.current.row()
+        row = -1
+        if(self.listView.current != None):
+            row = self.listView.current.row()
         if row == -1 : row = 0
         self.model.insertRow(row,item)
     

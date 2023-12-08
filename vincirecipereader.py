@@ -8,13 +8,13 @@ class Recipe():
     def AddSteps(self,steps):
         self.steps = steps
 class Step():
-    def __init__(self,_type=None):
+    def __init__(self,_type=''):
         self.type = _type
         self.attr = {}
     def Add_attr(self,key,value):
         self.attr[key]=value
     def clear(self):
-        self.type=None
+        self.type=''
         self.attr = {}
 class XMLReader:
     
@@ -24,7 +24,9 @@ class XMLReader:
     def ReadRecipeName(xmlFile):
         tree = ET.parse(xmlFile)
         root = tree.getroot()
-        return root.find("ScriptName").text
+        element = root.find("ScriptName")
+        if(element != None):
+            return element.text
 
     @staticmethod
     def ReadRecipe(xmlFile):
@@ -39,10 +41,11 @@ class XMLReader:
                 step = Step(neighbor.attrib[xsi+'type'])
                 for child in neighbor:
                     step.Add_attr(child.tag,child.text)
+                steps.append(step)
             elif 'subrecipe' in  neighbor.attrib.keys():
                 #Is a subrecipe
                 step = XMLReader.ReadRecipe(neighbor.attrib['subrecipe'])
-            steps.append(step)
+                steps.append(step)
         recipe.AddSteps(steps)
         return recipe
 
