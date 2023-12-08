@@ -49,7 +49,7 @@ class RecipeEditorWidget(QWidget):
             item = self.CreateItem(step)
             items.append(item)
         for index,item in enumerate(items):
-            self.model.insertRow(self.listView.current.row()+index,item)
+            self.model.insertRow(self.listView.current.row()+index+1,item)
 
     def RemoveStep(self):
         indexes = self.listView.selectedIndexes()
