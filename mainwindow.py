@@ -13,15 +13,29 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Vinci Recipe Editor")
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        self.initMenus()
+        
         self.initMainLayout()
+        self.initMenus()
         self.show()
 
 
     def initMenus(self):
         
         ##Window Menu
-        self.windowMenu = self.menuBar().addMenu("&Windows")
+        self.window_menu = self.menuBar().addMenu("&Windows")
+
+        ###Library
+        self.libDock_action = QAction("Library",self)
+        self.window_menu.addAction(self.libDock.toggleViewAction())
+
+        ###Editor
+        self.editorDock_action = QAction("Editor",self)
+        self.window_menu.addAction(self.editorDock.toggleViewAction())
+
+        ###Actions
+        self.actionsDock_action = QAction("Actions",self)
+        self.window_menu.addAction(self.actionsDock.toggleViewAction())
+
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
 
