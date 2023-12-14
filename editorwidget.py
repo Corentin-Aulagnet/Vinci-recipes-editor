@@ -5,7 +5,8 @@ from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import MyListView,MyItem,MyStyledDelegate
 from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
 from vincirecipereader import Step,Recipe
-class RecipeEditorWidget(QWidget):
+from mainwidget import MainWidget
+class RecipeEditorWidget(MainWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
         super().__init__(parent)

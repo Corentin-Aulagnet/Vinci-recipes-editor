@@ -3,7 +3,8 @@ from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
 from vincirecipereader import XMLReader,Step,Recipe
 import os
 import xml.etree.ElementTree as ET
-class ActionsWidget(QWidget):
+from mainwidget import MainWidget
+class ActionsWidget(MainWidget):
     def __init__(self,editor,parent = None):
         super().__init__(parent)
         self.editor = editor
@@ -31,6 +32,7 @@ class ActionsWidget(QWidget):
     def CreateRecipe(self):
         self.editor.clear()
         self.editor.ChangeTitle('')
+        
     
     @pyqtSlot()
     def OpenRecipe(self):
@@ -39,6 +41,7 @@ class ActionsWidget(QWidget):
             recipe = XMLReader.ReadRecipe(filePath)
             self.editor.PopulateList(recipe.steps)
             self.editor.ChangeTitle(recipe.name)
+            self.messageChanged.emit("Opened {}".format(filePath))
         except FileNotFoundError:
             pass
     
@@ -77,7 +80,8 @@ class ActionsWidget(QWidget):
                     sub = ET.SubElement(root,'CollecStep')
                     sub.set('subrecipe',step.path)
                         
-            tree.write(path, encoding="utf-8", xml_declaration=True) 
+            tree.write(path, encoding="utf-8", xml_declaration=True)
+            self.parent().PrintNormalMessage("Recipe saved to {}".format(path)) 
         #else:
         #Write to satus bar
 
@@ -126,6 +130,7 @@ class ActionsWidget(QWidget):
                             subsub.text = attr[key]
                         
             tree.write(path, encoding="utf-8", xml_declaration=True) 
+            self.parent().PrintNormalMessage("Recipe exported to {}".format(path))
         #else:
         #Write to satus bar
 
