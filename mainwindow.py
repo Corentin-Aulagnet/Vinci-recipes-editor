@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel
+from PyQt5.QtCore import Qt,pyqtSignal
 from librarywidget import LibraryWidget
 from editorwidget import RecipeEditorWidget
 from actionsWidget import ActionsWidget
+
 class MainWindow(QMainWindow):
     def __init__(self,width=1400,height=800):
         super().__init__()
@@ -50,6 +51,10 @@ class MainWindow(QMainWindow):
         ##Rightmost widget is a column of action button : add a step, remove a step, open a recipe, delete the recipe, save the recipe
         self.actionsWidget = ActionsWidget(parent = self,editor=self.recipeEditorWidget)
 
+        self.libraryWidget.messageChanged.connect(self.PrintNormalMessage)
+        self.recipeEditorWidget.messageChanged.connect(self.PrintNormalMessage)
+        self.actionsWidget.messageChanged.connect(self.PrintNormalMessage)
+
         self.setCentralWidget(QWidget())
         self.centralWidget().hide()
 
@@ -67,3 +72,9 @@ class MainWindow(QMainWindow):
         self.actionsDock.setWidget(self.actionsWidget)
         self.addDockWidget(Qt.RightDockWidgetArea,self.actionsDock)
 
+
+    def PrintNormalMessage(self,message):
+        self.statusBar().addWidget(QLabel(message))
+
+
+    

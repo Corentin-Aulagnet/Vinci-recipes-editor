@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QListWidgetItem
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
 from PyQt5.QtGui import QIcon
-
+from mainwidget import MainWidget
 import os
 from vincirecipereader import XMLReader
-class LibraryWidget(QWidget):
+class LibraryWidget(MainWidget):
     def __init__(self, parent= None):
         super().__init__(parent)
         self.customSubRecipes=[]
