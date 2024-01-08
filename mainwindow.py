@@ -74,7 +74,8 @@ class MainWindow(QMainWindow):
 
 
     def PrintNormalMessage(self,message):
-        self.statusBar().addWidget(QLabel(message))
+        self.statusBar().clearMessage()
+        self.statusBar().showMessage(message)
 
 
     
