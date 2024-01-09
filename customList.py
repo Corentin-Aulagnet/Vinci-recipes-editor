@@ -13,17 +13,16 @@ class MyListView(QListView):
         if event.keyboardModifiers() == Qt.ControlModifier:
             event.setDropAction(Qt.CopyAction)
         insertRow   = self.indexAt( event.pos() ).row()
-        match self.dropIndicatorPosition():
-                    case QAbstractItemView.OnItem:
-                        #do nothing
-                        return
-                    case QAbstractItemView.AboveItem:
+        if self.dropIndicatorPosition() == QAbstractItemView.OnItem:
+            #do nothing
+            return
+        elif self.dropIndicatorPosition() == QAbstractItemView.AboveItem:
                         #Above the item
                         insertRow   = self.indexAt( event.pos() ).row()
-                    case QAbstractItemView.BelowItem:
+        elif self.dropIndicatorPosition() == QAbstractItemView.BelowItem:
                         #Below the item
                         insertRow   = self.indexAt( event.pos() ).row() + 1
-                    case QAbstractItemView.OnViewport:
+        elif self.dropIndicatorPosition() == QAbstractItemView.OnViewport:
                         #At the end
                         insertRow   = self.model.rowCount() + 1
         if event.source() == self and (Qt.MoveAction and event.possibleActions()):

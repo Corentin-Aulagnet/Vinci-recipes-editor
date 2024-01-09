@@ -56,90 +56,90 @@ class StepAddPopUp(QDialog):
     def redrawForm(self,index):
         self.step.clear()
         clearLayout(self.editorLayout)
-        match self.combo.itemText(index):
-            case "CParamScript_MassflowSetpoint":
-                self.step.type = "CParamScript_MassflowSetpoint"
-                self.step.Add_attr("Massflow_ID",'0')
-                self.step.Add_attr("Measure_VariableID",'0')
-                self.step.Add_attr("Setpoint_VariableID",'0')
-                self.step.Add_attr("SetPoint_sccm",'0')
-                self.editorWidget = MassflowSetpoint(self.step,self)
+        if self.combo.itemText(index) == "CParamScript_MassflowSetpoint":
+            self.step.type = "CParamScript_MassflowSetpoint"
+            self.step.Add_attr("Massflow_ID",'0')
+            self.step.Add_attr("Measure_VariableID",'0')
+            self.step.Add_attr("Setpoint_VariableID",'0')
+            self.step.Add_attr("SetPoint_sccm",'0')
+            self.editorWidget = MassflowSetpoint(self.step,self)
 
-            case "CParamScript_VatValve":
-                self.step.type = "CParamScript_VatValve"
-                self.step.Add_attr("Mode",'0')
-                self.step.Add_attr("Setpoint",'0')
-                self.editorWidget = VATValve(self.step,self)
+        elif self.combo.itemText(index) == "CParamScript_VatValve":
+            self.step.type = "CParamScript_VatValve"
+            self.step.Add_attr("Mode",'0')
+            self.step.Add_attr("Setpoint",'0')
+            self.editorWidget = VATValve(self.step,self)
 
-            case "CParamScript_Maxim_PowerOff":
-                self.step.type = "CParamScript_Maxim_PowerOff"
-                self.step.Add_attr("Maxim_ID",'0')
-                self.step.Add_attr("IsOn",'0')
-                self.editorWidget = MaximPowerOff(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Maxim_PowerOff":
+            self.step.type = "CParamScript_Maxim_PowerOff"
+            self.step.Add_attr("Maxim_ID",'0')
+            self.step.Add_attr("IsOn",'0')
+            self.editorWidget = MaximPowerOff(self.step,self)
 
-            case "CParamScript_Maxim_Setpoints":
-                self.step.type = "CParamScript_Maxim_Setpoints"
-                self.step.Add_attr("Maxim_ID",'0')
-                self.step.Add_attr("Power",'0')
-                self.step.Add_attr("Current",'0')
-                self.step.Add_attr("Voltage",'0')
-                self.step.Add_attr("RampTime",'0')
-                self.step.Add_attr("ArcDetectDelayTime",'0')
-                self.step.Add_attr("ArcOffTime",'0')
-                self.editorWidget = MaximSetpoints(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Maxim_Setpoints":
+            self.step.type = "CParamScript_Maxim_Setpoints"
+            self.step.Add_attr("Maxim_ID",'0')
+            self.step.Add_attr("Power",'0')
+            self.step.Add_attr("Current",'0')
+            self.step.Add_attr("Voltage",'0')
+            self.step.Add_attr("RampTime",'0')
+            self.step.Add_attr("ArcDetectDelayTime",'0')
+            self.step.Add_attr("ArcOffTime",'0')
+            self.editorWidget = MaximSetpoints(self.step,self)
 
-            case "CParamScript_PowerSwitcher":
-                self.step.type = "CParamScript_PowerSwitcher"
-                self.step.Add_attr("DeviceID","WAGO")
-                self.step.Add_attr("Command_VariableID",'0')
-                self.step.Add_attr("State_VariableID",'0')
-                self.step.Add_attr("PowerSwitcher_ID",'0')
-                self.step.Add_attr("PowerSwitcher_InputID",'0')
-                self.step.Add_attr("PowerSwitcher_OutputID",'0')
-                self.editorWidget = PowerSwitcher(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_PowerSwitcher":
+            self.step.type = "CParamScript_PowerSwitcher"
+            self.step.Add_attr("DeviceID","WAGO")
+            self.step.Add_attr("Command_VariableID",'0')
+            self.step.Add_attr("State_VariableID",'0')
+            self.step.Add_attr("PowerSwitcher_ID",'0')
+            self.step.Add_attr("PowerSwitcher_InputID",'0')
+            self.step.Add_attr("PowerSwitcher_OutputID",'0')
+            self.editorWidget = PowerSwitcher(self.step,self)
 
-            case "CParamScript_Sleep":
-                self.step.type = "CParamScript_Sleep"
-                self.step.Add_attr("WaitTime_Sec",'0')
-                self.editorWidget = Sleep(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Sleep":
+            self.step.type = "CParamScript_Sleep"
+            self.step.Add_attr("WaitTime_Sec",'0')
+            self.editorWidget = Sleep(self.step,self)
                 
-            case "CParamScript_Substrate_HeatingOff":
-                self.step.type = "CParamScript_Substrate_HeatingOff"
-                self.editorWidget = QWidget()
+        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingOff":
+            self.step.type = "CParamScript_Substrate_HeatingOff"
+            self.editorWidget = QWidget()
 
-            case "CParamScript_Substrate_HeatingOn":
-                self.step.type = "CParamScript_Substrate_HeatingOn"
-                self.editorWidget = QWidget()
+        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingOn":
+            self.step.type = "CParamScript_Substrate_HeatingOn"
+            self.editorWidget = QWidget()
 
-            case "CParamScript_Substrate_RotationOff":
-                self.step.type = "CParaCParamScript_Substrate_RotationOffmScript_Sleep"
-                self.editorWidget = QWidget()
+        elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOff":
+            self.step.type = "CParaCParamScript_Substrate_RotationOffmScript_Sleep"
+            self.editorWidget = QWidget()
 
-            case "CParamScript_Substrate_RotationOn":
-                self.step.type = "CParamScript_Substrate_RotationOn"
-                self.editorWidget = QWidget()
+        elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOn":
+            self.step.type = "CParamScript_Substrate_RotationOn"
+            self.editorWidget = QWidget()
 
-            case "CParamScript_Substrate_HeatingSetpoint":
-                self.step.type = "CParamScript_Substrate_HeatingSetpoint"
-                self.step.Add_attr("SetPoint_Deg",'0')
-                self.editorWidget = SubstrateHeating(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingSetpoint":
+            self.step.type = "CParamScript_Substrate_HeatingSetpoint"
+            self.step.Add_attr("SetPoint_Deg",'0')
+            self.editorWidget = SubstrateHeating(self.step,self)
 
-            case "CParamScript_Shutter_OpenClose":
-                self.step.type = "CParamScript_Shutter_OpenClose"
-                self.step.Add_attr("DeviceID","WAGO")
-                self.step.Add_attr("Command_VariableID",'0')
-                self.step.Add_attr("State_VariableID",'0')
-                self.step.Add_attr("OpenState",'0')
-                self.editorWidget = ShutterOpenClose(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Shutter_OpenClose":
+            self.step.type = "CParamScript_Shutter_OpenClose"
+            self.step.Add_attr("DeviceID","WAGO")
+            self.step.Add_attr("Command_VariableID",'0')
+            self.step.Add_attr("State_VariableID",'0')
+            self.step.Add_attr("OpenState",'0')
+            self.editorWidget = ShutterOpenClose(self.step,self)
 
-            case "CParamScript_Valve_OpenClose":
-                self.step.type = "CParamScript_Valve_OpenClose"
-                self.step.Add_attr("DeviceID","WAGO")
-                self.step.Add_attr("Command_VariableID",'0')
-                self.step.Add_attr("State_VariableID",'0')
-                self.step.Add_attr("OpenState",'0')
-                self.editorWidget = ValveOpenClose(self.step,self)
+        elif self.combo.itemText(index) ==  "CParamScript_Valve_OpenClose":
+            self.step.type = "CParamScript_Valve_OpenClose"
+            self.step.Add_attr("DeviceID","WAGO")
+            self.step.Add_attr("Command_VariableID",'0')
+            self.step.Add_attr("State_VariableID",'0')
+            self.step.Add_attr("OpenState",'0')
+            self.editorWidget = ValveOpenClose(self.step,self)
         self.editorLayout.addWidget(self.editorWidget)
+    
     def close(self):
         self.editorWidget.close()
         self.done(1)
@@ -152,25 +152,24 @@ class StepEditorPopUp(QDialog):
         self.setGeometry(QRect(100, 100, 400, 200))
         self.layout = QVBoxLayout()
         self.okButton = QPushButton("Ok")
-        match step.type:
-            case "CParamScript_MassflowSetpoint":
-                self.editorWidget = MassflowSetpoint(step,self)
-            case "CParamScript_VatValve":
-                self.editorWidget = VATValve(step,self)
-            case "CParamScript_Maxim_PowerOff":
-                self.editorWidget = MaximPowerOff(step,self)
-            case "CParamScript_Maxim_Setpoints":
-                self.editorWidget = MaximSetpoints(step,self)
-            case "CParamScript_PowerSwitcher":
-                self.editorWidget = PowerSwitcher(step,self)
-            case "CParamScript_Sleep":
-                self.editorWidget = Sleep(step,self)
-            case "CParamScript_Substrate_HeatingSetpoint":
-                self.editorWidget = SubstrateHeating(step,self)
-            case "CParamScript_Shutter_OpenClose":
-                self.editorWidget = ShutterOpenClose(step,self)
-            case "CParamScript_Valve_OpenClose":
-                self.editorWidget = ValveOpenClose(step,self)
+        if step.type == "CParamScript_MassflowSetpoint":
+            self.editorWidget = MassflowSetpoint(step,self)
+        elif step.type == "CParamScript_VatValve":
+            self.editorWidget = VATValve(step,self)
+        elif step.type ==  "CParamScript_Maxim_PowerOff":
+            self.editorWidget = MaximPowerOff(step,self)
+        elif step.type ==  "CParamScript_Maxim_Setpoints":
+            self.editorWidget = MaximSetpoints(step,self)
+        elif step.type ==  "CParamScript_PowerSwitcher":
+            self.editorWidget = PowerSwitcher(step,self)
+        elif step.type ==  "CParamScript_Sleep":
+            self.editorWidget = Sleep(step,self)
+        elif step.type ==  "CParamScript_Substrate_HeatingSetpoint":
+            self.editorWidget = SubstrateHeating(step,self)
+        elif step.type ==  "CParamScript_Shutter_OpenClose":
+            self.editorWidget = ShutterOpenClose(step,self)
+        elif step.type ==  "CParamScript_Valve_OpenClose":
+            self.editorWidget = ValveOpenClose(step,self)
 
         self.okButton.clicked.connect(self.close)
         self.layout.addWidget(self.editorWidget)
@@ -192,40 +191,38 @@ class BaseStepEditor(QWidget):
 
 class MassflowSetpoint(BaseStepEditor):
         def __init__(self,step,parent=None):
-              super().__init__(step,parent)
-              self.combo = QComboBox()
-              self.combo.addItems(["Massflow #1 Argon","Massflow #2 Oxygen","Massflow #3 Nitrogen"])
+            super().__init__(step,parent)
+            self.combo = QComboBox()
+            self.combo.addItems(["Massflow #1 Argon","Massflow #2 Oxygen","Massflow #3 Nitrogen"])
 
-              match step.attr['Massflow_ID']:
-                    case 'MASSFLOW_1':
-                        self.combo.setCurrentIndex(0)
-                    case 'MASSFLOW_2':
-                        self.combo.setCurrentIndex(1)
-                    case 'MASSFLOW_3':
-                        self.combo.setCurrentIndex(2)
+            if step.attr['Massflow_ID'] == 'MASSFLOW_1':
+                self.combo.setCurrentIndex(0)
+            elif step.attr['Massflow_ID'] == 'MASSFLOW_2':
+                self.combo.setCurrentIndex(1)
+            elif step.attr['Massflow_ID'] == 'MASSFLOW_3':
+                self.combo.setCurrentIndex(2)
 
-              self.formLayout.addWidget(QLabel("Massflow name"),0,0)
-              self.formLayout.addWidget(self.combo,0,1)
+            self.formLayout.addWidget(QLabel("Massflow name"),0,0)
+            self.formLayout.addWidget(self.combo,0,1)
 
-              self.edit = QLineEdit()
-              self.edit.setText(step.attr['SetPoint_sccm'])
-              self.formLayout.addWidget(QLabel("Setpoint"),1,0)
-              self.formLayout.addWidget(self.edit,1,1)
+            self.edit = QLineEdit()
+            self.edit.setText(step.attr['SetPoint_sccm'])
+            self.formLayout.addWidget(QLabel("Setpoint"),1,0)
+            self.formLayout.addWidget(self.edit,1,1)
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_1'
-                        self.step.attr['Measure_VariableID'] = 'MDW_MF1_MES'
-                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF1_SP'
-                    case 1:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_2'
-                        self.step.attr['Measure_VariableID'] = 'MDW_MF2_MES'
-                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF2_SP'
-                    case 2:
-                        self.step.attr['Massflow_ID'] = 'MASSFLOW_3'
-                        self.step.attr['Measure_VariableID'] = 'MDW_MF3_MES'
-                        self.step.attr['Setpoint_VariableID'] = 'MDW_MF3_SP'
+            if self.combo.currentIndex() == 0:
+                self.step.attr['Massflow_ID'] = 'MASSFLOW_1'
+                self.step.attr['Measure_VariableID'] = 'MDW_MF1_MES'
+                self.step.attr['Setpoint_VariableID'] = 'MDW_MF1_SP'
+            elif self.combo.currentIndex() == 1:
+                self.step.attr['Massflow_ID'] = 'MASSFLOW_2'
+                self.step.attr['Measure_VariableID'] = 'MDW_MF2_MES'
+                self.step.attr['Setpoint_VariableID'] = 'MDW_MF2_SP'
+            elif self.combo.currentIndex() == 2:
+                self.step.attr['Massflow_ID'] = 'MASSFLOW_3'
+                self.step.attr['Measure_VariableID'] = 'MDW_MF3_MES'
+                self.step.attr['Setpoint_VariableID'] = 'MDW_MF3_SP'
             self.step.attr['SetPoint_sccm'] = self.edit.text()
             super().close()
 
@@ -236,14 +233,13 @@ class VATValve(BaseStepEditor):
                 self.setpointLayout = QHBoxLayout(self)
                 self.combo.addItems(["Closed","Open","Position control",'Pressure control'])
                 self.combo.currentIndexChanged.connect(self.redrawform)
-                match step.attr['Mode']:
-                    case 'Closed':
-                        self.combo.setCurrentIndex(0)
-                    case 'Open':
+                if step.attr['Mode'] == 'Closed':
+                    self.combo.setCurrentIndex(0)
+                elif step.attr['Mode'] == 'Open':
                         self.combo.setCurrentIndex(1)
-                    case 'PositionControl':
+                elif step.attr['Mode'] == 'PositionControl':
                         self.combo.setCurrentIndex(2)
-                    case 'PressureControl':
+                elif step.attr['Mode'] == 'PressureControl':
                         self.combo.setCurrentIndex(3)
 
                 self.formLayout.addWidget(QLabel("Mode"),0,0)
@@ -261,22 +257,20 @@ class VATValve(BaseStepEditor):
             self.setpointLayout.addWidget(QLabel("Setpoint"))
             self.setpointLayout.addStretch()
             self.setpointLayout.addWidget(self.edit)
-            match index:
-                case 2:
-                    self.setpointLayout.addWidget(QLabel("%"))
-                case 3:
+            if index == 2:
+                self.setpointLayout.addWidget(QLabel("%"))
+            elif index == 3:
                     self.setpointLayout.addWidget(QLabel("mBar"))
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
-                        self.step.attr['Mode'] = 'Closed'
-                    case 1:
-                        self.step.attr['Mode'] = 'Open'
-                    case 2:
-                        self.step.attr['Mode'] = 'PositionControl'
-                    case 3:
-                        self.step.attr['Mode'] = 'PressureControl'
+            if self.combo.currentIndex() == 0:
+                self.step.attr['Mode'] = 'Closed'
+            elif self.combo.currentIndex() == 1:
+                self.step.attr['Mode'] = 'Open'
+            elif self.combo.currentIndex() == 2:
+                self.step.attr['Mode'] = 'PositionControl'
+            elif self.combo.currentIndex() == 3:
+                self.step.attr['Mode'] = 'PressureControl'
             
             self.step.attr['Setpoint'] = self.edit.text()
             super().close()
@@ -287,13 +281,12 @@ class MaximPowerOff(BaseStepEditor):
                 self.combo = QComboBox()
                 self.combo.addItems(["Maxim 1","Maxim 2","Maxim 3"])
 
-                match step.attr['Maxim_ID']:
-                    case 'MAXIM_1':
-                        self.combo.setCurrentIndex(0)
-                    case 'MAXIM_2':
-                        self.combo.setCurrentIndex(1)
-                    case 'MAXIM_3':
-                        self.combo.setCurrentIndex(2)
+                if step.attr['Maxim_ID'] == 'MAXIM_1':
+                    self.combo.setCurrentIndex(0)
+                elif step.attr['Maxim_ID'] == 'MAXIM_2':
+                    self.combo.setCurrentIndex(1)
+                elif step.attr['Maxim_ID'] == 'MAXIM_3':
+                    self.combo.setCurrentIndex(2)
 
                 self.formLayout.addWidget(QLabel("Maxim name"),0,0)
                 self.formLayout.addWidget(self.combo,0,1)
@@ -303,23 +296,21 @@ class MaximPowerOff(BaseStepEditor):
                 self.onRadio = QRadioButton('On')
                 self.buttonGroup.addButton(self.onRadio)
                 self.buttonGroup.addButton(self.offRadio)
-                match self.step.attr['IsOn']:
-                    case 'true':
+                if self.step.attr['IsOn'] == 'true':
                         self.onRadio.setChecked(True)
-                    case 'false':
+                elif self.step.attr['IsOn'] == 'false':
                         self.offRadio.setChecked(True)
                 self.formLayout.addWidget(QLabel("State"),1,0)
                 self.formLayout.addWidget(self.onRadio,1,1)
                 self.formLayout.addWidget(self.offRadio,1,2)
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
-                        self.step.attr['Maxim_ID'] = 'MAXIM_1'
-                    case 1:
-                        self.step.attr['Maxim_ID'] = 'MAXIM_2'
-                    case 2:
-                        self.step.attr['Maxim_ID'] = 'MAXIM_3'
+            if self.combo.currentIndex() == 0:
+                self.step.attr['Maxim_ID'] = 'MAXIM_1'
+            elif self.combo.currentIndex() == 1:
+                self.step.attr['Maxim_ID'] = 'MAXIM_2'
+            elif self.combo.currentIndex() == 2:
+                self.step.attr['Maxim_ID'] = 'MAXIM_3'
             if self.onRadio.isChecked() : self.step.attr['IsOn'] = 'true' 
             else: self.step.attr['IsOn'] = 'false'
             super().close()
@@ -330,12 +321,11 @@ class MaximSetpoints(BaseStepEditor):
                 self.combo = QComboBox()
                 self.combo.addItems(["Maxim 1","Maxim 2","Maxim 3"])
 
-                match step.attr['Maxim_ID']:
-                    case 'MAXIM_1':
+                if step.attr['Maxim_ID'] == 'MAXIM_1':
                         self.combo.setCurrentIndex(0)
-                    case 'MAXIM_2':
+                elif step.attr['Maxim_ID'] == 'MAXIM_2':
                         self.combo.setCurrentIndex(1)
-                    case 'MAXIM_3':
+                elif step.attr['Maxim_ID'] == 'MAXIM_3':
                         self.combo.setCurrentIndex(2)
 
                 self.formLayout.addWidget(QLabel("Maxim name"),0,0)
@@ -378,12 +368,11 @@ class MaximSetpoints(BaseStepEditor):
                 self.formLayout.addWidget(QLabel("µs"),6,2)
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
+            if self.combo.currentIndex() == 0:
                         self.step.attr['Maxim_ID'] = 'MAXIM_1'
-                    case 1:
+            elif self.combo.currentIndex() == 1:
                         self.step.attr['Maxim_ID'] = 'MAXIM_2'
-                    case 2:
+            elif self.combo.currentIndex() == 2:
                         self.step.attr['Maxim_ID'] = 'MAXIM_3'
             self.step.attr['Power'] = self.powerEdit.text()
             self.step.attr['Current'] = self.currentEdit.text()
@@ -438,10 +427,9 @@ class PowerSwitcher(BaseStepEditor):
                 self.switcherCombo = QComboBox()
                 self.switcherCombo.addItems(PowerSwitcher.switcher_supply.keys())
 
-                match step.attr['PowerSwitcher_ID']:
-                    case 'SWITCHER_1':
+                if step.attr['PowerSwitcher_ID'] == 'SWITCHER_1':
                         self.switcherCombo.setCurrentIndex(0)
-                    case 'SWITCHER_2':
+                elif step.attr['PowerSwitcher_ID'] == 'SWITCHER_2':
                         self.switcherCombo.setCurrentIndex(1)
                 self.switcherCombo.currentIndexChanged.connect(self.redrawSupplyLayout)
                 self.formLayout.addWidget(QLabel("Power switcher"),0,0)
@@ -467,17 +455,15 @@ class PowerSwitcher(BaseStepEditor):
         @pyqtSlot(int)
         def redrawSupplyLayout(self,index):
             self.supplyCombo.clear()
-            match index:
-                case 0:
-                      self.supplyCombo.addItems(self.switcher_supply['Power switcher 1'])
-                case 1:
-                      self.supplyCombo.addItems(self.switcher_supply['Power switcher 2'])
+            if index == 0:
+                self.supplyCombo.addItems(self.switcher_supply['Power switcher 1'])
+            elif index == 1:
+                self.supplyCombo.addItems(self.switcher_supply['Power switcher 2'])
             
-            match self.step.attr['PowerSwitcher_InputID']:
-                    case 'IN_1':
-                        self.supplyCombo.setCurrentIndex(0)
-                    case 'IN_2':
-                        self.supplyCombo.setCurrentIndex(1)
+            if self.step.attr['PowerSwitcher_InputID'] == 'IN_1':
+                self.supplyCombo.setCurrentIndex(0)
+            elif self.step.attr['PowerSwitcher_InputID'] == 'IN_2':
+                self.supplyCombo.setCurrentIndex(1)
 
             self.supplyCombo.currentIndexChanged.connect(self.redrawCathodesLayout)
             
@@ -485,27 +471,25 @@ class PowerSwitcher(BaseStepEditor):
         @pyqtSlot(int)
         def redrawCathodesLayout(self,index):
             self.cathodesCombo.clear()
-            match self.supplyCombo.itemText(index):
-                case 'Seren 2':
+            if self.supplyCombo.itemText(index) == 'Seren 2':
                       self.cathodesCombo.addItems(self.supply_cathodes['Seren 2'])
-                case 'Maxim 1':
+            elif self.supplyCombo.itemText(index) == 'Maxim 1':
                       self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
-                case 'Maxim 2':
+            elif self.supplyCombo.itemText(index) == 'Maxim 2':
                       self.cathodesCombo.addItems(self.supply_cathodes['Maxim 2'])
-                case 'Maxim 3':
+            elif self.supplyCombo.itemText(index) == 'Maxim 3':
                       self.cathodesCombo.addItems(self.supply_cathodes['Maxim 3'])
 
             
-            match self.step.attr['PowerSwitcher_OutputID']:
-                    case 'NONE':
+            if self.step.attr['PowerSwitcher_OutputID'] == 'NONE':
                         self.cathodesCombo.setCurrentIndex(0)
-                    case 'OUT_1':
+            elif self.step.attr['PowerSwitcher_OutputID'] == 'OUT_1':
                         self.cathodesCombo.setCurrentIndex(1)
-                    case 'OUT_2':
+            elif self.step.attr['PowerSwitcher_OutputID'] == 'OUT_2':
                         self.cathodesCombo.setCurrentIndex(2)
-                    case 'OUT_3':
+            elif self.step.attr['PowerSwitcher_OutputID'] == 'OUT_3':
                         self.cathodesCombo.setCurrentIndex(3)
-                    case 'OUT_4':
+            elif self.step.attr['PowerSwitcher_OutputID'] == 'OUT_4':
                         self.cathodesCombo.setCurrentIndex(4)
             
         def close(self):
@@ -519,27 +503,26 @@ class PowerSwitcher(BaseStepEditor):
                 self.step.attr["Command_VariableID"] = 'MW_SW2_DC_COMMAND' 
                 self.step.attr["State_VariableID"] = 'MW_SW2_DC_STATE'
                 self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_2'
-            match self.supplyCombo.currentIndex():
-                case 1:
+            if self.supplyCombo.currentIndex() == 1:
                     #IN_1
                     self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
-                case 2:
+            elif self.supplyCombo.currentIndex() ==  2:
                     #IN_2
                     self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
-            match self.cathodesCombo.currentIndex():
-                case 0:
+
+            if self.cathodesCombo.currentIndex() == 0:
                     #None
                     self.step.attr["PowerSwitcher_OutputID"] = 'NONE'
-                case 1:
+            elif self.cathodesCombo.currentIndex() == 1:
                     #OUT_1
                     self.step.attr["PowerSwitcher_OutputID"] = 'OUT_1'
-                case 2:
+            elif self.cathodesCombo.currentIndex() == 2:
                     #OUT_2
                     self.step.attr["PowerSwitcher_OutputID"] = 'OUT_2'
-                case 3:
+            elif self.cathodesCombo.currentIndex() == 3:
                     #OUT_3
                     self.step.attr["PowerSwitcher_OutputID"] = 'OUT_3'
-                case 4:
+            elif self.cathodesCombo.currentIndex() == 4:
                     #OUT_4
                     self.step.attr["PowerSwitcher_OutputID"] = 'OUT_4'
             super().close()
@@ -550,22 +533,21 @@ class ShutterOpenClose(BaseStepEditor):
                 self.combo = QComboBox()
                 self.combo.addItems(["Cathode {}".format(i) for i in range(1,9)])
 
-                match step.attr['Command_VariableID']:
-                    case 'MX_DC_Shutter1_COMMAND':
+                if step.attr['Command_VariableID'] == 'MX_DC_Shutter1_COMMAND':
                         self.combo.setCurrentIndex(0)
-                    case 'MX_DC_Shutter2_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter2_COMMAND':
                         self.combo.setCurrentIndex(1)
-                    case 'MX_DC_Shutter3_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter3_COMMAND':
                         self.combo.setCurrentIndex(2)
-                    case 'MX_DC_Shutter4_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter4_COMMAND':
                         self.combo.setCurrentIndex(3)
-                    case 'MX_DC_Shutter5_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter5_COMMAND':
                         self.combo.setCurrentIndex(4)
-                    case 'MX_DC_Shutter6_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter6_COMMAND':
                         self.combo.setCurrentIndex(5)
-                    case 'MX_DC_Shutter7_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter7_COMMAND':
                         self.combo.setCurrentIndex(6)
-                    case 'MX_DC_Shutter8_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_Shutter8_COMMAND':
                         self.combo.setCurrentIndex(7)
 
                 self.formLayout.addWidget(QLabel("Shutter name"),0,0)
@@ -576,39 +558,37 @@ class ShutterOpenClose(BaseStepEditor):
                 self.onRadio = QRadioButton('Open')
                 self.buttonGroup.addButton(self.onRadio)
                 self.buttonGroup.addButton(self.offRadio)
-                match self.step.attr['OpenState']:
-                    case 'true':
+                if self.step.attr['OpenState'] == 'true':
                         self.onRadio.setChecked(True)
-                    case 'false':
+                elif self.step.attr['OpenState'] == 'false':
                         self.offRadio.setChecked(True)
                 self.formLayout.addWidget(QLabel("State"),1,0)
                 self.formLayout.addWidget(self.onRadio,1,1)
                 self.formLayout.addWidget(self.offRadio,1,2)
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
+            if self.combo.currentIndex() == 0:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter1_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter1_STATE'
-                    case 1:
+            elif self.combo.currentIndex() == 1:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter2_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter2_STATE'
-                    case 2:
+            elif self.combo.currentIndex() == 2:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter3_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter3_STATE'
-                    case 3:
+            elif self.combo.currentIndex() == 3:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter4_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter4_STATE'
-                    case 4:
+            elif self.combo.currentIndex() == 4:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter5_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter5_STATE'
-                    case 5:
+            elif self.combo.currentIndex() == 5:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter6_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter6_STATE'
-                    case 6:
+            elif self.combo.currentIndex() == 6:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter7_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter7_STATE'
-                    case 7:
+            elif self.combo.currentIndex() == 7:
                         self.step.attr['Command_VariableID'] = 'MX_DC_Shutter8_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_Shutter8_STATE'
             if self.onRadio.isChecked() : self.step.attr['OpenState'] = 'true' 
@@ -630,24 +610,23 @@ class ValveOpenClose(BaseStepEditor):
                                      "Massflow #2 Gas injection valve",
                                      "Massflow #3 Gas injection valve"])
 
-                match step.attr['Command_VariableID']:
-                    case 'MX_DC_BackingValve_COMMAND':
+                if step.attr['Command_VariableID'] == 'MX_DC_BackingValve_COMMAND':
                         self.combo.setCurrentIndex(0)
-                    case 'MX_DC_GasInjectionValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_GasInjectionValve_COMMAND':
                         self.combo.setCurrentIndex(1)
-                    case 'MX_DC_RoughingValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_RoughingValve_COMMAND':
                         self.combo.setCurrentIndex(2)
-                    case 'MX_DC_VentingValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_VentingValve_COMMAND':
                         self.combo.setCurrentIndex(3)
-                    case 'MX_LL_BackingValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_LL_BackingValve_COMMAND':
                         self.combo.setCurrentIndex(4)
-                    case 'MX_LL_VentingValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_LL_VentingValve_COMMAND':
                         self.combo.setCurrentIndex(5)
-                    case 'MX_DC_MF1_GasInjectionValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_MF1_GasInjectionValve_COMMAND':
                         self.combo.setCurrentIndex(6)
-                    case 'MX_DC_MF2_GasInjectionValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_MF2_GasInjectionValve_COMMAND':
                         self.combo.setCurrentIndex(7)
-                    case 'MX_DC_MF3_GasInjectionValve_COMMAND':
+                elif step.attr['Command_VariableID'] == 'MX_DC_MF3_GasInjectionValve_COMMAND':
                         self.combo.setCurrentIndex(8)
 
                 self.formLayout.addWidget(QLabel("Valve name"),0,0)
@@ -658,42 +637,40 @@ class ValveOpenClose(BaseStepEditor):
                 self.onRadio = QRadioButton('Open')
                 self.buttonGroup.addButton(self.onRadio)
                 self.buttonGroup.addButton(self.offRadio)
-                match self.step.attr['OpenState']:
-                    case 'true':
+                if self.step.attr['OpenState'] == 'true':
                         self.onRadio.setChecked(True)
-                    case 'false':
+                if self.step.attr['OpenState'] == 'false':
                         self.offRadio.setChecked(True)
                 self.formLayout.addWidget(QLabel("State"),1,0)
                 self.formLayout.addWidget(self.onRadio,1,1)
                 self.formLayout.addWidget(self.offRadio,1,2)
 
         def close(self):
-            match self.combo.currentIndex():
-                    case 0:
+            if self.combo.currentIndex() == 0:
                         self.step.attr['Command_VariableID'] = 'MX_DC_BackingValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_BackingValve_STATE'
-                    case 1:
+            if self.combo.currentIndex() == 1:
                         self.step.attr['Command_VariableID'] = 'MX_DC_GasInjectionValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_GasInjectionValve_STATE'
-                    case 2:
+            if self.combo.currentIndex() == 2:
                         self.step.attr['Command_VariableID'] = 'MX_DC_RoughingValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_RoughingValve_STATE'
-                    case 3:
+            if self.combo.currentIndex() == 3:
                         self.step.attr['Command_VariableID'] = 'MX_DC_VentingValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_VentingValve_STATE'
-                    case 4:
+            if self.combo.currentIndex() == 4:
                         self.step.attr['Command_VariableID'] = 'MX_LL_BackingValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_LL_BackingValve_STATE'
-                    case 5:
+            if self.combo.currentIndex() == 5:
                         self.step.attr['Command_VariableID'] = 'MX_LL_VentingValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_LL_VentingValve_STATE'
-                    case 6:
+            if self.combo.currentIndex() == 6:
                         self.step.attr['Command_VariableID'] = 'MX_DC_MF1_GasInjectionValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_MF1_GasInjectionValve_STATE'
-                    case 7:
+            if self.combo.currentIndex() == 7:
                         self.step.attr['Command_VariableID'] = 'MX_DC_MF2_GasInjectionValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_MF2_GasInjectionValve_STATE'
-                    case 8:
+            if self.combo.currentIndex() == 8:
                         self.step.attr['Command_VariableID'] = 'MX_DC_MF3_GasInjectionValve_COMMAND'
                         self.step.attr['State_VariableID'] = 'MX_DC_MF3_GasInjectionValve_STATE'
             if self.onRadio.isChecked() : self.step.attr['OpenState'] = 'true' 
