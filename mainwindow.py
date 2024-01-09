@@ -1,9 +1,9 @@
-from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel
+from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog
 from PyQt5.QtCore import Qt,pyqtSignal
 from librarywidget import LibraryWidget
 from editorwidget import RecipeEditorWidget
 from actionsWidget import ActionsWidget
-
+from mainwidget import MainWidget
 class MainWindow(QMainWindow):
     def __init__(self,width=1400,height=800):
         super().__init__()
@@ -11,15 +11,21 @@ class MainWindow(QMainWindow):
         self.width = width
         self.left = 100
         self.top = 100
+        
         self.setWindowTitle("Vinci Recipe Editor")
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        
+        self.initWorkingDir()
         self.initMainLayout()
         self.initMenus()
         self.show()
 
-
+    def initWorkingDir(self):
+        try:
+            with open("user.pref",'r') as f:
+                MainWidget.SetWorkingDir(f.readline())
+        except FileNotFoundError:
+            pass
     def initMenus(self):
         
         ##Window Menu
@@ -37,9 +43,20 @@ class MainWindow(QMainWindow):
         self.actionsDock_action = QAction("Actions",self)
         self.window_menu.addAction(self.actionsDock.toggleViewAction())
 
+        ##Preferences
+        self.prefMenu = self.menuBar().addMenu("&Preferences")
+        ###Editor
+        self.editWorkingPath_action = QAction("Set Working Directory...",self)
+        self.editWorkingPath_action.triggered.connect(self.SetWorkingDir)
+        self.prefMenu.addAction(self.editWorkingPath_action)
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
 
+    def SetWorkingDir(self):
+        dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.workingDir)
+        if dir != "":
+            MainWidget.SetWorkingDir(dir)
+            self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
     def initMainLayout(self):
 
         self.setCentralWidget(QWidget())

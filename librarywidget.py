@@ -34,18 +34,22 @@ class LibraryWidget(MainWidget):
                 for line in lines:
                     self.customSubRecipes.append(XMLReader.ReadRecipe(line[:-1]))
         except FileNotFoundError:
-            print("file not found")
             f = open("SubRecipes.dat",'w')
             f.close()
             self.ReadCustomSubRecipes()
     @pyqtSlot()
     def AddToLibraryAction(self):
-        filePath =  QFileDialog.getOpenFileName (None,'Recipe File','C:/Users/p06173/Documents/PhD/Work/EXP/Recipes',("Recipe Files (*.RCP);;Subrecipe Files (*.uRCP)"))[0]
-        recipe = XMLReader.ReadRecipe(filePath)
-        self.customSubRecipes.append(recipe)
-        with open("SubRecipes.dat",'a') as file:
-            file.write(filePath+"\n")
-        self.PopulateList()
+        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Recipe Files (*.RCP);;Subrecipe Files (*.uRCP)"))[0]
+        try:
+            recipe = XMLReader.ReadRecipe(filePath)
+            
+            self.customSubRecipes.append(recipe)
+            with open("SubRecipes.dat",'a') as file:
+                file.write(filePath+"\n")
+            self.PopulateList()
+        except XMLReader.ReadRecipeError:
+                #Error during reading, file does not exists
+                self.messageChanged.emit("Failed to add subrecipe to the library")
 
     def PopulateList(self):
         self.listWidget.clear()

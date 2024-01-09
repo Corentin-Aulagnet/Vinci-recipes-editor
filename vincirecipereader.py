@@ -17,7 +17,8 @@ class Step():
         self.type=''
         self.attr = {}
 class XMLReader:
-    
+    class ReadRecipeError(Exception):
+        pass
     def __init__(self):
         pass
     @staticmethod
@@ -29,25 +30,28 @@ class XMLReader:
             return element.text
 
     @staticmethod
-    def ReadRecipe(xmlFile):
+    def ReadRecipe(xmlFile)->Recipe: 
         xsi='{http://www.w3.org/2001/XMLSchema-instance}'
-        tree = ET.parse(xmlFile)
-        root = tree.getroot()
-        recipe = Recipe(xmlFile)
-        steps = []
-        for neighbor in root.iter('CollecStep'):
-            if(xsi+'type' in neighbor.attrib.keys()):
-                #Is a real step
-                step = Step(neighbor.attrib[xsi+'type'])
-                for child in neighbor:
-                    step.Add_attr(child.tag,child.text)
-                steps.append(step)
-            elif 'subrecipe' in  neighbor.attrib.keys():
-                #Is a subrecipe
-                step = XMLReader.ReadRecipe(neighbor.attrib['subrecipe'])
-                steps.append(step)
-        recipe.AddSteps(steps)
-        return recipe
+        try:
+            tree = ET.parse(xmlFile)
+            root = tree.getroot()
+            recipe = Recipe(xmlFile)
+            steps = []
+            for neighbor in root.iter('CollecStep'):
+                if(xsi+'type' in neighbor.attrib.keys()):
+                    #Is a real step
+                    step = Step(neighbor.attrib[xsi+'type'])
+                    for child in neighbor:
+                        step.Add_attr(child.tag,child.text)
+                    steps.append(step)
+                elif 'subrecipe' in  neighbor.attrib.keys():
+                    #Is a subrecipe
+                    step = XMLReader.ReadRecipe(neighbor.attrib['subrecipe'])
+                    steps.append(step)
+            recipe.AddSteps(steps)
+            return recipe
+        except FileNotFoundError as e:
+            raise XMLReader.ReadRecipeError()
 
     
 
