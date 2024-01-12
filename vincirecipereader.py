@@ -1,16 +1,25 @@
 import xml.etree.ElementTree as ET
+import copy
 
 class Recipe():
-    def __init__(self,path):
+    def __init__(self,path,_steps=[]):
         self.name= XMLReader.ReadRecipeName(path)
         self.path = path 
-        self.steps=[]
+        self.steps=_steps
+    @classmethod
+    def from_foo(cls, class_instance):
+        data = copy.deepcopy(class_instance) # if deepcopy is necessary
+        return cls(data.path,data.steps)
     def AddSteps(self,steps):
         self.steps = steps
 class Step():
-    def __init__(self,_type=''):
+    def __init__(self,_type='',_attr={}):
         self.type = _type
-        self.attr = {}
+        self.attr = _attr
+    @classmethod
+    def from_foo(cls, class_instance):
+        data = copy.deepcopy(class_instance) # if deepcopy is necessary
+        return cls(data.type,data.attr)
     def Add_attr(self,key,value):
         self.attr[key]=value
     def clear(self):
@@ -40,7 +49,7 @@ class XMLReader:
             for neighbor in root.iter('CollecStep'):
                 if(xsi+'type' in neighbor.attrib.keys()):
                     #Is a real step
-                    step = Step(neighbor.attrib[xsi+'type'])
+                    step = Step(neighbor.attrib[xsi+'type'],{})
                     for child in neighbor:
                         step.Add_attr(child.tag,child.text)
                     steps.append(step)

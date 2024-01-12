@@ -85,6 +85,7 @@ class ActionsWidget(MainWidget):
                         sub.set('subrecipe',step.path)
                             
                 tree.write(path, encoding="utf-8", xml_declaration=True)
+                self.editor.ChangeTitle(path)
                 self.messageChanged.emit("Recipe saved to {}".format(path)) 
             
         except (IndexError, FileNotFoundError) as e:
@@ -93,9 +94,9 @@ class ActionsWidget(MainWidget):
     @pyqtSlot()
     def ExportRecipe(self):
         path,extension = QFileDialog.getSaveFileName (None,'Recipe File',MainWidget.workingDir,("Recipe Files (*.RCP)"))
-        extension = extension.split('(')[1][1:-1]
-        name = path.split('/')[-1][:-len(extension)]
         if (path != ''):
+            extension = extension.split('(')[1][1:-1]
+            name = path.split('/')[-1][:-len(extension)]
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
             steps = self.editor.GetListItemData()
             print(steps)
