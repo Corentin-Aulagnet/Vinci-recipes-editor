@@ -135,7 +135,7 @@ class ActionsWidget(MainWidget):
                             subsub.text = attr[key]
                         
             tree.write(path, encoding="utf-8", xml_declaration=True) 
-            self.parent().PrintNormalMessage("Recipe exported to {}".format(path))
+            self.messageChanged.emit("Recipe exported to {}".format(path))
         else:
             self.messageChanged.emit("Failed to export, filename empty")
 
