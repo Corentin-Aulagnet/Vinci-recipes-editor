@@ -37,15 +37,16 @@ class ActionsWidget(MainWidget):
     @pyqtSlot()
     def OpenRecipe(self):
         filePath=''
-        try :
-            filePath =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
-            recipe = XMLReader.ReadRecipe(filePath)
-            self.editor.PopulateList(recipe.steps)
-            self.editor.ChangeTitle(recipe.name)
-            self.messageChanged.emit("Opened {}".format(filePath))
-        except FileNotFoundError as e:
-            self.messageChanged.emit("Failed to open file: {}".format(e))
-            pass
+        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
+        if filePath !='':
+            try:
+                recipe = XMLReader.ReadRecipe(filePath)
+                self.editor.PopulateList(recipe.steps)
+                self.editor.ChangeTitle(recipe.name)
+                self.messageChanged.emit("Opened {}".format(filePath))
+            except XMLReader.ReadRecipeError as e:
+                self.messageChanged.emit("Failed to open file: {}".format(e))
+                pass
     
     @pyqtSlot()
     def SaveRecipe(self):
