@@ -46,7 +46,12 @@ class RecipeEditorWidget(MainWidget):
     def PasteSelected(self):
         items = []
         for it in self.pasteBin:
-            step = it.data(Qt.UserRole)
+            _step = it.data(Qt.UserRole)
+            step = None
+            if type(_step) == Step:
+                step = Step.from_foo(_step)
+            elif type(step) == Recipe:
+                step = Recipe.from_foo(_step)
             item = self.CreateItem(step)
             items.append(item)
         for index,item in enumerate(items):
