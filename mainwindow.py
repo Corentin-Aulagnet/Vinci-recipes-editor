@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog
+from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog,QMessageBox
 from PyQt5.QtCore import Qt,pyqtSignal
 from librarywidget import LibraryWidget
 from editorwidget import RecipeEditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
+    version = "v0.1.2"
+    date= "01/17/2024"
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height
@@ -51,7 +53,14 @@ class MainWindow(QMainWindow):
         self.prefMenu.addAction(self.editWorkingPath_action)
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
+        self.version_action = QAction("Version",self)
+        self.version_action.triggered.connect(self.DisplayVersion)
+        self.aboutMenu.addAction(self.version_action)
 
+    def DisplayVersion(self):
+        QMessageBox.information(self,'Version',"""Version: {}\n
+Date of publication: {}\n
+Details: To be published""".format(MainWindow.version,MainWindow.date))
     def SetWorkingDir(self):
         dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.workingDir)
         if dir != "":
