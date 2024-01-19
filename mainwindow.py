@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog,QMessageBox
 from PyQt5.QtCore import Qt,pyqtSignal
 from librarywidget import LibraryWidget
-from editorwidget import RecipeEditorWidget
+from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
@@ -73,7 +73,7 @@ Details: To be published""".format(MainWindow.version,MainWindow.date))
         #Leftmost widget is a library of user defined recipes, with a button to add recipes to the library
         self.libraryWidget = LibraryWidget(parent=self)
         ##Center widget is the recipe being edited as a list of small clickable,dragable rectangles
-        self.recipeEditorWidget = RecipeEditorWidget(parent = self)
+        self.recipeEditorWidget = EditorWidget(parent = self)
         ##Rightmost widget is a column of action button : add a step, remove a step, open a recipe, delete the recipe, save the recipe
         self.actionsWidget = ActionsWidget(parent = self,editor=self.recipeEditorWidget)
 

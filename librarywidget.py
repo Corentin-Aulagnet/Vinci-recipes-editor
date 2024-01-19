@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon
 from mainwidget import MainWidget
 import os
 from vincirecipereader import XMLReader
-class LibraryWidget(MainWidget):
+class LibraryWidget(MainWidget,QWidget):
     def __init__(self, parent= None):
         super().__init__(parent)
         self.customSubRecipes=[]

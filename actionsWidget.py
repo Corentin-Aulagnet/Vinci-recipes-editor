@@ -4,7 +4,7 @@ from vincirecipereader import XMLReader,Step,Recipe
 import os
 import xml.etree.ElementTree as ET
 from mainwidget import MainWidget
-class ActionsWidget(MainWidget):
+class ActionsWidget(MainWidget,QWidget):
     def __init__(self,editor,parent = None):
         super().__init__(parent)
         self.editor = editor
@@ -30,8 +30,7 @@ class ActionsWidget(MainWidget):
     
     @pyqtSlot()
     def CreateRecipe(self):
-        self.editor.clear()
-        self.editor.ChangeTitle('')
+        self.editor.addTab()
         self.messageChanged.emit("Created a new recipe")
     
     @pyqtSlot()
@@ -41,9 +40,12 @@ class ActionsWidget(MainWidget):
         if filePath !='':
             try:
                 recipe = XMLReader.ReadRecipe(filePath)
-                self.editor.PopulateList(recipe.steps)
-                self.editor.ChangeTitle(recipe.name)
-                self.messageChanged.emit("Opened {}".format(filePath))
+                if(self.editor.isAlreadyOpen(recipe.name)):
+                    self.editor.switchTo(recipe.name)
+                    self.messageChanged.emit("{} was already opened".format(recipe.name))
+                else:
+                    self.editor.changeCurrentTab(recipe.steps,recipe.name)
+                    self.messageChanged.emit("Opened {}".format(recipe.name))
             except XMLReader.ReadRecipeError as e:
                 self.messageChanged.emit("Failed to open file: {}".format(e))
                 pass
@@ -56,8 +58,7 @@ class ActionsWidget(MainWidget):
             name = path.split('/')[-1][:-len(extension)] 
             if (path != ''):
                 xsi="{http://www.w3.org/2001/XMLSchema-instance}"
-                steps = self.editor.GetListItemData()
-                print(steps)
+                steps = self.editor.GetCurrentList()
                 root = ET.Element('CParam_Recipe')
                 tree = ET.ElementTree(root)
                 
@@ -72,7 +73,6 @@ class ActionsWidget(MainWidget):
                         #Is a real step
                         _type = step.type
                         attr = step.attr
-                        print(_type)
                         sub = ET.SubElement(root,'CollecStep')
                         sub.set(xsi+'type',_type)
 
@@ -85,7 +85,7 @@ class ActionsWidget(MainWidget):
                         sub.set('subrecipe',step.path)
                             
                 tree.write(path, encoding="utf-8", xml_declaration=True)
-                self.editor.ChangeTitle(path)
+                self.editor.ChangeTitleofTab(name)
                 self.messageChanged.emit("Recipe saved to {}".format(path)) 
             
         except (IndexError, FileNotFoundError) as e:
@@ -98,8 +98,7 @@ class ActionsWidget(MainWidget):
             extension = extension.split('(')[1][1:-1]
             name = path.split('/')[-1][:-len(extension)]
             xsi="{http://www.w3.org/2001/XMLSchema-instance}"
-            steps = self.editor.GetListItemData()
-            print(steps)
+            steps = self.editor.GetCurrentList()
             root = ET.Element('CParam_Recipe')
             tree = ET.ElementTree(root)
             
@@ -114,7 +113,6 @@ class ActionsWidget(MainWidget):
                     #Is a real step
                     _type = step.type
                     attr = step.attr
-                    print(_type)
                     sub = ET.SubElement(root,'CollecStep')
                     sub.set(xsi+'type',_type)
 
@@ -127,7 +125,6 @@ class ActionsWidget(MainWidget):
                         #Is a real step
                         _type = substep.type
                         attr = substep.attr
-                        print(_type)
                         sub = ET.SubElement(root,'CollecStep')
                         sub.set(xsi+'type',_type)
 

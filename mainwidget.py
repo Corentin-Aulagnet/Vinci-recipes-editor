@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import pyqtSignal
-class MainWidget(QWidget):
+class MainWidget():
     messageChanged = pyqtSignal(str)
     workingDir = '.'
 
@@ -10,5 +9,5 @@ class MainWidget(QWidget):
         with open("user.pref",'w') as file:
             file.write(MainWidget.workingDir)
         
-    def __init__(self,parent=None):
-        super().__init__(parent)
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
