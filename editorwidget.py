@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
+from PyQt5.QtWidgets import QWidget,QTabWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
@@ -6,7 +6,51 @@ from customList import MyListView,MyItem,MyStyledDelegate
 from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
 from vincirecipereader import Step,Recipe
 from mainwidget import MainWidget
-class RecipeEditorWidget(MainWidget):
+
+class EditorWidget(QTabWidget,MainWidget):
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        super(MainWidget,self).__init__()
+        self.setTabsClosable(True)
+        self.setElideMode(Qt.ElideRight)
+        self.tabs = []
+        self.tabCloseRequested.connect(self.closeTab)
+
+    def addTab(self):
+        super().addTab(RecipeEditorWidget(),'New Recipe*')
+        self.setCurrentIndex (self.count()-1)
+        self.setTabToolTip (self.currentIndex(), 'New Recipe*')
+
+    def changeCurrentTab(self,steps,title):
+        if(self.count()==0 or self.tabText(self.currentIndex())!='New Recipe*' ):
+            self.addTab()
+            
+        self.widget(self.currentIndex()).PopulateList(steps)
+        self.ChangeTitleofTab(title)
+    def isAlreadyOpen(self,title):
+        for i in range(self.count()):
+            if(self.tabText(i) == title):
+                return True
+        return False
+    def switchTo(self,title):
+        for i in range(self.count()):
+            if(self.tabText(i) == title):
+                self.setCurrentIndex (i)
+    @pyqtSlot(int)
+    def closeTab (self, currentIndex):
+            currentQWidget = self.widget(currentIndex)
+            currentQWidget.deleteLater()
+            self.removeTab(currentIndex)
+    
+    def ChangeTitleofTab(self,title):
+        self.setTabText(self.currentIndex(), title)
+        self.setTabToolTip (self.currentIndex(), title)
+    
+    def GetCurrentList(self):
+        currentQWidget = self.widget(self.currentIndex())
+        return currentQWidget.GetListItemData()
+
+class RecipeEditorWidget(MainWidget,QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
         super().__init__(parent)
