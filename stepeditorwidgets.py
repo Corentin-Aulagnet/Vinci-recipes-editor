@@ -39,7 +39,8 @@ class StepAddPopUp(QDialog):
                              "CParamScript_Substrate_RotationOn",
                              "CParamScript_Substrate_HeatingSetpoint",
                              "CParamScript_Shutter_OpenClose",
-                             "CParamScript_Valve_OpenClose"])
+                             "CParamScript_Valve_OpenClose",
+                             "CParamScript_Wait_TempEvent"])
         self.combo.currentIndexChanged.connect(self.redrawForm)
         self.okButton.clicked.connect(self.close)
         self.editorLayout = QVBoxLayout()
@@ -138,6 +139,16 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("State_VariableID",'0')
             self.step.Add_attr("OpenState",'0')
             self.editorWidget = ValveOpenClose(self.step,self)
+
+        elif self.combo.itemText(index) ==  "CParamScript_Wait_TempEvent":
+            self.step.type = "CParamScript_Wait_TempEvent"
+            self.step.Add_attr("DeviceID","WAGO")
+            self.step.Add_attr("VariableID",'0')
+            self.step.Add_attr("Operation",'0')
+            self.step.Add_attr("Threshold",'0')
+            self.step.Add_attr("TimeOut_Min",'0')
+            self.editorWidget = WaitTempEvent(self.step,self)
+
         self.editorLayout.addWidget(self.editorWidget)
     
     def close(self):
@@ -171,6 +182,8 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = ShutterOpenClose(step,self)
         elif step.type ==  "CParamScript_Valve_OpenClose":
             self.editorWidget = ValveOpenClose(step,self)
+        elif step.type ==  "CParamScript_Wait_TempEvent":
+            self.editorWidget = WaitTempEvent(step,self)
         else:
                self.editorWidget = None
         if self.editorWidget != None:
@@ -679,4 +692,61 @@ class ValveOpenClose(BaseStepEditor):
                         self.step.attr['State_VariableID'] = 'MX_DC_MF3_GasInjectionValve_STATE'
             if self.onRadio.isChecked() : self.step.attr['OpenState'] = 'true' 
             else: self.step.attr['OpenState'] = 'false'
+            super().close()
+
+class WaitTempEvent(BaseStepEditor):
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.varCombo = QComboBox()
+                self.varCombo.addItems(["Substrate heating Temperature measurement"
+                                     ])
+
+                if step.attr['VariableID'] == 'MDW_DC_HT1_MES':
+                        self.varCombo.setCurrentIndex(0)
+                
+                self.formLayout.addWidget(QLabel("Temperature to check"),0,0)
+                self.formLayout.addWidget(self.varCombo,0,1)
+
+                self.opCombo = QComboBox()
+                self.opCombo.addItems(["=",
+                                       "<",
+                                       ">"
+                                     ])
+
+                if step.attr['Operation'] == 'EQUAL':
+                    self.opCombo.setCurrentIndex(0)
+                elif step.attr['Operation'] == 'LESS':
+                    self.opCombo.setCurrentIndex(1)
+                elif step.attr['Operation'] == 'MORE':
+                    self.opCombo.setCurrentIndex(2)
+                
+                self.formLayout.addWidget(QLabel("Operation"),1,0)
+                self.formLayout.addWidget(self.opCombo,1,1)
+
+                self.thresholdEdit = QLineEdit()
+                self.thresholdEdit.setText(step.attr['Threshold'])
+                self.formLayout.addWidget(QLabel("Threshold"),2,0)
+                self.formLayout.addWidget(self.thresholdEdit,2,1)
+                self.formLayout.addWidget(QLabel("°C"),2,2)
+
+                self.timeoutEdit = QLineEdit()
+                self.timeoutEdit.setText(step.attr['TimeOut_Min'])
+                self.formLayout.addWidget(QLabel("Max time to wait"),3,0)
+                self.formLayout.addWidget(self.timeoutEdit,3,1)
+                self.formLayout.addWidget(QLabel("min"),3,2)
+
+        def close(self):
+            if self.varCombo.currentIndex() == 0:
+                        self.step.attr['VariableID'] = 'MDW_DC_HT1_MES'
+            
+            if self.opCombo.currentIndex() == 0:
+                        self.step.attr['Operation'] = 'EQUAL'
+            elif self.opCombo.currentIndex() == 1:
+                        self.step.attr['Operation'] = 'LESS'
+            elif self.opCombo.currentIndex() == 2:
+                        self.step.attr['Operation'] = 'MORE'
+
+            self.step.attr['TimeOut_Min'] = self.timeoutEdit.text()
+            self.step.attr['Threshold'] = self.thresholdEdit.text()
+
             super().close()
