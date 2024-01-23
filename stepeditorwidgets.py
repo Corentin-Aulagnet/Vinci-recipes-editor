@@ -152,6 +152,7 @@ class StepEditorPopUp(QDialog):
         self.setGeometry(QRect(100, 100, 400, 200))
         self.layout = QVBoxLayout()
         self.okButton = QPushButton("Ok")
+        self.editorWidget = None
         if step.type == "CParamScript_MassflowSetpoint":
             self.editorWidget = MassflowSetpoint(step,self)
         elif step.type == "CParamScript_VatValve":
@@ -170,13 +171,16 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = ShutterOpenClose(step,self)
         elif step.type ==  "CParamScript_Valve_OpenClose":
             self.editorWidget = ValveOpenClose(step,self)
-
-        self.okButton.clicked.connect(self.close)
-        self.layout.addWidget(self.editorWidget)
-        self.layout.addWidget(self.okButton)
-        self.setLayout(self.layout)
+        else:
+               self.editorWidget = None
+        if self.editorWidget != None:
+            self.okButton.clicked.connect(self.close)
+            self.layout.addWidget(self.editorWidget)
+            self.layout.addWidget(self.okButton)
+            self.setLayout(self.layout)
+    
     def close(self):
-        self.editorWidget.close()
+        if(self.editorWidget!= None):self.editorWidget.close()
         self.done(1)
 
 class BaseStepEditor(QWidget):
