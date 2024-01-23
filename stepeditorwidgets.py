@@ -111,7 +111,7 @@ class StepAddPopUp(QDialog):
             self.editorWidget = QWidget()
 
         elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOff":
-            self.step.type = "CParaCParamScript_Substrate_RotationOffmScript_Sleep"
+            self.step.type = "CParamScript_Substrate_RotationOff"
             self.editorWidget = QWidget()
 
         elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOn":
