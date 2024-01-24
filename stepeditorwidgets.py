@@ -503,10 +503,10 @@ class PowerSwitcher(BaseStepEditor):
                 self.step.attr["Command_VariableID"] = 'MW_SW2_DC_COMMAND' 
                 self.step.attr["State_VariableID"] = 'MW_SW2_DC_STATE'
                 self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_2'
-            if self.supplyCombo.currentIndex() == 1:
+            if self.supplyCombo.currentIndex() == 0:
                     #IN_1
                     self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
-            elif self.supplyCombo.currentIndex() ==  2:
+            elif self.supplyCombo.currentIndex() ==  1:
                     #IN_2
                     self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
 
