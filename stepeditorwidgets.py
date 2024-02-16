@@ -493,22 +493,30 @@ class PowerSwitcher(BaseStepEditor):
                         self.cathodesCombo.setCurrentIndex(4)
             
         def close(self):
-            if self.switcherCombo.currentIndex() == 0:
-                #Switcher 1 is selected
+            if self.switcherCombo.currentIndex() == 0 and self.supplyCombo.currentIndex() == 0:
+                #Switcher 1 and 1st ouput (SEREN 1) is selected
+                self.step.attr["Command_VariableID"] = 'MW_SW1_RF_COMMAND' 
+                self.step.attr["State_VariableID"] = 'MW_SW1_RF_STATE'
+                self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_1'
+                self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
+            elif self.switcherCombo.currentIndex() == 0 and self.supplyCombo.currentIndex() == 1:
+                #Switcher 1 and 2nd ouput (MAXIM 1) is selected
                 self.step.attr["Command_VariableID"] = 'MW_SW1_DC_COMMAND' 
                 self.step.attr["State_VariableID"] = 'MW_SW1_DC_STATE'
                 self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_1'
-            else:
-                #Switcher 2 is selected
+                self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
+            if self.switcherCombo.currentIndex() == 1 and self.supplyCombo.currentIndex() == 0:
+                #Switcher 2 and 1st ouput (MAXIM 2) is selected
+                self.step.attr["Command_VariableID"] = 'MW_SW2_RF_COMMAND' 
+                self.step.attr["State_VariableID"] = 'MW_SW2_RF_STATE'
+                self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_2'
+                self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
+            elif self.switcherCombo.currentIndex() == 1 and self.supplyCombo.currentIndex() == 1:
+                #Switcher 2 and 2nd ouput (MAXIM 3) is selected
                 self.step.attr["Command_VariableID"] = 'MW_SW2_DC_COMMAND' 
                 self.step.attr["State_VariableID"] = 'MW_SW2_DC_STATE'
                 self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_2'
-            if self.supplyCombo.currentIndex() == 0:
-                    #IN_1
-                    self.step.attr["PowerSwitcher_InputID"] = 'IN_1'
-            elif self.supplyCombo.currentIndex() ==  1:
-                    #IN_2
-                    self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
+                self.step.attr["PowerSwitcher_InputID"] = 'IN_2'
 
             if self.cathodesCombo.currentIndex() == 0:
                     #None
