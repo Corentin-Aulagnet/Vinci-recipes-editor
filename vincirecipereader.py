@@ -6,6 +6,7 @@ class Recipe():
         self.name= XMLReader.ReadRecipeName(path)
         self.path = path 
         self.steps=_steps
+    
     @classmethod
     def from_foo(cls, class_instance):
         data = copy.deepcopy(class_instance) # if deepcopy is necessary
@@ -16,10 +17,17 @@ class Step():
     def __init__(self,_type='',_attr={}):
         self.type = _type
         self.attr = _attr
+        
+    @property
+    def name(self):
+        return self.type.split("CParamScript_")[1]
     @classmethod
     def from_foo(cls, class_instance):
         data = copy.deepcopy(class_instance) # if deepcopy is necessary
         return cls(data.type,data.attr)
+    @classmethod
+    def dummy(cls):
+        return cls("CParamScript_")
     def Add_attr(self,key,value):
         self.attr[key]=value
     def clear(self):

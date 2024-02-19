@@ -1,8 +1,9 @@
-from PyQt5.QtWidgets import QWidget,QTabWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
+from PyQt5.QtWidgets import QTableView,QWidget,QTabWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
-from customList import MyListView,MyItem,MyStyledDelegate
+from customList import CustomView,MyStyledDelegate,CustomModel
+from editor import MyTableView
 from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
 from vincirecipereader import Step,Recipe
 from mainwidget import MainWidget
@@ -24,7 +25,6 @@ class EditorWidget(QTabWidget,MainWidget):
     def changeCurrentTab(self,steps,title):
         if(self.count()==0 or self.tabText(self.currentIndex())!='New Recipe*' ):
             self.addTab()
-            
         self.widget(self.currentIndex()).PopulateList(steps)
         self.ChangeTitleofTab(title)
     def isAlreadyOpen(self,title):
@@ -56,25 +56,15 @@ class RecipeEditorWidget(MainWidget,QWidget):
         super().__init__(parent)
 
         self.layout = QVBoxLayout()
-        self.listView = MyListView(self)
-        self.model = QStandardItemModel(self.listView)
+        self.view = MyTableView(self)
+        self.view.doubleClicked.connect(self.openStepEditor)
 
-        self.listView.setModel(self.model)
-        self.listView.setDragEnabled(True)
-        self.listView.viewport().setAcceptDrops(True)
-        self.listView.setDefaultDropAction(Qt.MoveAction)
-        self.listView.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.listView.doubleClicked.connect(self.openStepEditor)
-        self.listView.setItemDelegate(MyStyledDelegate(self))
-        #self.listView.setMovement(QListView.Free)
-        #self.listView.setDragDropMode(QAbstractItemView.DragDrop)
-        #self.listWidget.setItemDelegate(StepItemDelegate())
 
-        self.layout.addWidget(self.listView)
+        self.layout.addWidget(self.view)
         self.setLayout(self.layout)
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_C),self,self.CopySelected)
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_V),self,self.PasteSelected)
-        self.tmpStep = Step()
+        self.tmpStep = Step.dummy()
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
         self.popup = None
@@ -85,51 +75,54 @@ class RecipeEditorWidget(MainWidget,QWidget):
         self.model.clear()
 
     def CopySelected(self):
-        self.pasteBin = self.listView.selectedIndexes()
-
-    def PasteSelected(self):
-        items = []
-        for it in self.pasteBin:
+        pasteBin = [self.view.selectedIndexes()[i] for i in range(1,len(self.view.selectedIndexes()),2)]
+        self.copiedItems = []
+        for it in pasteBin:
             _step = it.data(Qt.UserRole)
             step = None
             if type(_step) == Step:
                 step = Step.from_foo(_step)
             elif type(step) == Recipe:
                 step = Recipe.from_foo(_step)
-            item = self.CreateItem(step)
-            items.append(item)
-        for index,item in enumerate(items):
-            if(self.listView.current != None): self.model.insertRow(self.listView.current.row()+index+1,item)
+            
+        self.copiedItems.append(step)
+
+    def PasteSelected(self):
+        for index,step in enumerate(self.copiedItems):
+            item = self.view.createItem(step)
+            if(len(self.view.selectedIndexes())> 0): self.view.insertRow(self.view.selectedIndexes()[-1].row()+index+1,item)
 
     def RemoveStep(self):
-        indexes = self.listView.selectedIndexes()
+        indexes = self.view.selectedIndexes()
         if len(indexes)> 0:self.model.removeRows(indexes[0].row(),len(indexes))
 
     def AddStep(self):
-        self.tmpStep = Step()
         popup = StepAddPopUp(self.tmpStep,self)
         popup.exec()
-        item = self.CreateItem(self.tmpStep)
-        row = -1
-        if(self.listView.current != None):
-            row = self.listView.current.row()
+        if(len(self.view.selectedIndexes()) >1):
+            row = self.view.selectedIndexes()[0].row()
+        else: row=-1
         if row == -1 : row = 0
-        self.model.insertRow(row,item)
+        #index = self.model.createIndex(row,1)
+        #self.model.insertRow(row)
+        #item = self.CreateItem(self.tmpStep,index)
+        self.view.addRow(self.tmpStep)
+        
+        
     
     def PopulateList(self,steps):
-        #self.listWidget.clear()
-        self.model.clear()
-        for step in steps:
-            item = self.CreateItem(step)
-            self.model.appendRow(item)
+        self.view.model.clear()
+        for i,step in enumerate(steps):
+            self.view.addRow(step)
+            
         
-    def CreateItem(self,step):
-        item = MyItem()
+    def CreateItem(self,step,index:QModelIndex):
+        item = index
         if(type(step) == Step):
-            item.setText(step.type)
-            item.setData(step,Qt.UserRole)
+            self.model.setData(item,step.type,Qt.DisplayRole)
+            self.model.setData(item,step,Qt.UserRole)
             icon = QIcon('res/step_512.png')
-            item.setIcon(icon)
+            self.model.setData(item,icon,Qt.DecorationRole)
         elif(type(step) == Recipe):
             item.setText(step.name)
             item.setData(step,Qt.UserRole)
@@ -139,15 +132,23 @@ class RecipeEditorWidget(MainWidget,QWidget):
     
     def GetListItemData(self):
         res = []
-        count = self.model.rowCount()
+        count = self.view.model.rowCount()
         for i in range(count):
-            res.append(self.model.item(i).data(Qt.UserRole))
+            res.append(self.view.model.item(i,1).data(Qt.UserRole))
         return res
+    
     @pyqtSlot(QModelIndex)
     def openStepEditor(self,index:QModelIndex):
-        step = index.data(Qt.UserRole)
+        changedRow = index.row()
+        firstIndex = self.view.model.index(changedRow,0)
+        lastIndex = self.view.model.index(changedRow,1)
+
+        step = lastIndex.data(Qt.UserRole)
         self.popup = StepEditorPopUp(step,self)
         self.popup.exec()
+        self.view.updateRow(changedRow,step)
+        self.view.model.dataChanged.emit(firstIndex,lastIndex)
+
         
                 
                 

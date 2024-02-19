@@ -1,14 +1,14 @@
-from PyQt5.QtWidgets import QListView,QStyledItemDelegate,QStyleOptionViewItem,QAbstractItemView
+from PyQt5.QtWidgets import QTableView,QListView,QStyledItemDelegate,QStyleOptionViewItem,QAbstractItemView
 from PyQt5.QtGui import QStandardItem,QDragEnterEvent,QDragMoveEvent,QDropEvent,QMouseEvent,QDrag,QPainter
-from PyQt5.QtCore import Qt,QModelIndex
+from PyQt5.QtCore import Qt,QModelIndex,QAbstractTableModel,QVariant
 from vincirecipereader import Recipe
-class MyListView(QListView):
+class CustomView(QTableView):
     def __init__(self,parent=None):
         super().__init__(parent)
-        self.current = None
+        self.currentRow = None
 
     def currentChanged(self,current,previous):
-        self.current = current
+        self.currentRow = current
     def dropEvent(self,event:QDropEvent):
         if event.keyboardModifiers() == Qt.ControlModifier:
             event.setDropAction(Qt.CopyAction)
@@ -53,14 +53,49 @@ class MyListView(QListView):
             mimeData = event.mimeData()
             self.model().dropMimeData(mimeData,Qt.MoveAction,insertRow,0,QModelIndex())
 
-class MyItem(QStandardItem):
-    def __init__(self,parent=None):
-        super().__init__(parent)
-        self.setFlags(self.flags() ^ Qt.ItemIsEditable)
-
 class MyStyledDelegate(QStyledItemDelegate):
     def __init__(self,parent= None):
         super().__init__(parent)
     
     def paint(self,painter:QPainter, option:QStyleOptionViewItem, index:QModelIndex):
         super().paint(painter,option,index)
+
+
+class CustomModel(QAbstractTableModel):
+    def __init__(self,parent):
+        super().__init__(parent)
+        self.datas=[]
+
+    def rowCount(self,parent:QModelIndex=QModelIndex()):
+        if(parent.isValid()):
+            return 0
+        else: 
+              return len(self.datas)
+    def columnCount(self,parent:QModelIndex=QModelIndex()):
+          return 2
+    
+    def setData(self,index,value,role:Qt.DisplayRole):
+        self.dataChanged.emit(index,index,[role])
+
+    def data(self,index:QModelIndex, role:int = Qt.DisplayRole):
+          if(index.isValid):
+                return "Ok"#index.data(role)
+          else:
+                return QVariant() #invalid QVariant
+    def headerData(self,section:int,orientation,role=Qt.DisplayRole):
+          return "header "+str(section)
+    def insertRows(self,row:int,count:int,parent:QModelIndex = QModelIndex()):
+        try:
+            self.beginInsertRows(parent,row,row+count)
+            tmp_start = self.datas[:row]
+            tmp_end = self.datas[row:]
+            tmp_start.append(parent)
+            self.datas=tmp_start+tmp_end
+            self.endInsertRows()
+            return True
+        except:
+            return False
+    def insertRow(self,row:int,parent:QModelIndex = QModelIndex()):
+        self.insertRows(row,1,parent)
+    def flags(self,index:QModelIndex):
+         return Qt.ItemIsSelectable | Qt.ItemIsEnabled
