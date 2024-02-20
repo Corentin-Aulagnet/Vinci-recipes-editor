@@ -5,8 +5,8 @@ from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
-    version = "v0.1.2"
-    date= "01/17/2024"
+    version = "v0.3.0"
+    date= "20th of February, 2024"
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height

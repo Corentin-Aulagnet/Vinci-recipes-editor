@@ -8,6 +8,11 @@ from stepeditorwidgets import StepEditorPopUp,StepAddPopUp
 from vincirecipereader import Step,Recipe
 from mainwidget import MainWidget
 
+class PasteBinManager():
+    copiedItems=[]
+            
+
+
 class EditorWidget(QTabWidget,MainWidget):
     def __init__(self,parent=None):
         super().__init__(parent)
@@ -36,11 +41,12 @@ class EditorWidget(QTabWidget,MainWidget):
         for i in range(self.count()):
             if(self.tabText(i) == title):
                 self.setCurrentIndex (i)
+    
     @pyqtSlot(int)
     def closeTab (self, currentIndex):
-            currentQWidget = self.widget(currentIndex)
-            currentQWidget.deleteLater()
-            self.removeTab(currentIndex)
+        currentQWidget = self.widget(currentIndex)
+        currentQWidget.deleteLater()
+        self.removeTab(currentIndex)
     
     def ChangeTitleofTab(self,title):
         self.setTabText(self.currentIndex(), title)
@@ -76,7 +82,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
     def CopySelected(self):
         pasteBin = [self.view.selectedIndexes()[i] for i in range(1,len(self.view.selectedIndexes()),2)]
-        self.copiedItems = []
+        PasteBinManager.copiedItems = []
         for it in pasteBin:
             _step = it.data(Qt.UserRole)
             step = None
@@ -85,16 +91,16 @@ class RecipeEditorWidget(MainWidget,QWidget):
             elif type(step) == Recipe:
                 step = Recipe.from_foo(_step)
             
-        self.copiedItems.append(step)
+        PasteBinManager.copiedItems.append(step)
 
     def PasteSelected(self):
-        for index,step in enumerate(self.copiedItems):
+        for index,step in enumerate(PasteBinManager.copiedItems):
             item = self.view.createItem(step)
             if(len(self.view.selectedIndexes())> 0): self.view.insertRow(self.view.selectedIndexes()[-1].row()+index+1,item)
 
     def RemoveStep(self):
         indexes = self.view.selectedIndexes()
-        if len(indexes)> 0:self.model.removeRows(indexes[0].row(),len(indexes))
+        if len(indexes)> 0:self.view.removeRows(indexes[0].row(),len(indexes)//2)
 
     def AddStep(self):
         popup = StepAddPopUp(self.tmpStep,self)
