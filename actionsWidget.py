@@ -133,6 +133,7 @@ class ActionsWidget(MainWidget,QWidget):
                             subsub.text = attr[key]
                         
             tree.write(path, encoding="utf-8", xml_declaration=True) 
+            self.editor.ChangeTitleofTab(name)
             self.messageChanged.emit("Recipe exported to {}".format(path))
         else:
             self.messageChanged.emit("Failed to export, filename empty")
