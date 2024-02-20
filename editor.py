@@ -61,6 +61,12 @@ class MyTableView(QTableView):
     def insertRow(self,start,row):
             self.model.insertRow(start,row)
 
+    def removeRows(self,start,count):
+        self.model.removeRows(start,count)
+        
+    def removeRow(self,row):
+        self.removeRows(row,1)
+        
     def createStepItem(self,step:Step):
         item_1 = QStandardItem(step.name)
         item_1.setEditable(False)
