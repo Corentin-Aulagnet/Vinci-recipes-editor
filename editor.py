@@ -1,6 +1,6 @@
-from PyQt5.QtGui import QStandardItemModel,QStandardItem,QIcon
-from PyQt5.QtWidgets import QProxyStyle,QStyleOption,QTableView,QHeaderView
-from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QStandardItemModel,QStandardItem,QIcon,QDropEvent
+from PyQt5.QtWidgets import QProxyStyle,QStyleOption,QTableView,QHeaderView,QAbstractItemView
+from PyQt5.QtCore import Qt,QModelIndex
 from vincirecipereader import Step,Recipe
 class MyModel(QStandardItemModel):
 
@@ -8,6 +8,7 @@ class MyModel(QStandardItemModel):
         """
         Always move the entire row, and don't allow column "shifting"
         """
+        
         return super().dropMimeData(data, action, row, 0, parent)
 
 class MyStyle(QProxyStyle):
@@ -48,6 +49,29 @@ class MyTableView(QTableView):
         self.model = MyModel()
         self.setModel(self.model)
     
+
+    def dropEvent(self,event:QDropEvent):
+        if event.keyboardModifiers() == Qt.ControlModifier:
+            event.setDropAction(Qt.CopyAction)
+        insertRow   = self.indexAt( event.pos() ).row()
+        if self.dropIndicatorPosition() == QAbstractItemView.OnItem:
+            #do nothing
+            return
+        elif self.dropIndicatorPosition() == QAbstractItemView.AboveItem:
+                        #Above the item
+                        insertRow   = self.indexAt( event.pos() ).row()
+        elif self.dropIndicatorPosition() == QAbstractItemView.BelowItem:
+                        #Below the item
+                        insertRow   = self.indexAt( event.pos() ).row() + 1
+        elif self.dropIndicatorPosition() == QAbstractItemView.OnViewport:
+                        #At the end
+                        insertRow   = self.model.rowCount() + 1
+        super().dropEvent(event)
+        #event.accept()
+        #mimeData = event.mimeData()
+        
+        #self.model.dropMimeData(mimeData,Qt.CopyAction,insertRow,0,QModelIndex())
+
     def addRow(self,step):
         
         item = self.createItem(step)
@@ -58,8 +82,9 @@ class MyTableView(QTableView):
         for i,row in enumerate(rows):
             self.insertRow(start+i,row)
 
-    def insertRow(self,start,row):
-            self.model.insertRow(start,row)
+    def insertRow(self,start,step):
+        item = self.createItem(step)
+        self.model.insertRow(start,item)
 
     def removeRows(self,start,count):
         self.model.removeRows(start,count)
@@ -99,6 +124,5 @@ class MyTableView(QTableView):
             return self.createRecipeItem(step)
         
     def updateRow(self,row,step):
-        item = self.createItem(step)
         self.model.removeRow(row)
-        self.insertRow(row,item)
+        self.insertRow(row,step)

@@ -91,12 +91,12 @@ class RecipeEditorWidget(MainWidget,QWidget):
             elif type(step) == Recipe:
                 step = Recipe.from_foo(_step)
             
-        PasteBinManager.copiedItems.append(step)
+            PasteBinManager.copiedItems.append(step)
 
     def PasteSelected(self):
         for index,step in enumerate(PasteBinManager.copiedItems):
-            item = self.view.createItem(step)
-            if(len(self.view.selectedIndexes())> 0): self.view.insertRow(self.view.selectedIndexes()[-1].row()+index+1,item)
+            if(len(self.view.selectedIndexes())> 0): self.view.insertRow(self.view.selectedIndexes()[-1].row()+index+1,step)
+            else:self.view.insertRow(index,step)
 
     def RemoveStep(self):
         indexes = self.view.selectedIndexes()
@@ -105,14 +105,10 @@ class RecipeEditorWidget(MainWidget,QWidget):
     def AddStep(self):
         popup = StepAddPopUp(self.tmpStep,self)
         popup.exec()
-        if(len(self.view.selectedIndexes()) >1):
-            row = self.view.selectedIndexes()[0].row()
-        else: row=-1
-        if row == -1 : row = 0
-        #index = self.model.createIndex(row,1)
-        #self.model.insertRow(row)
-        #item = self.CreateItem(self.tmpStep,index)
-        self.view.addRow(self.tmpStep)
+        if(len(self.view.selectedIndexes()) >=1):
+            row = self.view.selectedIndexes()[-1].row()+1
+        else: row = 0
+        self.view.insertRow(row,self.tmpStep)
         
         
     
