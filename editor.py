@@ -99,11 +99,76 @@ class MyTableView(QTableView):
         icon = QIcon('res/step_512.png')
         item_1.setData(icon,Qt.DecorationRole)
         
-        item_2 = QStandardItem(str(step.attr))
+        item_2 = QStandardItem(self.getInfos(step))
         item_2.setEditable(False)
         item_2.setDropEnabled(False)
         item_2.setData(step,Qt.UserRole)
         return [item_1, item_2]
+    
+    def getInfos(self,step:Step):
+        name = step.name
+        infos=""
+        if(name =="MassflowSetpoint"):
+            infos = "{} , Setpoint = {}sccm".format(step.attr["Massflow_ID"],step.attr["SetPoint_sccm"])
+        elif name == "VatValve":
+            infos = "Mode : {} , Setpoint = {}mbar".format(step.attr["Mode"],step.attr['Setpoint'])
+        elif name == "Maxim_PowerOff":
+            state = "OFF"
+            if bool(step.attr["IsOn"]):state = "ON"
+            infos = "{} , {}".format(step.attr["Maxim_ID"],state)
+        elif name == "Maxim_Setpoints":
+            infos = "{} , P={}W, I={}A, Voltage={}V, ramp={}s, arc delay={}us, arc offtime={}us".format(step.attr["Maxim_ID"],step.attr["Power"],step.attr["Current"],step.attr["Voltage"],step.attr["RampTime"],step.attr["ArcDetectDelayTime"],step.attr["ArcOffTime"])
+        elif name == "PowerSwitcher":
+            swInputId={'SWITCHER_1':{'IN_1':'SEREN 2', 'IN_2':'MAXIM 1'},'SWITCHER_2':{'IN_1':'MAXIM 2','IN_2':'MAXIM 3'}}
+            supply_cathodes= {
+             'SEREN 2' : {'NONE':'None','OUT_1':'Cathode 1','OUT_2':'Cathode 2','OUT_3':'Cathode 3','OUT_4':'Cathode 4'},
+             'MAXIM 1' : {'NONE':'None','OUT_1':'Cathode 1','OUT_2':'Cathode 2','OUT_3':'Cathode 3','OUT_4':'Cathode 4'},
+             'MAXIM 2' : {'NONE':'None','OUT_1':'Cathode 5','OUT_2':'Cathode 6','OUT_3':'Cathode 7','OUT_4':'Cathode 8'},
+             'MAXIM 3' : {'NONE':'None','OUT_1':'Cathode 5','OUT_2':'Cathode 6','OUT_3':'Cathode 7','OUT_4':'Cathode 8'}         
+            }
+            supply = (swInputId[step.attr['PowerSwitcher_ID']])[step.attr['PowerSwitcher_InputID']]
+            infos = "Switcher: {}, Supplier: {}, Output: {}".format(step.attr['PowerSwitcher_ID'],supply,supply_cathodes[supply][step.attr["PowerSwitcher_OutputID"]])
+        elif name == "Sleep":
+            infos = "Wait {}s".format(step.attr["WaitTime_Sec"])
+        elif name == "Substrate_HeatingOff":
+             infos = ""
+        elif name == "Substrate_HeatingOn":
+             infos = ""
+        elif name == "Substrate_RotationOff":
+             infos = ""
+        elif name == "Substrate_RotationOn":
+             infos = ""
+        elif name == "Substrate_HeatingSetpoint":
+            infos = "Heat setpoint {}°C".format(step.attr["SetPoint_Deg"])
+        elif name == "Shutter_OpenClose":
+            step2Cathode = {'MX_DC_Shutter1_COMMAND':'Cathode 1',
+                            'MX_DC_Shutter2_COMMAND':'Cathode 2',
+                            'MX_DC_Shutter3_COMMAND':'Cathode 3',
+                            'MX_DC_Shutter4_COMMAND':'Cathode 4',
+                            'MX_DC_Shutter5_COMMAND':'Cathode 5',
+                            'MX_DC_Shutter6_COMMAND':'Cathode 6',
+                            'MX_DC_Shutter7_COMMAND':'Cathode 7',
+                            'MX_DC_Shutter8_COMMAND':'Cathode 8'}
+            state= 'OPEN'
+            if step.attr['OpenState'] == 'false':
+                state = 'CLOSE'
+            
+            infos = "{} {}".format(step2Cathode[step.attr['Command_VariableID']],state)
+        elif name == "Valve_OpenClose":
+            step2Valve={'MX_DC_BackingValve_COMMAND':"Deposit chamber Backing valve",
+                                     'MX_DC_GasInjectionValve_COMMAND':"Deposit chamber Gas injection valve",
+                                     'MX_DC_RoughingValve_COMMAND':"Deposit chamber Roughing valve",
+                                     'MX_DC_VentingValve_COMMAND':"Deposit chamber Venting valve",
+                                     'MX_LL_BackingValve_COMMAND':"Loadlock chamber Backing valve",
+                                     'MX_LL_VentingValve_COMMAND':"Loadlock chamber Venting valve",
+                                     'MX_DC_MF1_GasInjectionValve_COMMAND':"Massflow #1 Gas injection valve",
+                                     'MX_DC_MF2_GasInjectionValve_COMMAND':"Massflow #2 Gas injection valve",
+                                     'MX_DC_MF3_GasInjectionValve_COMMAND':"Massflow #3 Gas injection valve"}
+            state = 'OPEN'
+            if step.attr['OpenState'] == 'false':
+                state = 'CLOSE'
+            infos = "{} {}".format(step2Valve[step.attr['Command_VariableID']],state)
+        return infos
     def createRecipeItem(self,recipe:Recipe):
         item_1 = QStandardItem(recipe.name)
         item_1.setEditable(False)

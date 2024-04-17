@@ -494,7 +494,7 @@ class PowerSwitcher(BaseStepEditor):
             
         def close(self):
             if self.switcherCombo.currentIndex() == 0 and self.supplyCombo.currentIndex() == 0:
-                #Switcher 1 and 1st ouput (SEREN 1) is selected
+                #Switcher 1 and 1st ouput (SEREN 2) is selected
                 self.step.attr["Command_VariableID"] = 'MW_SW1_RF_COMMAND' 
                 self.step.attr["State_VariableID"] = 'MW_SW1_RF_STATE'
                 self.step.attr["PowerSwitcher_ID"] = 'SWITCHER_1'
