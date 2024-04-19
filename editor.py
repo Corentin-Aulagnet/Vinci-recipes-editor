@@ -66,10 +66,10 @@ class MyTableView(QTableView):
         self.model = MyModel()
         self.setModel(self.model)
 
-    def dragEnterEvent(self, event):
+    """ def dragEnterEvent(self, event):
         if event.source() == self:
             event.accept()
-            
+
         else:
             super().dragEnterEvent(event)
 
@@ -78,7 +78,7 @@ class MyTableView(QTableView):
             event.setDropAction(Qt.MoveAction)
             event.accept()
         else:
-            super().dragMoveEvent(event)
+            super().dragMoveEvent(event)"""
 
     def dropEvent(self,event:QDropEvent):
         if event.keyboardModifiers() == Qt.ControlModifier:
@@ -146,7 +146,7 @@ class MyTableView(QTableView):
             infos = "Mode : {} , Setpoint = {}mbar".format(step.attr["Mode"],step.attr['Setpoint'])
         elif name == "Maxim_PowerOff":
             state = "OFF"
-            if bool(step.attr["IsOn"]):state = "ON"
+            if bool(step.attr["IsOn"] == "true"):state = "ON"
             infos = "{} , {}".format(step.attr["Maxim_ID"],state)
         elif name == "Maxim_Setpoints":
             infos = "{} , P={}W, I={}A, Voltage={}V, ramp={}s, arc delay={}us, arc offtime={}us".format(step.attr["Maxim_ID"],step.attr["Power"],step.attr["Current"],step.attr["Voltage"],step.attr["RampTime"],step.attr["ArcDetectDelayTime"],step.attr["ArcOffTime"])

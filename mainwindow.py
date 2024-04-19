@@ -5,8 +5,8 @@ from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
-    version = "v0.3.0"
-    date= "20th of February, 2024"
+    version = "v0.5.1"
+    date= "19th of April, 2024"
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height
@@ -90,7 +90,7 @@ Details: To be published""".format(MainWindow.version,MainWindow.date))
         self.libDock.setWidget(self.libraryWidget)
         self.addDockWidget(Qt.LeftDockWidgetArea,self.libDock)
 
-        self.editorDock = QDockWidget("Editor -")
+        self.editorDock = QDockWidget("Editor")
         self.editorDock.setWidget(self.recipeEditorWidget)
         self.addDockWidget(Qt.BottomDockWidgetArea,self.editorDock)
 
