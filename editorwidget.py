@@ -11,58 +11,13 @@ from mainwidget import MainWidget
 class PasteBinManager():
     copiedItems=[]
             
-
-
-class EditorWidget(QTabWidget,MainWidget):
-    def __init__(self,parent=None):
-        super().__init__(parent)
-        super(MainWidget,self).__init__()
-        self.setTabsClosable(True)
-        self.setElideMode(Qt.ElideRight)
-        self.tabs = []
-        self.tabCloseRequested.connect(self.closeTab)
-
-    def addTab(self):
-        super().addTab(RecipeEditorWidget(),'New Recipe*')
-        self.setCurrentIndex (self.count()-1)
-        self.setTabToolTip (self.currentIndex(), 'New Recipe*')
-
-    def changeCurrentTab(self,steps,title):
-        if(self.count()==0 or self.tabText(self.currentIndex())!='New Recipe*' ):
-            self.addTab()
-        self.widget(self.currentIndex()).PopulateList(steps)
-        self.ChangeTitleofTab(title)
-    def isAlreadyOpen(self,title):
-        for i in range(self.count()):
-            if(self.tabText(i) == title):
-                return True
-        return False
-    def switchTo(self,title):
-        for i in range(self.count()):
-            if(self.tabText(i) == title):
-                self.setCurrentIndex (i)
-    
-    @pyqtSlot(int)
-    def closeTab (self, currentIndex):
-        currentQWidget = self.widget(currentIndex)
-        currentQWidget.deleteLater()
-        self.removeTab(currentIndex)
-    
-    def ChangeTitleofTab(self,title):
-        self.setTabText(self.currentIndex(), title)
-        self.setTabToolTip (self.currentIndex(), title)
-    
-    def GetCurrentList(self):
-        currentQWidget = self.widget(self.currentIndex())
-        return currentQWidget.GetListItemData()
-
 class RecipeEditorWidget(MainWidget,QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
         super().__init__(parent)
 
         self.layout = QVBoxLayout()
-        self.view = MyTableView(self)
+        self.view:MyTableView = MyTableView(self)
         self.view.doubleClicked.connect(self.openStepEditor)
 
 
@@ -74,6 +29,8 @@ class RecipeEditorWidget(MainWidget,QWidget):
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
         self.popup = None
+
+    
 
     def ChangeTitle(self,name):
         self.parent().setWindowTitle('Editor - '+name)
@@ -100,7 +57,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
     def RemoveStep(self):
         indexes = self.view.selectedIndexes()
-        if len(indexes)> 0:self.view.removeRows(indexes[0].row(),len(indexes)//2)
+        if len(indexes)> 0:self.view.removeRows(min([indexes[i].row() for i in range(len(indexes))]),len(indexes)//2)
 
     def AddStep(self):
         popup = StepAddPopUp(self.tmpStep,self)
@@ -150,6 +107,57 @@ class RecipeEditorWidget(MainWidget,QWidget):
         self.popup.exec()
         self.view.updateRow(changedRow,step)
         self.view.model.dataChanged.emit(firstIndex,lastIndex)
+
+
+class EditorWidget(QTabWidget,MainWidget):
+    currentWidget = None
+
+
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        super(MainWidget,self).__init__()
+        self.setTabsClosable(True)
+        self.setElideMode(Qt.ElideRight)
+        self.tabs = []
+        self.tabCloseRequested.connect(self.closeTab)
+
+    def addTab(self):
+        super().addTab(RecipeEditorWidget(),'New Recipe*')
+        self.setCurrentIndex (self.count()-1)
+        self.setTabToolTip (self.currentIndex(), 'New Recipe*')
+
+    def changeCurrentTab(self,steps,title):
+        if(self.count()==0 or self.tabText(self.currentIndex())!='New Recipe*' ):
+            self.addTab()
+        self.widget(self.currentIndex()).PopulateList(steps)
+        self.ChangeTitleofTab(title)
+    def isAlreadyOpen(self,title):
+        for i in range(self.count()):
+            if(self.tabText(i) == title):
+                return True
+        return False
+    def setCurrentIndex(self,index:int):
+        EditorWidget.currentWidget = self.widget(index)
+        super().setCurrentIndex(index)
+    def switchTo(self,title):
+        for i in range(self.count()):
+            if(self.tabText(i) == title):
+                self.setCurrentIndex (i)
+    
+    @pyqtSlot(int)
+    def closeTab (self, currentIndex):
+        currentQWidget = self.widget(currentIndex)
+        currentQWidget.deleteLater()
+        self.removeTab(currentIndex)
+    
+    def ChangeTitleofTab(self,title):
+        self.setTabText(self.currentIndex(), title)
+        self.setTabToolTip (self.currentIndex(), title)
+    
+    def GetCurrentList(self):
+        #EditorWidget.currentQWidget = self.widget(self.currentIndex())
+        return EditorWidget.currentWidget.GetListItemData()
+
 
         
                 

@@ -54,9 +54,10 @@ class ActionsWidget(MainWidget,QWidget):
     def SaveRecipe(self):
         try:
             path,extension = QFileDialog.getSaveFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
-            extension = extension.split('(')[1][1:-1]
-            name = path.split('/')[-1][:-len(extension)] 
+           
             if (path != ''):
+                extension = extension.split('(')[1][1:-1]
+                name = path.split('/')[-1][:-len(extension)] 
                 xsi="{http://www.w3.org/2001/XMLSchema-instance}"
                 steps = self.editor.GetCurrentList()
                 root = ET.Element('CParam_Recipe')

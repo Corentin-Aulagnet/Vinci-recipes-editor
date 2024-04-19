@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QListWidgetItem
+from PyQt5.QtWidgets import QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QListWidgetItem,QHBoxLayout
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
 from PyQt5.QtGui import QIcon
 from mainwidget import MainWidget
+from editorwidget import EditorWidget
+from editor import MyTableView
 import os
 from vincirecipereader import XMLReader
 class LibraryWidget(MainWidget,QWidget):
@@ -20,9 +22,17 @@ class LibraryWidget(MainWidget,QWidget):
         
         self.layout.addWidget(self.listWidget)
 
+        self.buttonsLayout = QHBoxLayout()
+
         self.addToLibraryButton = QPushButton("Add a recipe")
         self.addToLibraryButton.clicked.connect(self.AddToLibraryAction)
-        self.layout.addWidget(self.addToLibraryButton)
+        self.buttonsLayout.addWidget(self.addToLibraryButton)
+
+        self.addToRecipeButton = QPushButton('+')
+        self.addToRecipeButton.clicked.connect(self.AddToRecipeAction)
+        self.buttonsLayout.addWidget(self.addToRecipeButton)
+
+        self.layout.addLayout(self.buttonsLayout)
         
         self.setLayout(self.layout)
         
@@ -50,6 +60,16 @@ class LibraryWidget(MainWidget,QWidget):
         except XMLReader.ReadRecipeError:
                 #Error during reading, file does not exists
                 self.messageChanged.emit("Failed to add subrecipe to the library")
+
+    @pyqtSlot()
+    def AddToRecipeAction(self):
+        selectedRecipe = self.listWidget.item(self.listWidget.currentRow()).data(Qt.UserRole)
+        view = EditorWidget.currentWidget.view
+        if(len(view.selectedIndexes())>0):
+            view.insertRow(view.selectedIndexes()[0].row()+1,selectedRecipe)
+        else :
+            view.addRow(selectedRecipe)
+
 
     def PopulateList(self):
         self.listWidget.clear()

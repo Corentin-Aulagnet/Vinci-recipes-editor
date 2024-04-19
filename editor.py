@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QStandardItemModel,QStandardItem,QIcon,QDropEvent
 from PyQt5.QtWidgets import QProxyStyle,QStyleOption,QTableView,QHeaderView,QAbstractItemView
-from PyQt5.QtCore import Qt,QModelIndex
+from PyQt5.QtCore import Qt,QModelIndex,QTextStream,QIODevice,QMimeData
 from vincirecipereader import Step,Recipe
 class MyModel(QStandardItemModel):
 
@@ -8,9 +8,8 @@ class MyModel(QStandardItemModel):
         """
         Always move the entire row, and don't allow column "shifting"
         """
-        
-        return super().dropMimeData(data, action, row, 0, parent)
-
+        return super().dropMimeData(data, Qt.MoveAction, row, 0, parent)
+    
 class MyStyle(QProxyStyle):
 
     def drawPrimitive(self, element, option, painter, widget=None):
@@ -26,7 +25,24 @@ class MyStyle(QProxyStyle):
                 option_new.rect.setRight(widget.width())
             option = option_new
         super().drawPrimitive(element, option, painter, widget)
-
+class MyMimeData(QMimeData):
+     def __init__(self,mimeType,data):
+        self.mimeType = mimeType
+        self.data = data
+        super().__init__()    
+        
+     def hasFormat(self,mimeType:str)->bool:
+        return mimeType == 'StepInfo' or mimeType == 'RecipeInfo' or super().hasFormat(mimeType)
+     def formats(self):
+        return ['StepInfo','RecipeInfo']+super().formats()
+     def retrieveData(self,mimeType:str,type):
+        if mimeType == 'StepInfo' and type == Step and self.hasFormat(mimeType):
+            return self.data
+        if mimeType == 'RecipeInfo' and type == Recipe and self.hasFormat(mimeType):
+            return self.data
+        else:
+            return super().retrieveData(mimeType,type)
+          
 class MyTableView(QTableView):
 
     def __init__(self, parent):
@@ -38,6 +54,7 @@ class MyTableView(QTableView):
         self.setSelectionBehavior(self.SelectRows)
         self.setSelectionMode(self.ExtendedSelection)
         self.setShowGrid(False)
+        self.setDropIndicatorShown(True)
         self.viewport().setAcceptDrops(True)
         self.setDragDropMode(self.InternalMove)
         self.setDragDropOverwriteMode(False)
@@ -48,11 +65,26 @@ class MyTableView(QTableView):
         # Set our custom model - this prevents row "shifting"
         self.model = MyModel()
         self.setModel(self.model)
-    
+
+    def dragEnterEvent(self, event):
+        if event.source() == self:
+            event.accept()
+            
+        else:
+            super().dragEnterEvent(event)
+
+    def dragMoveEvent(self, event):
+        if event.source() == self:
+            event.setDropAction(Qt.MoveAction)
+            event.accept()
+        else:
+            super().dragMoveEvent(event)
 
     def dropEvent(self,event:QDropEvent):
         if event.keyboardModifiers() == Qt.ControlModifier:
             event.setDropAction(Qt.CopyAction)
+        else:
+            event.setDropAction(Qt.MoveAction)
         insertRow   = self.indexAt( event.pos() ).row()
         if self.dropIndicatorPosition() == QAbstractItemView.OnItem:
             #do nothing
@@ -66,11 +98,11 @@ class MyTableView(QTableView):
         elif self.dropIndicatorPosition() == QAbstractItemView.OnViewport:
                         #At the end
                         insertRow   = self.model.rowCount() + 1
-        super().dropEvent(event)
         #event.accept()
-        #mimeData = event.mimeData()
         
-        #self.model.dropMimeData(mimeData,Qt.CopyAction,insertRow,0,QModelIndex())
+        #self.insertRow(insertRow,Step.dummy())
+        #self.model.dropMimeData(event.mimeData(),event.dropAction(),insertRow,0,self.indexAt( event.pos() ))
+        super().dropEvent(event)
 
     def addRow(self,step):
         
