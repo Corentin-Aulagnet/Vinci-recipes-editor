@@ -8,7 +8,7 @@ class MyModel(QStandardItemModel):
         """
         Always move the entire row, and don't allow column "shifting"
         """
-        return super().dropMimeData(data, Qt.MoveAction, row, 0, parent)
+        return super().dropMimeData(data, Qt.CopyAction, row, 0, parent)
     
 class MyStyle(QProxyStyle):
 
@@ -55,9 +55,10 @@ class MyTableView(QTableView):
         self.setSelectionMode(self.ExtendedSelection)
         self.setShowGrid(False)
         self.setDropIndicatorShown(True)
-        self.viewport().setAcceptDrops(True)
-        self.setDragDropMode(self.InternalMove)
+        self.setDragDropMode(self.DragDrop)
+        self.setDefaultDropAction(Qt.MoveAction)
         self.setDragDropOverwriteMode(False)
+        self.setAcceptDrops(True)
 
         # Set our custom style - this draws the drop indicator across the whole row
         self.setStyle(MyStyle())
@@ -66,25 +67,17 @@ class MyTableView(QTableView):
         self.model = MyModel()
         self.setModel(self.model)
 
-    """ def dragEnterEvent(self, event):
-        if event.source() == self:
-            event.accept()
+    def dragEnterEvent(self, event):
+        event.accept()
+        
 
-        else:
-            super().dragEnterEvent(event)
+    '''def dragMoveEvent(self, event):
+        event.accept()'''
 
-    def dragMoveEvent(self, event):
-        if event.source() == self:
-            event.setDropAction(Qt.MoveAction)
-            event.accept()
-        else:
-            super().dragMoveEvent(event)"""
+    def dragLeaveEvent(self,event):
+        super().dragLeaveEvent(event)
 
-    def dropEvent(self,event:QDropEvent):
-        if event.keyboardModifiers() == Qt.ControlModifier:
-            event.setDropAction(Qt.CopyAction)
-        else:
-            event.setDropAction(Qt.MoveAction)
+    def dropEvent(self,event):
         insertRow   = self.indexAt( event.pos() ).row()
         if self.dropIndicatorPosition() == QAbstractItemView.OnItem:
             #do nothing
@@ -97,12 +90,22 @@ class MyTableView(QTableView):
                         insertRow   = self.indexAt( event.pos() ).row() + 1
         elif self.dropIndicatorPosition() == QAbstractItemView.OnViewport:
                         #At the end
-                        insertRow   = self.model.rowCount() + 1
-        #event.accept()
-        
-        #self.insertRow(insertRow,Step.dummy())
+                        insertRow   = self.model.rowCount()
+        if event.source() == self:
+            if event.keyboardModifiers() == Qt.ControlModifier:
+                event.setDropAction(Qt.CopyAction)
+            else:
+                event.setDropAction(Qt.MoveAction)
+            
+            data = event.source().selectedIndexes()[1].data(Qt.UserRole)
+            
+            
+        #super().dropEvent(event)
+        else:
+            data = event.source().selectedIndexes()[0].data(Qt.UserRole)
+        event.accept()
+        self.insertRow(insertRow,data)
         #self.model.dropMimeData(event.mimeData(),event.dropAction(),insertRow,0,self.indexAt( event.pos() ))
-        super().dropEvent(event)
 
     def addRow(self,step):
         

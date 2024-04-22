@@ -125,11 +125,17 @@ class EditorWidget(QTabWidget,MainWidget):
         super().addTab(RecipeEditorWidget(),'New Recipe*')
         self.setCurrentIndex (self.count()-1)
         self.setTabToolTip (self.currentIndex(), 'New Recipe*')
+        #self.setIconSize(QSize(50,50))
 
-    def changeCurrentTab(self,steps,title):
+    def changeCurrentTab(self,steps,title,type):
         if(self.count()==0 or self.tabText(self.currentIndex())!='New Recipe*' ):
             self.addTab()
         self.widget(self.currentIndex()).PopulateList(steps)
+        if type == Step:
+            self.setTabIcon(self.currentIndex(),QIcon('res/step_512.png'))
+        elif type == Recipe:
+            self.setTabIcon(self.currentIndex(),QIcon('res/ass_512.png'))
+        
         self.ChangeTitleofTab(title)
     def isAlreadyOpen(self,title):
         for i in range(self.count()):

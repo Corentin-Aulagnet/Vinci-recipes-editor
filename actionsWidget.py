@@ -36,15 +36,23 @@ class ActionsWidget(MainWidget,QWidget):
     @pyqtSlot()
     def OpenRecipe(self):
         filePath=''
-        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))[0]
+        filePath,extension =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
         if filePath !='':
+            extension = extension.split('(')[1][1:-1]
+            if extension == '.RCP':
+                type = Recipe
+            elif extension == '.uRCP':
+                type = Step
+            else :
+                raise FileNotFoundError
             try:
                 recipe = XMLReader.ReadRecipe(filePath)
+
                 if(self.editor.isAlreadyOpen(recipe.name)):
                     self.editor.switchTo(recipe.name)
                     self.messageChanged.emit("{} was already opened".format(recipe.name))
                 else:
-                    self.editor.changeCurrentTab(recipe.steps,recipe.name)
+                    self.editor.changeCurrentTab(recipe.steps,recipe.name,type)
                     self.messageChanged.emit("Opened {}".format(recipe.name))
             except XMLReader.ReadRecipeError as e:
                 self.messageChanged.emit("Failed to open file: {}".format(e))
