@@ -5,8 +5,8 @@ from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
-    version = "v0.5.1"
-    date= "19th of April, 2024"
+    version = "v0.6.1"
+    date= "23nd of April, 2024"
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height
@@ -47,10 +47,15 @@ class MainWindow(QMainWindow):
 
         ##Preferences
         self.prefMenu = self.menuBar().addMenu("&Preferences")
-        ###Editor
+        ###Working directory
         self.editWorkingPath_action = QAction("Set Working Directory...",self)
         self.editWorkingPath_action.triggered.connect(self.SetWorkingDir)
         self.prefMenu.addAction(self.editWorkingPath_action)
+        ###PROCESS.INI
+        self.editprocessini_action = QAction("Choose PROCESS.INI file",self)
+        self.editprocessini_action.triggered.connect(self.SetProcessIni)
+        self.prefMenu.addAction(self.editprocessini_action)
+        self.editprocessini_action.setEnabled(False)
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
         self.version_action = QAction("Version",self)
@@ -66,6 +71,13 @@ Details: To be published""".format(MainWindow.version,MainWindow.date))
         if dir != "":
             MainWidget.SetWorkingDir(dir)
             self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
+    
+    def SetProcessIni(self):
+            dir = QFileDialog.getOpenFileName(self,caption="Set Working Directory",directory = MainWidget.workingDir)
+            if dir != "":
+                MainWidget.SetWorkingDir(dir)
+                self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
+
     def initMainLayout(self):
 
         self.setCentralWidget(QWidget())

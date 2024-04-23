@@ -2,6 +2,7 @@
 *.RCP
 user.prof
 build.ps1
+PROCESS.INI
 .vscode/
 # Byte-compiled / optimized / DLL files
 __pycache__/

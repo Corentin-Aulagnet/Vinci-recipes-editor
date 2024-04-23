@@ -170,11 +170,14 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = ShutterOpenClose(step,self)
         elif step.type ==  "CParamScript_Valve_OpenClose":
             self.editorWidget = ValveOpenClose(step,self)
-
+        else: 
+            self.isValid = False
+            return
         self.okButton.clicked.connect(self.close)
         self.layout.addWidget(self.editorWidget)
         self.layout.addWidget(self.okButton)
         self.setLayout(self.layout)
+        self.isValid = True
     def close(self):
         self.editorWidget.close()
         self.done(1)

@@ -65,7 +65,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
         if(len(self.view.selectedIndexes()) >=1):
             row = self.view.selectedIndexes()[-1].row()+1
         else: row = 0
-        self.view.insertRow(row,self.tmpStep)
+        self.view.insertRow(row,Step.from_foo(self.tmpStep))
         
         
     
@@ -104,9 +104,10 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
         step = lastIndex.data(Qt.UserRole)
         self.popup = StepEditorPopUp(step,self)
-        self.popup.exec()
-        self.view.updateRow(changedRow,step)
-        self.view.model.dataChanged.emit(firstIndex,lastIndex)
+        if self.popup.isValid :
+            self.popup.exec()
+            self.view.updateRow(changedRow,step)
+            self.view.model.dataChanged.emit(firstIndex,lastIndex)
 
 
 class EditorWidget(QTabWidget,MainWidget):
