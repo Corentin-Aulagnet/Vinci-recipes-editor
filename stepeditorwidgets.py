@@ -429,7 +429,7 @@ class PowerSwitcher(BaseStepEditor):
                 super().__init__(step,parent)
                 self.switcherCombo = QComboBox()
                 self.switcherCombo.addItems(PowerSwitcher.switcher_supply.keys())
-
+                
                 if step.attr['PowerSwitcher_ID'] == 'SWITCHER_1':
                         self.switcherCombo.setCurrentIndex(0)
                 elif step.attr['PowerSwitcher_ID'] == 'SWITCHER_2':
@@ -475,13 +475,25 @@ class PowerSwitcher(BaseStepEditor):
         def redrawCathodesLayout(self,index):
             self.cathodesCombo.clear()
             if self.supplyCombo.itemText(index) == 'Seren 2':
-                      self.cathodesCombo.addItems(self.supply_cathodes['Seren 2'])
+                self.cathodesCombo.addItems(self.supply_cathodes['Seren 2'])
+                model = self.cathodesCombo.model()
+                item = model.item( 1, 0 )
+                item.setEnabled( False) 
             elif self.supplyCombo.itemText(index) == 'Maxim 1':
-                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
+                self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
+                model = self.cathodesCombo.model()
+                item = model.item( 2, 0 )
+                item.setEnabled( False) 
             elif self.supplyCombo.itemText(index) == 'Maxim 2':
-                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 2'])
+                self.cathodesCombo.addItems(self.supply_cathodes['Maxim 2'])
+                model = self.cathodesCombo.model()
+                item = model.item( 3, 0 )
+                item.setEnabled( False)
             elif self.supplyCombo.itemText(index) == 'Maxim 3':
-                      self.cathodesCombo.addItems(self.supply_cathodes['Maxim 3'])
+                self.cathodesCombo.addItems(self.supply_cathodes['Maxim 3'])
+                model = self.cathodesCombo.model()
+                item = model.item( 2, 0 )
+                item.setEnabled( False)
 
             
             if self.step.attr['PowerSwitcher_OutputID'] == 'NONE':

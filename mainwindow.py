@@ -5,8 +5,8 @@ from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 class MainWindow(QMainWindow):
-    version = "v0.6.1"
-    date= "23nd of April, 2024"
+    version = "v0.6.2"
+    date= "05th of June, 2024"
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height
@@ -63,9 +63,14 @@ class MainWindow(QMainWindow):
         self.aboutMenu.addAction(self.version_action)
 
     def DisplayVersion(self):
-        QMessageBox.information(self,'Version',"""Version: {}\n
-Date of publication: {}\n
-Details: To be published""".format(MainWindow.version,MainWindow.date))
+        msgBox = QMessageBox(self)
+        msgBox.setTextFormat(Qt.RichText)
+        msgBox.setWindowTitle('About')
+        msgBox.setText("""Version: {}\r
+Date of publication: {}\r
+Details: Developped and maintained by Corentin Aulagnet.\r
+You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vinci-recipes-editor/issues'>GitHub</a>""".format(MainWindow.version,MainWindow.date))
+        msgBox.exec()
     def SetWorkingDir(self):
         dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.workingDir)
         if dir != "":
