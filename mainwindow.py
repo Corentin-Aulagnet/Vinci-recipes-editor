@@ -1,12 +1,17 @@
-from PyQt5.QtWidgets import QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog,QMessageBox
-from PyQt5.QtCore import Qt,pyqtSignal
+from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog,QMessageBox
+from PyQt5.QtCore import Qt,pyqtSlot
 from librarywidget import LibraryWidget
 from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
+import os,sys
+from updateCheck import UpdateCheckThread,start_update
 class MainWindow(QMainWindow):
     version = "v0.6.2"
     date= "05th of June, 2024"
+    github_user = 'Corentin-Aulagnet'
+    github_repo = 'Vinci-recipes-editor'
+    asset_name= lambda s : f'VinciRecipeEditor_{s}_python3.8.zip'
     def __init__(self,width=1400,height=800):
         super().__init__()
         self.height = height
@@ -20,8 +25,36 @@ class MainWindow(QMainWindow):
         self.initWorkingDir()
         self.initMainLayout()
         self.initMenus()
+        self.checkForUpdates()
         self.show()
 
+    def checkForUpdates(self):
+        #Check for updates
+        # Start the update check thread
+        self.update_thread = UpdateCheckThread(MainWindow.github_user,MainWindow.github_repo,MainWindow.version,MainWindow.asset_name)
+        self.update_thread.update_available.connect(self.on_update_check_finished)
+        self.update_thread.start()
+    @pyqtSlot(str)
+    def on_update_check_finished(self,latest_version):
+        #Get the folder where the app is running from
+        if getattr(sys, 'frozen', False):
+            # If the application is run as a bundle, the PyInstaller bootloader
+            # extends the sys module by a flag frozen=True and sets the app 
+            # path into variable _MEIPASS'.
+            application_path = sys._MEIPASS
+        else:
+            application_path = os.path.dirname(os.path.abspath(__file__))
+        installation_folder = application_path
+        if latest_version != '':
+            msgBox = QMessageBox()
+            msgBox.setText(f"A newer version ({latest_version}) is available. You are currently using version {MainWindow.version}.");
+            msgBox.setInformativeText("Do you want to download the latest version? VinciRecipesEditor will be closed")
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msgBox.setDefaultButton(QMessageBox.Yes)
+            ret = msgBox.exec()
+            if ret == QMessageBox.Yes : 
+                start_update(latest_version,installation_folder,MainWindow.github_user,MainWindow.github_repo,MainWindow.asset_name(latest_version))
+                QApplication.instance().quit()
     def initWorkingDir(self):
         try:
             with open("user.pref",'r') as f:
