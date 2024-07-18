@@ -27,19 +27,20 @@ class StepAddPopUp(QDialog):
         self.okButton = QPushButton("Ok")
         self.combo = QComboBox()
         self.step = step
-        self.combo.addItems(["CParamScript_MassflowSetpoint",
-                             "CParamScript_VatValve",
-                             "CParamScript_Maxim_PowerOff",
-                             "CParamScript_Maxim_Setpoints",
-                             "CParamScript_PowerSwitcher",
-                             "CParamScript_Sleep",
-                             "CParamScript_Substrate_HeatingOff",
-                             "CParamScript_Substrate_HeatingOn",
-                             "CParamScript_Substrate_RotationOff",
-                             "CParamScript_Substrate_RotationOn",
-                             "CParamScript_Substrate_HeatingSetpoint",
-                             "CParamScript_Shutter_OpenClose",
-                             "CParamScript_Valve_OpenClose"])
+        self.step_display_names=["Massflow Setpoint",
+                             "Vat Valve",
+                             "Maxim Power Off",
+                             "Maxim Setpoints",
+                             "PowerSwitcher",
+                             "Sleep",
+                             "Substrate Heating Off",
+                             "Substrate Heating On",
+                             "Substrate Rotation Off",
+                             "Substrate Rotation On",
+                             "Substrate Heating Setpoint",
+                             "Shutter Open Close",
+                             "Valve Open Close"]
+        self.combo.addItems(self.step_display_names)
         self.combo.currentIndexChanged.connect(self.redrawForm)
         self.okButton.clicked.connect(self.close)
         self.editorLayout = QVBoxLayout()
@@ -56,7 +57,7 @@ class StepAddPopUp(QDialog):
     def redrawForm(self,index):
         self.step.clear()
         clearLayout(self.editorLayout)
-        if self.combo.itemText(index) == "CParamScript_MassflowSetpoint":
+        if self.combo.itemText(index) == self.step_display_names[0]:
             self.step.type = "CParamScript_MassflowSetpoint"
             self.step.Add_attr("Massflow_ID",'0')
             self.step.Add_attr("Measure_VariableID",'0')
@@ -64,19 +65,19 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("SetPoint_sccm",'0')
             self.editorWidget = MassflowSetpoint(self.step,self)
 
-        elif self.combo.itemText(index) == "CParamScript_VatValve":
+        elif self.combo.itemText(index) == self.step_display_names[1]:
             self.step.type = "CParamScript_VatValve"
             self.step.Add_attr("Mode",'0')
             self.step.Add_attr("Setpoint",'0')
             self.editorWidget = VATValve(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_Maxim_PowerOff":
+        elif self.combo.itemText(index) ==  self.step_display_names[2]:
             self.step.type = "CParamScript_Maxim_PowerOff"
             self.step.Add_attr("Maxim_ID",'0')
             self.step.Add_attr("IsOn",'0')
             self.editorWidget = MaximPowerOff(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_Maxim_Setpoints":
+        elif self.combo.itemText(index) ==  self.step_display_names[3]:
             self.step.type = "CParamScript_Maxim_Setpoints"
             self.step.Add_attr("Maxim_ID",'0')
             self.step.Add_attr("Power",'0')
@@ -87,7 +88,7 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("ArcOffTime",'0')
             self.editorWidget = MaximSetpoints(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_PowerSwitcher":
+        elif self.combo.itemText(index) ==  self.step_display_names[4]:
             self.step.type = "CParamScript_PowerSwitcher"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
@@ -97,33 +98,33 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("PowerSwitcher_OutputID",'0')
             self.editorWidget = PowerSwitcher(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_Sleep":
+        elif self.combo.itemText(index) ==  self.step_display_names[5]:
             self.step.type = "CParamScript_Sleep"
             self.step.Add_attr("WaitTime_Sec",'0')
             self.editorWidget = Sleep(self.step,self)
                 
-        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingOff":
+        elif self.combo.itemText(index) ==  self.step_display_names[6]:
             self.step.type = "CParamScript_Substrate_HeatingOff"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingOn":
+        elif self.combo.itemText(index) ==  self.step_display_names[7]:
             self.step.type = "CParamScript_Substrate_HeatingOn"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOff":
+        elif self.combo.itemText(index) ==  self.step_display_names[8]:
             self.step.type = "CParamScript_Substrate_RotationOff"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  "CParamScript_Substrate_RotationOn":
+        elif self.combo.itemText(index) ==  self.step_display_names[9]:
             self.step.type = "CParamScript_Substrate_RotationOn"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  "CParamScript_Substrate_HeatingSetpoint":
+        elif self.combo.itemText(index) ==  self.step_display_names[10]:
             self.step.type = "CParamScript_Substrate_HeatingSetpoint"
             self.step.Add_attr("SetPoint_Deg",'0')
             self.editorWidget = SubstrateHeating(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_Shutter_OpenClose":
+        elif self.combo.itemText(index) ==  self.step_display_names[11]:
             self.step.type = "CParamScript_Shutter_OpenClose"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
@@ -131,7 +132,7 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("OpenState",'0')
             self.editorWidget = ShutterOpenClose(self.step,self)
 
-        elif self.combo.itemText(index) ==  "CParamScript_Valve_OpenClose":
+        elif self.combo.itemText(index) ==  self.step_display_names[12]:
             self.step.type = "CParamScript_Valve_OpenClose"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
