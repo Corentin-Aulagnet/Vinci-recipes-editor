@@ -24,12 +24,14 @@ class UpdateCheckThread(QThread):
 
 def get_latest_release(user, repo):
     url = f'https://api.github.com/repos/{user}/{repo}/releases/latest'
-    response = requests.get(url)
-    if response.status_code == 200:
-        latest_release = response.json()
-        return latest_release['tag_name']
-    else:
-        return None
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            latest_release = response.json()
+            return latest_release['tag_name']
+        else:
+            return None
+    except: return None
 
 def compare_versions(current_version, latest_version):
     from packaging import version
