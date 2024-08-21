@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QTableView,QWidget,QTabWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel
-from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex
+from PyQt5.QtCore import pyqtSlot,pyqtSignal,QObject,QSize,Qt,QAbstractListModel,QModelIndex
 from PyQt5.QtGui import QKeySequence,QDropEvent,QStandardItemModel,QIcon
 from QExpandableItem import QListWidgetView,QExpandableWidget,STRETCHING
 from customList import CustomView,MyStyledDelegate,CustomModel
@@ -111,7 +111,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
 
 class EditorWidget(QTabWidget,MainWidget):
-    currentWidget = None
+    #currentWidget = None
 
 
     def __init__(self,parent=None):
@@ -123,8 +123,9 @@ class EditorWidget(QTabWidget,MainWidget):
         self.tabCloseRequested.connect(self.closeTab)
 
     def addTab(self):
+        #EditorWidget.currentWidget = RecipeEditorWidget()
         super().addTab(RecipeEditorWidget(),'New Recipe*')
-        self.setCurrentIndex (self.count()-1)
+        self.setCurrentIndex(self.count()-1)
         self.setTabToolTip (self.currentIndex(), 'New Recipe*')
         #self.setIconSize(QSize(50,50))
 
@@ -144,12 +145,12 @@ class EditorWidget(QTabWidget,MainWidget):
                 return True
         return False
     def setCurrentIndex(self,index:int):
-        EditorWidget.currentWidget = self.widget(index)
+        #EditorWidget.currentWidget = self.currentWidget
         super().setCurrentIndex(index)
     def switchTo(self,title):
         for i in range(self.count()):
             if(self.tabText(i) == title):
-                self.setCurrentIndex (i)
+                self.setCurrentIndex(i)
     
     @pyqtSlot(int)
     def closeTab (self, currentIndex):
@@ -163,7 +164,7 @@ class EditorWidget(QTabWidget,MainWidget):
     
     def GetCurrentList(self):
         #EditorWidget.currentQWidget = self.widget(self.currentIndex())
-        return EditorWidget.currentWidget.GetListItemData()
+        return self.currentWidget().GetListItemData()
 
 
         
