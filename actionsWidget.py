@@ -36,7 +36,7 @@ class ActionsWidget(MainWidget,QWidget):
     @pyqtSlot()
     def OpenRecipe(self):
         filePath=''
-        filePath,extension =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
+        filePath,extension =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.workingDir,("Recipe Files (*.RCP);;Subrecipe Files (*.uRCP)"))
         if filePath !='':
             extension = extension.split('(')[1][1:-1]
             if extension == '.RCP':
@@ -61,7 +61,8 @@ class ActionsWidget(MainWidget,QWidget):
     @pyqtSlot()
     def SaveRecipe(self):
         try:
-            path,extension = QFileDialog.getSaveFileName (None,'Recipe File',MainWidget.workingDir,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
+            defaultName = self.editor.GetCurrentRecipeName()
+            path,extension = QFileDialog.getSaveFileName (None,'Recipe Name',MainWidget.workingDir+'\\'+defaultName,("Subrecipe Files (*.uRCP);;Recipe Files (*.RCP)"))
            
             if (path != ''):
                 extension = extension.split('(')[1][1:-1]
@@ -102,7 +103,8 @@ class ActionsWidget(MainWidget,QWidget):
 
     @pyqtSlot()
     def ExportRecipe(self):
-        path,extension = QFileDialog.getSaveFileName (None,'Recipe File',MainWidget.workingDir,("Recipe Files (*.RCP)"))
+        defaultName = self.editor.GetCurrentRecipeName()
+        path,extension = QFileDialog.getSaveFileName(None,'Recipe File',MainWidget.workingDir+'\\'+defaultName,("Recipe Files (*.RCP)"))
         if (path != ''):
             extension = extension.split('(')[1][1:-1]
             name = path.split('/')[-1][:-len(extension)]

@@ -20,7 +20,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
         self.view:MyTableView = MyTableView(self)
         self.view.doubleClicked.connect(self.openStepEditor)
 
-
+        self.name = ""
         self.layout.addWidget(self.view)
         self.setLayout(self.layout)
         self.copyShortcut = QShortcut(QKeySequence(Qt.CTRL | Qt.Key_C),self,self.CopySelected)
@@ -33,6 +33,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
     
 
     def ChangeTitle(self,name):
+        self.name = name
         self.parent().setWindowTitle('Editor - '+name)
     def clear(self):
         self.model.clear()
@@ -160,13 +161,15 @@ class EditorWidget(QTabWidget,MainWidget):
     
     def ChangeTitleofTab(self,title):
         self.setTabText(self.currentIndex(), title)
+        self.currentWidget().name = title
         self.setTabToolTip (self.currentIndex(), title)
     
     def GetCurrentList(self):
         #EditorWidget.currentQWidget = self.widget(self.currentIndex())
         return self.currentWidget().GetListItemData()
 
-
+    def GetCurrentRecipeName(self):
+        return self.currentWidget().name
         
                 
                 
