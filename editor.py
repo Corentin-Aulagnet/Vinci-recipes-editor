@@ -97,14 +97,21 @@ class MyTableView(QTableView):
             else:
                 event.setDropAction(Qt.MoveAction)
             
-            data = event.source().selectedIndexes()[1].data(Qt.UserRole)
-            
-            
+            data=[]
+            for index in [event.source().selectedIndexes()[i] for i in range(1,len(event.source().selectedIndexes()),2)]: 
+                if(event.dropAction() == Qt.CopyAction):
+                    d = index.data(Qt.UserRole)
+                    if type(d) == Step:
+                        data.append(Step.from_foo(index.data(Qt.UserRole)))
+                    else : 
+                        data.append(Recipe.from_foo(index.data(Qt.UserRole)))
+                else:
+                    data.append(index.data(Qt.UserRole))     
         #super().dropEvent(event)
         else:
             data = event.source().selectedIndexes()[0].data(Qt.UserRole)
         event.accept()
-        self.insertRow(insertRow,data)
+        self.insertRows(insertRow,data)
         #self.model.dropMimeData(event.mimeData(),event.dropAction(),insertRow,0,self.indexAt( event.pos() ))
 
     def addRow(self,step):
