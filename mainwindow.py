@@ -6,6 +6,7 @@ from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
 import os,sys
 from updateCheck import UpdateCheckThread,start_update
+from json import load,JSONDecodeError
 class MainWindow(QMainWindow):
     version = "v0.7.3"
     date= "21th of August, 2024"
@@ -58,8 +59,10 @@ class MainWindow(QMainWindow):
     def initWorkingDir(self):
         try:
             with open("user.pref",'r') as f:
-                MainWidget.SetWorkingDir(f.readline())
-        except FileNotFoundError:
+                json = load(f)
+                if "WORKING_DIR" in json : MainWidget.SetWorkingDir(json["WORKING_DIR"])
+                if "PROCESS_INI_PATH" in json : MainWidget.SetProcessIniPath(json["PROCESS_INI_PATH"])
+        except (FileNotFoundError,JSONDecodeError) as e:
             pass
     def initMenus(self):
         
@@ -88,7 +91,6 @@ class MainWindow(QMainWindow):
         self.editprocessini_action = QAction("Choose PROCESS.INI file",self)
         self.editprocessini_action.triggered.connect(self.SetProcessIni)
         self.prefMenu.addAction(self.editprocessini_action)
-        self.editprocessini_action.setEnabled(False)
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
         self.version_action = QAction("Version",self)
@@ -108,13 +110,15 @@ You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vin
         dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.workingDir)
         if dir != "":
             MainWidget.SetWorkingDir(dir)
+            MainWidget.savePrefs()
             self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
     
     def SetProcessIni(self):
-            dir = QFileDialog.getOpenFileName(self,caption="Set Working Directory",directory = MainWidget.workingDir)
-            if dir != "":
-                MainWidget.SetWorkingDir(dir)
-                self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
+            path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = MainWidget.workingDir)[0]
+            if path != "":
+                MainWidget.SetProcessIniPath(path)
+                MainWidget.savePrefs()
+                self.PrintNormalMessage("Changed PROCESS.INI to {}".format(MainWidget.PROCESS_INI_PATH))
 
     def initMainLayout(self):
 

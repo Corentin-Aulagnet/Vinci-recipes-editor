@@ -62,11 +62,13 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
     def AddStep(self):
         popup = StepAddPopUp(self.tmpStep,self)
-        popup.exec()
-        if(len(self.view.selectedIndexes()) >=1):
-            row = self.view.selectedIndexes()[-1].row()+1
-        else: row = 0
-        self.view.insertRow(row,Step.from_foo(self.tmpStep))
+        id = popup.exec()
+        if id > 0:
+            #Ok was clicked
+            if(len(self.view.selectedIndexes()) >=1):
+                row = self.view.selectedIndexes()[-1].row()+1
+            else: row = 0
+            self.view.insertRow(row,Step.from_foo(self.tmpStep))
         
         
     

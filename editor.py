@@ -2,6 +2,7 @@ from PyQt5.QtGui import QStandardItemModel,QStandardItem,QIcon,QDropEvent
 from PyQt5.QtWidgets import QProxyStyle,QStyleOption,QTableView,QHeaderView,QAbstractItemView
 from PyQt5.QtCore import Qt,QModelIndex,QTextStream,QIODevice,QMimeData
 from vincirecipereader import Step,Recipe
+from mainwidget import MainWidget
 class MyModel(QStandardItemModel):
 
     def dropMimeData(self, data, action, row, col, parent):
@@ -163,10 +164,10 @@ class MyTableView(QTableView):
         elif name == "PowerSwitcher":
             swInputId={'SWITCHER_1':{'IN_1':'SEREN 2', 'IN_2':'MAXIM 1'},'SWITCHER_2':{'IN_1':'MAXIM 2','IN_2':'MAXIM 3'}}
             supply_cathodes= {
-             'SEREN 2' : {'NONE':'None','OUT_1':'Cathode 1','OUT_2':'Cathode 2','OUT_3':'Cathode 3','OUT_4':'Cathode 4'},
-             'MAXIM 1' : {'NONE':'None','OUT_1':'Cathode 1','OUT_2':'Cathode 2','OUT_3':'Cathode 3','OUT_4':'Cathode 4'},
-             'MAXIM 2' : {'NONE':'None','OUT_1':'Cathode 5','OUT_2':'Cathode 6','OUT_3':'Cathode 7','OUT_4':'Cathode 8'},
-             'MAXIM 3' : {'NONE':'None','OUT_1':'Cathode 5','OUT_2':'Cathode 6','OUT_3':'Cathode 7','OUT_4':'Cathode 8'}         
+             'SEREN 2' : {'NONE':'None','OUT_1':'Cathode 1 ({})'.format(MainWidget.target_symbols[0]),'OUT_2':'Cathode 2 ({})'.format(MainWidget.target_symbols[1]),'OUT_3':'Cathode 3 ({})'.format(MainWidget.target_symbols[2]),'OUT_4':'Cathode 4 ({})'.format(MainWidget.target_symbols[3])},
+             'MAXIM 1' : {'NONE':'None','OUT_1':'Cathode 1 ({})'.format(MainWidget.target_symbols[0]),'OUT_2':'Cathode 2 ({})'.format(MainWidget.target_symbols[1]),'OUT_3':'Cathode 3 ({})'.format(MainWidget.target_symbols[2]),'OUT_4':'Cathode 4 ({})'.format(MainWidget.target_symbols[3])},
+             'MAXIM 2' : {'NONE':'None','OUT_1':'Cathode 5 ({})'.format(MainWidget.target_symbols[4]),'OUT_2':'Cathode 6 ({})'.format(MainWidget.target_symbols[5]),'OUT_3':'Cathode 7 ({})'.format(MainWidget.target_symbols[6]),'OUT_4':'Cathode 8 ({})'.format(MainWidget.target_symbols[7])},
+             'MAXIM 3' : {'NONE':'None','OUT_1':'Cathode 5 ({})'.format(MainWidget.target_symbols[4]),'OUT_2':'Cathode 6 ({})'.format(MainWidget.target_symbols[5]),'OUT_3':'Cathode 7 ({})'.format(MainWidget.target_symbols[6]),'OUT_4':'Cathode 8 ({})'.format(MainWidget.target_symbols[7])}         
             }
             supply = (swInputId[step.attr['PowerSwitcher_ID']])[step.attr['PowerSwitcher_InputID']]
             infos = "Switcher: {}, Supplier: {}, Output: {}".format(step.attr['PowerSwitcher_ID'],supply,supply_cathodes[supply][step.attr["PowerSwitcher_OutputID"]])
@@ -183,14 +184,7 @@ class MyTableView(QTableView):
         elif name == "Substrate_HeatingSetpoint":
             infos = "Heat setpoint {}°C".format(step.attr["SetPoint_Deg"])
         elif name == "Shutter_OpenClose":
-            step2Cathode = {'MX_DC_Shutter1_COMMAND':'Cathode 1',
-                            'MX_DC_Shutter2_COMMAND':'Cathode 2',
-                            'MX_DC_Shutter3_COMMAND':'Cathode 3',
-                            'MX_DC_Shutter4_COMMAND':'Cathode 4',
-                            'MX_DC_Shutter5_COMMAND':'Cathode 5',
-                            'MX_DC_Shutter6_COMMAND':'Cathode 6',
-                            'MX_DC_Shutter7_COMMAND':'Cathode 7',
-                            'MX_DC_Shutter8_COMMAND':'Cathode 8'}
+            step2Cathode = {'MX_DC_Shutter{}_COMMAND'.format(i,):'Cathode {} ({})'.format(i,MainWidget.target_symbols[i-1]) for i in range(1,9)}
             state= 'OPEN'
             if step.attr['OpenState'] == 'false':
                 state = 'CLOSE'

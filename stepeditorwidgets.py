@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QLayout,QRadioButton,QButtonGroup,QLineEdit,QComboBox,QWidget,QListWidget,QVBoxLayout,QHBoxLayout,QGridLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QShortcut,QListWidgetItem,QLabel,QDialog
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt,QAbstractListModel,QModelIndex,QRect
 from vincirecipereader import Step,Recipe
-
+from mainwidget import MainWidget
 def clearLayout(layout):
     if layout != None:
         while layout.count():
@@ -660,14 +660,15 @@ class PowerSwitcher(BaseStepEditor):
              'Power switcher 2':['Maxim 2','Maxim 3']
 
         }
-        supply_cathodes= {
-             'Seren 2' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
-             'Maxim 1' : ['None','Cathode 1','Cathode 2','Cathode 3','Cathode 4'],
-             'Maxim 2' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8'],
-             'Maxim 3' : ['None','Cathode 5','Cathode 6','Cathode 7','Cathode 8']         
-            }
+        
         def __init__(self,step,parent=None):
                 super().__init__(step,parent)
+                self.supply_cathodes= {
+             'Seren 2' : ['None',"Cathode 1 ({})".format(MainWidget.target_symbols[0]),'Cathode 2 ({})'.format(MainWidget.target_symbols[1]),'Cathode 3 ({})'.format(MainWidget.target_symbols[2]),'Cathode 4 ({})'.format(MainWidget.target_symbols[3])],
+             'Maxim 1' : ['None','Cathode 1 ({})'.format(MainWidget.target_symbols[0]),'Cathode 2 ({})'.format(MainWidget.target_symbols[1]),'Cathode 3 ({})'.format(MainWidget.target_symbols[2]),'Cathode 4 ({})'.format(MainWidget.target_symbols[3])],
+             'Maxim 2' : ['None','Cathode 5 ({})'.format(MainWidget.target_symbols[4]),'Cathode 6 ({})'.format(MainWidget.target_symbols[5]),'Cathode 7 ({})'.format(MainWidget.target_symbols[6]),'Cathode 8 ({})'.format(MainWidget.target_symbols[7])],
+             'Maxim 3' : ['None','Cathode 5 ({})'.format(MainWidget.target_symbols[4]),'Cathode 6 ({})'.format(MainWidget.target_symbols[5]),'Cathode 7 ({})'.format(MainWidget.target_symbols[6]),'Cathode 8 ({})'.format(MainWidget.target_symbols[7])]         
+            }
                 self.switcherCombo = QComboBox()
                 self.switcherCombo.addItems(PowerSwitcher.switcher_supply.keys())
                 
@@ -795,7 +796,7 @@ class ShutterOpenClose(BaseStepEditor):
         def __init__(self,step,parent=None):
                 super().__init__(step,parent)
                 self.combo = QComboBox()
-                self.combo.addItems(["Cathode {}".format(i) for i in range(1,9)])
+                self.combo.addItems(["Cathode {} ({})".format(i,MainWidget.target_symbols[i-1]) for i in range(1,9)])
 
                 if step.attr['Command_VariableID'] == 'MX_DC_Shutter1_COMMAND':
                         self.combo.setCurrentIndex(0)
