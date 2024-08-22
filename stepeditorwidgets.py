@@ -31,6 +31,8 @@ class StepAddPopUp(QDialog):
                              "Vat Valve",
                              "Maxim Power Off",
                              "Maxim Setpoints",
+                             "Seren MC2",
+                             "Seren Rx01",
                              "PowerSwitcher",
                              "Sleep",
                              "Substrate Heating Off",
@@ -89,6 +91,38 @@ class StepAddPopUp(QDialog):
             self.editorWidget = MaximSetpoints(self.step,self)
 
         elif self.combo.itemText(index) ==  self.step_display_names[4]:
+            self.step.type = "CParamScript_Seren_MC2_Setpoints"
+            self.step.Add_attr("SerenID",'0')
+            self.step.Add_attr("TuneCapacitor",'0')
+            self.step.Add_attr("LoadCapacitor",'0')
+            self.step.Add_attr("TuneCapacitor_Setpoint_VariableID",'0')
+            self.step.Add_attr("LoadCapacitor_Setpoint_VariableID",'0')
+            self.step.Add_attr("TuneCapacitor_SetCommand_VariableID",'0')
+            self.step.Add_attr("LoadCapacitor_SetCommand_VariableID",'0')
+            self.editorWidget = SerenMC2(self.step,self)
+
+        elif self.combo.itemText(index) ==  self.step_display_names[5]:
+            self.step.type = "CParamScript_Seren_Rx01_Setpoints"
+            self.step.Add_attr("SerenID",'0')
+            self.step.Add_attr("Mode",'0')
+            self.step.Add_attr("Setpoint",'0')
+            self.step.Add_attr("Synchronisation",'0')
+            self.step.Add_attr("ContinuousPulse",'0')
+            self.step.Add_attr("PulseTrain",'0')
+            self.step.Add_attr("Mode_Command_VariableID",'0')
+            self.step.Add_attr("Mode_State_VariableID",'0')
+            self.step.Add_attr("OutputSetpoint_VariableID",'0')
+            self.step.Add_attr("Synchronisation_Command_VariableID",'0')
+            self.step.Add_attr("Synchronisation_State_VariableID",'0')
+            self.step.Add_attr("Output_Command_VariableID",'0')
+            self.step.Add_attr("Output_State_VariableID",'0')
+            self.step.Add_attr("ContinuousPulse_Command_VariableID",'0')
+            self.step.Add_attr("ContinuousPulse_State_VariableID",'0')
+            self.step.Add_attr("PulseTrain_Command_VariableID",'0')
+            self.step.Add_attr("PulseTrain_State_VariableID",'0')
+            self.editorWidget = SerenRx01(self.step,self)
+
+        elif self.combo.itemText(index) ==  self.step_display_names[6]:
             self.step.type = "CParamScript_PowerSwitcher"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
@@ -98,33 +132,33 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("PowerSwitcher_OutputID",'0')
             self.editorWidget = PowerSwitcher(self.step,self)
 
-        elif self.combo.itemText(index) ==  self.step_display_names[5]:
+        elif self.combo.itemText(index) ==  self.step_display_names[7]:
             self.step.type = "CParamScript_Sleep"
             self.step.Add_attr("WaitTime_Sec",'0')
             self.editorWidget = Sleep(self.step,self)
                 
-        elif self.combo.itemText(index) ==  self.step_display_names[6]:
+        elif self.combo.itemText(index) ==  self.step_display_names[8]:
             self.step.type = "CParamScript_Substrate_HeatingOff"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  self.step_display_names[7]:
+        elif self.combo.itemText(index) ==  self.step_display_names[9]:
             self.step.type = "CParamScript_Substrate_HeatingOn"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  self.step_display_names[8]:
+        elif self.combo.itemText(index) ==  self.step_display_names[10]:
             self.step.type = "CParamScript_Substrate_RotationOff"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  self.step_display_names[9]:
+        elif self.combo.itemText(index) ==  self.step_display_names[11]:
             self.step.type = "CParamScript_Substrate_RotationOn"
             self.editorWidget = QWidget()
 
-        elif self.combo.itemText(index) ==  self.step_display_names[10]:
+        elif self.combo.itemText(index) ==  self.step_display_names[12]:
             self.step.type = "CParamScript_Substrate_HeatingSetpoint"
             self.step.Add_attr("SetPoint_Deg",'0')
             self.editorWidget = SubstrateHeating(self.step,self)
 
-        elif self.combo.itemText(index) ==  self.step_display_names[11]:
+        elif self.combo.itemText(index) ==  self.step_display_names[13]:
             self.step.type = "CParamScript_Shutter_OpenClose"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
@@ -132,7 +166,7 @@ class StepAddPopUp(QDialog):
             self.step.Add_attr("OpenState",'0')
             self.editorWidget = ShutterOpenClose(self.step,self)
 
-        elif self.combo.itemText(index) ==  self.step_display_names[12]:
+        elif self.combo.itemText(index) ==  self.step_display_names[14]:
             self.step.type = "CParamScript_Valve_OpenClose"
             self.step.Add_attr("DeviceID","WAGO")
             self.step.Add_attr("Command_VariableID",'0')
@@ -159,8 +193,10 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = VATValve(step,self)
         elif step.type ==  "CParamScript_Maxim_PowerOff":
             self.editorWidget = MaximPowerOff(step,self)
-        elif step.type ==  "CParamScript_Maxim_Setpoints":
-            self.editorWidget = MaximSetpoints(step,self)
+        elif step.type ==  "CParamScript_Seren_MC2_Setpoints":
+            self.editorWidget = SerenMC2(step,self)
+        elif step.type ==  "CParamScript_Seren_Rx01_Setpoints":
+            self.editorWidget = SerenRx01(step,self)
         elif step.type ==  "CParamScript_PowerSwitcher":
             self.editorWidget = PowerSwitcher(step,self)
         elif step.type ==  "CParamScript_Sleep":
@@ -193,6 +229,210 @@ class BaseStepEditor(QWidget):
     def close(self):
         pass
 
+
+class SerenRx01(BaseStepEditor):
+    def __init__(self,step,parent=None):
+        super().__init__(step,parent)
+
+        #Seren Selection
+        self.combo = QComboBox()
+        self.combo.addItems(["Seren #1", "Seren #2"])
+        if step.attr['SerenID'] == 'SEREN_1':
+            self.combo.setCurrentIndex(0)
+        elif step.attr['SerenID'] == 'SEREN_2':
+            self.combo.setCurrentIndex(1)
+        self.formLayout.addWidget(QLabel("Seren name"),0,0)
+        self.formLayout.addWidget(self.combo,0,1)
+
+        #Mode
+        self.modeGroup = QButtonGroup()
+        self.powerRadio = QRadioButton('Power')
+        self.voltageRadio = QRadioButton('Voltage')
+        self.modeGroup.addButton(self.powerRadio)
+        self.modeGroup.setId(self.powerRadio,0)
+        self.modeGroup.addButton(self.voltageRadio)
+        self.modeGroup.setId(self.voltageRadio,1)
+        if self.step.attr['Mode'] == 'POWER':
+                self.powerRadio.setChecked(True)
+        elif self.step.attr['Mode'] == 'VOLTAGE':
+                self.voltageRadio.setChecked(True)
+        self.formLayout.addWidget(QLabel("Mode"),1,0)
+        self.formLayout.addWidget(self.powerRadio,1,1)
+        self.formLayout.addWidget(self.voltageRadio,1,2)
+        self.modeGroup.idClicked.connect(self.redrawForm)
+
+
+
+        #setpoint
+        self.editSetpoint = QLineEdit()
+        self.editSetpoint.setText(self.step.attr['Setpoint'])
+        self.setpointLabel = QLabel("Setpoint")
+        self.setpointUnitLabel = QLabel("W")
+        self.formLayout.addWidget(self.setpointLabel,2,0)
+        self.formLayout.addWidget(self.editSetpoint,2,1)
+        self.formLayout.addWidget(self.setpointUnitLabel,2,2)
+        
+
+        #Synchronisation
+        self.syncGroup = QButtonGroup()
+        self.masterRadio = QRadioButton('Master')
+        self.slaveRadio = QRadioButton('Slave')
+        self.syncGroup.addButton(self.masterRadio)
+        self.syncGroup.setId(self.masterRadio,0)
+        self.syncGroup.addButton(self.slaveRadio)
+        self.syncGroup.setId(self.slaveRadio,1)
+        if self.step.attr['Synchronisation'] == 'MASTER':
+                self.masterRadio.setChecked(True)
+        elif self.step.attr['Synchronisation'] == 'SLAVE':
+                self.slaveRadio.setChecked(True)
+        self.formLayout.addWidget(QLabel("Synchronisation"),3,0)
+        self.formLayout.addWidget(self.masterRadio,3,1)
+        self.formLayout.addWidget(self.slaveRadio,3,2)
+
+        #Output Mode
+        self.outputGroup = QButtonGroup()
+        self.contRadio = QRadioButton('Continuous')
+        self.pulseRadio = QRadioButton('Pulse')
+        self.outputGroup.addButton(self.contRadio)
+        self.outputGroup.setId(self.contRadio,0)
+        self.outputGroup.addButton(self.pulseRadio)
+        self.outputGroup.setId(self.pulseRadio,1)
+        if self.step.attr['ContinuousPulse'] == 'CONTINUOUS':
+                self.contRadio.setChecked(True)
+        elif self.step.attr['ContinuousPulse'] == 'PULSE':
+                self.pulseRadio.setChecked(True)
+        self.formLayout.addWidget(QLabel("Output Mode"),4,0)
+        self.formLayout.addWidget(self.contRadio,4,1)
+        self.formLayout.addWidget(self.pulseRadio,4,2)
+
+        #Pulse train
+        self.pulseTrainGroup = QButtonGroup()
+        self.onRadio = QRadioButton('On')
+        self.offRadio = QRadioButton('Off')
+        self.pulseTrainGroup.addButton(self.onRadio)
+        self.pulseTrainGroup.setId(self.onRadio,0)
+        self.pulseTrainGroup.addButton(self.offRadio)
+        self.pulseTrainGroup.setId(self.offRadio,1)
+        if self.step.attr['PulseTrain'] == 'true':
+                self.onRadio.setChecked(True)
+        elif self.step.attr['PulseTrain'] == 'false':
+                self.offRadio.setChecked(True)
+        self.formLayout.addWidget(QLabel("Output Mode"),5,0)
+        self.formLayout.addWidget(self.onRadio,5,1)
+        self.formLayout.addWidget(self.offRadio,5,2)
+
+    @pyqtSlot(int)
+    def redrawForm(self,id):
+        if id == 0:       
+            #Power control mode
+            self.setpointLabel.setText("Power Setpoint")
+            self.setpointUnitLabel.setText("W")
+        elif id == 1:
+            #Voltage control mode
+            self.setpointLabel.setText("Voltage Setpoint")
+            self.setpointUnitLabel.setText("V")
+
+    def close(self):
+        #seren id
+        if self.combo.currentIndex() == 0:
+            self.step.attr['SerenID'] = "SEREN_1"
+            self.step.attr["Mode_Command_VariableID"] = "MX_SEREN_Rx01_1_POWER_VOLTAGE_SW_COMMAND"
+            self.step.attr["Mode_State_VariableID"] = "MX_SEREN_Rx01_1_POWER_VOLTAGE_SW_STATE"
+            self.step.attr["OutputSetpoint_VariableID"] = "MDW_SEREN_Rx01_1_SP_Watts"
+            self.step.attr["Synchronisation_Command_VariableID"] = "MX_SEREN_Rx01_1_EXCITATION_EXT_SW_COMMAND"
+            self.step.attr["Synchronisation_State_VariableID"] = "MX_SEREN_Rx01_1_EXCITATION_EXT_SW_STATE"
+            self.step.attr["Output_Command_VariableID"] = "MX_SEREN_Rx01_1_RF_OUTPUT_COMMAND"
+            self.step.attr["Output_State_VariableID"]="MX_SEREN_Rx01_1_RF_OUTPUT_STATE"
+            self.step.attr["ContinuousPulse_Command_VariableID"] = "MX_SEREN_Rx01_1_OUTPUT_TYPE_SW_COMMAND"
+            self.step.attr["ContinuousPulse_State_VariableID"] = "MX_SEREN_Rx01_1_OUTPUT_TYPE_SW_STATE"
+            self.step.attr["PulseTrain_Command_VariableID"] = "MX_SEREN_Rx01_1_PULSETRAIN_ONOFF_COMMAND"
+            self.step.attr["PulseTrain_State_VariableID"] = "MX_SEREN_Rx01_1_PULSETRAIN_ONOFF_STATE"
+        if self.combo.currentIndex() == 1:
+            self.step.attr['SerenID'] = "SEREN_2"
+            self.step.attr["Mode_Command_VariableID"] = "MX_SEREN_Rx01_2_POWER_VOLTAGE_SW_COMMAND"
+            self.step.attr["Mode_State_VariableID"] = "MX_SEREN_Rx01_2_POWER_VOLTAGE_SW_STATE"
+            self.step.attr["OutputSetpoint_VariableID"] = "MDW_SEREN_Rx01_2_SP_Watts"
+            self.step.attr["Synchronisation_Command_VariableID"] = "MX_SEREN_Rx01_2_EXCITATION_EXT_SW_COMMAND"
+            self.step.attr["Synchronisation_State_VariableID"] = "MX_SEREN_Rx01_2_EXCITATION_EXT_SW_STATE"
+            self.step.attr["Output_Command_VariableID"] = "MX_SEREN_Rx01_2_RF_OUTPUT_COMMAND"
+            self.step.attr["Output_State_VariableID"]="MX_SEREN_Rx01_2_RF_OUTPUT_STATE"
+            self.step.attr["ContinuousPulse_Command_VariableID"] = "MX_SEREN_Rx01_2_OUTPUT_TYPE_SW_COMMAND"
+            self.step.attr["ContinuousPulse_State_VariableID"] = "MX_SEREN_Rx01_2_OUTPUT_TYPE_SW_STATE"
+            self.step.attr["PulseTrain_Command_VariableID"] = "MX_SEREN_Rx01_2_PULSETRAIN_ONOFF_COMMAND"
+            self.step.attr["PulseTrain_State_VariableID"] = "MX_SEREN_Rx01_2_PULSETRAIN_ONOFF_STATE"
+
+        #mode
+        if self.powerRadio.isChecked():
+            self.step.attr['Mode'] = 'POWER'
+        else:
+            self.step.attr['Mode'] = 'VOLTAGE'
+        
+        #setpoint
+        self.step.attr['Setpoint'] = self.editSetpoint.text()
+
+        #Synchronisation
+        if self.masterRadio.isChecked():
+            self.step.attr['Synchronisation'] = 'MASTER'
+        else:
+            self.step.attr['Synchronisation'] = 'SLAVE'
+
+        #output mode
+        if self.contRadio.isChecked():
+            self.step.attr['ContinuousPulse'] = 'CONTINUOUS'
+        else :
+            self.step.attr['ContinuousPulse'] = 'PULSE'
+
+        #pulseTrain
+        if self.onRadio.isChecked(): 
+            self.step.attr['PulseTrain'] = 'true'
+        else:
+            self.step.attr['PulseTrain'] = 'false'
+            
+        super().close()
+
+class SerenMC2(BaseStepEditor):
+    def __init__(self,step,parent=None):
+        super().__init__(step,parent)
+        #Seren Selection
+        self.combo = QComboBox()
+        self.combo.addItems(["Seren #1", "Seren #2"])
+        if step.attr['SerenID'] == 'SEREN_1':
+            self.combo.setCurrentIndex(0)
+        elif step.attr['SerenID'] == 'SEREN_2':
+            self.combo.setCurrentIndex(1)
+        self.formLayout.addWidget(QLabel("Seren name"),0,0)
+        self.formLayout.addWidget(self.combo,0,1)
+
+        #Load capacity setpoint
+        self.editLoad = QLineEdit()
+        self.editLoad.setText(step.attr['LoadCapacitor'])
+        self.formLayout.addWidget(QLabel("Load Capacity Setpoint"),1,0)
+        self.formLayout.addWidget(self.editLoad,1,1)
+
+         #Tune capacity setpoint
+        self.editTune = QLineEdit()
+        self.editTune.setText(step.attr['TuneCapacitor'])
+        self.formLayout.addWidget(QLabel("Tune Capacity Setpoint"),2,0)
+        self.formLayout.addWidget(self.editTune,2,1)
+
+    def close(self):
+        if self.combo.currentIndex() == 0:
+            self.step.attr['SerenID'] = 'SEREN_1'
+            self.step.attr['TuneCapacitor_Setpoint_VariableID'] = 'MDW_SEREN_MC2_1_TUNE_SETPOINT_Percent'
+            self.step.attr['LoadCapacitor_Setpoint_VariableID'] = 'MDW_SEREN_MC2_1_LOAD_SETPOINT_Percent'
+            self.step.attr['TuneCapacitor_SetCommand_VariableID'] = 'MX_SEREN_MC2_1_SET_TUNE_COMMAND'
+            self.step.attr['LoadCapacitor_SetCommand_VariableID'] = 'MX_SEREN_MC2_1_SET_LOAD_COMMAND'
+
+        elif self.combo.currentIndex() == 1:
+            self.step.attr['SerenID'] = 'SEREN_2'
+            self.step.attr['TuneCapacitor_Setpoint_VariableID'] = 'MDW_SEREN_MC2_2_TUNE_SETPOINT_Percent'
+            self.step.attr['LoadCapacitor_Setpoint_VariableID'] = 'MDW_SEREN_MC2_2_LOAD_SETPOINT_Percent'
+            self.step.attr['TuneCapacitor_SetCommand_VariableID'] = 'MX_SEREN_MC2_2_SET_TUNE_COMMAND'
+            self.step.attr['LoadCapacitor_SetCommand_VariableID'] = 'MX_SEREN_MC2_2_SET_LOAD_COMMAND'
+
+        self.step.attr['LoadCapacitor'] = self.editLoad.text()
+        self.step.attr['TuneCapacitor'] = self.editTune.text()
+        super().close()
 class MassflowSetpoint(BaseStepEditor):
         def __init__(self,step,parent=None):
             super().__init__(step,parent)
