@@ -193,6 +193,8 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = VATValve(step,self)
         elif step.type ==  "CParamScript_Maxim_PowerOff":
             self.editorWidget = MaximPowerOff(step,self)
+        elif step.type ==  "CParamScript_Maxim_Setpoints":
+            self.editorWidget = MaximSetpoints(step,self)
         elif step.type ==  "CParamScript_Seren_MC2_Setpoints":
             self.editorWidget = SerenMC2(step,self)
         elif step.type ==  "CParamScript_Seren_Rx01_Setpoints":
