@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QAction,QWidget,QLabel,QFileDialog,QMessageBox
 from PyQt5.QtCore import Qt,pyqtSlot
+from PyQt5.QtGui import QIcon
 from librarywidget import LibraryWidget
 from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
@@ -8,8 +9,8 @@ import os,sys
 from updateCheck import UpdateCheckThread,start_update
 from json import load,JSONDecodeError
 class MainWindow(QMainWindow):
-    version = "v0.8.0"
-    date= "22th of August, 2024"
+    version = "v0.9.0"
+    date= "06th of September, 2024"
     github_user = 'Corentin-Aulagnet'
     github_repo = 'Vinci-recipes-editor'
     asset_name= lambda s : f'VinciRecipeEditor_{s}_python3.8.zip'
@@ -22,7 +23,8 @@ class MainWindow(QMainWindow):
         
         self.setWindowTitle("Vinci Recipe Editor")
         self.setGeometry(self.left, self.top, self.width, self.height)
-
+        #self.setIcon("res\VinciRecipeEditor.ico")
+        self.setWindowIcon(QIcon("res\VinciRecipeEditor.ico"))
         self.initWorkingDir()
         self.initMainLayout()
         self.initMenus()
