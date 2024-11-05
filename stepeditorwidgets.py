@@ -720,24 +720,24 @@ class PowerSwitcher(BaseStepEditor):
             self.cathodesCombo.clear()
             if self.supplyCombo.itemText(index) == 'Seren 2':
                 self.cathodesCombo.addItems(self.supply_cathodes['Seren 2'])
-                model = self.cathodesCombo.model()
-                item = model.item( 3, 0 )
-                item.setEnabled( False) 
+                #model = self.cathodesCombo.model()
+                #item = model.item( 3, 0 )
+                #item.setEnabled( False) 
             elif self.supplyCombo.itemText(index) == 'Maxim 1':
                 self.cathodesCombo.addItems(self.supply_cathodes['Maxim 1'])
-                model = self.cathodesCombo.model()
-                item = model.item( 4, 0 )
-                item.setEnabled( False) 
+                #model = self.cathodesCombo.model()
+                #item = model.item( 4, 0 )
+                #item.setEnabled( False) 
             elif self.supplyCombo.itemText(index) == 'Maxim 2':
                 self.cathodesCombo.addItems(self.supply_cathodes['Maxim 2'])
-                model = self.cathodesCombo.model()
-                item = model.item( 3, 0 )
-                item.setEnabled( False)
+                #model = self.cathodesCombo.model()
+                #item = model.item( 3, 0 )
+                #item.setEnabled( False)
             elif self.supplyCombo.itemText(index) == 'Maxim 3':
                 self.cathodesCombo.addItems(self.supply_cathodes['Maxim 3'])
-                model = self.cathodesCombo.model()
-                item = model.item( 2, 0 )
-                item.setEnabled( False)
+                #model = self.cathodesCombo.model()
+                #item = model.item( 2, 0 )
+                #item.setEnabled( False)
 
             
             if self.step.attr['PowerSwitcher_OutputID'] == 'NONE':

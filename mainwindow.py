@@ -9,8 +9,8 @@ import os,sys
 from updateCheck import UpdateCheckThread,start_update
 from json import load,JSONDecodeError
 class MainWindow(QMainWindow):
-    version = "v0.9.1"
-    date= "02th of October, 2024"
+    version = "v0.9.2"
+    date= "05th of November, 2024"
     github_user = 'Corentin-Aulagnet'
     github_repo = 'Vinci-recipes-editor'
     asset_name= lambda s : f'VinciRecipeEditor_{s}_python3.8.zip'
