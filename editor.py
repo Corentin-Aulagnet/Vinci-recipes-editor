@@ -204,6 +204,13 @@ class MyTableView(QTableView):
             if step.attr['OpenState'] == 'false':
                 state = 'CLOSE'
             infos = "{} {}".format(step2Valve[step.attr['Command_VariableID']],state)
+        elif name == "Seren_PowerOff":
+            if step.attr["IsOn"]=='true':
+                state = "On"
+            else: state = "Off"
+            infos = "{} : {}".format(step.attr["SerenID"],state)
+        #elif name == "Seren_MC2_Setpoints":
+        #elif name == "Seren_Rx01_Setpoints":
         return infos
     def createRecipeItem(self,recipe:Recipe):
         item_1 = QStandardItem(recipe.name)

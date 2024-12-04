@@ -199,6 +199,8 @@ class StepEditorPopUp(QDialog):
             self.editorWidget = SerenMC2(step,self)
         elif step.type ==  "CParamScript_Seren_Rx01_Setpoints":
             self.editorWidget = SerenRx01(step,self)
+        elif step.type ==  "CParamScript_Seren_PowerOff":
+            self.editorWidget = SerenPowerOff(step,self)
         elif step.type ==  "CParamScript_PowerSwitcher":
             self.editorWidget = PowerSwitcher(step,self)
         elif step.type ==  "CParamScript_Sleep":
@@ -435,6 +437,47 @@ class SerenMC2(BaseStepEditor):
         self.step.attr['LoadCapacitor'] = self.editLoad.text()
         self.step.attr['TuneCapacitor'] = self.editTune.text()
         super().close()
+
+class SerenPowerOff(BaseStepEditor):
+        def __init__(self,step,parent=None):
+                super().__init__(step,parent)
+                self.combo = QComboBox()
+                self.combo.addItems(["Seren 1","Seren 2"])
+
+                if step.attr['SerenID'] == 'SEREN_1':
+                    self.combo.setCurrentIndex(0)
+                elif step.attr['SerenID'] == 'SEREN_2':
+                    self.combo.setCurrentIndex(1)
+
+                self.formLayout.addWidget(QLabel("Seren name"),0,0)
+                self.formLayout.addWidget(self.combo,0,1)
+
+                self.buttonGroup = QButtonGroup()
+                self.offRadio = QRadioButton('Off')
+                self.onRadio = QRadioButton('On')
+                self.buttonGroup.addButton(self.onRadio)
+                self.buttonGroup.addButton(self.offRadio)
+                if self.step.attr['IsOn'] == 'true':
+                        self.onRadio.setChecked(True)
+                elif self.step.attr['IsOn'] == 'false':
+                        self.offRadio.setChecked(True)
+                self.formLayout.addWidget(QLabel("State"),1,0)
+                self.formLayout.addWidget(self.onRadio,1,1)
+                self.formLayout.addWidget(self.offRadio,1,2)
+
+        def close(self):
+            if self.combo.currentIndex() == 0:
+                self.step.attr['SerenID'] = 'SEREN_1'
+                self.step.attr['Command_VariableID'] = 'MX_SEREN_Rx01_1_RF_OUTPUT_COMMAND'
+                self.step.attr['State_VariableID'] = 'MX_SEREN_Rx01_1_RF_OUTPUT_STATE'
+            elif self.combo.currentIndex() == 1:
+                self.step.attr['SerenID'] = 'SEREN_2'
+                self.step.attr['Command_VariableID'] = 'MX_SEREN_Rx01_2_RF_OUTPUT_COMMAND'
+                self.step.attr['State_VariableID'] = 'MX_SEREN_Rx01_2_RF_OUTPUT_STATE'
+            if self.onRadio.isChecked() : self.step.attr['IsOn'] = 'true' 
+            else: self.step.attr['IsOn'] = 'false'
+            super().close()
+
 class MassflowSetpoint(BaseStepEditor):
         def __init__(self,step,parent=None):
             super().__init__(step,parent)
