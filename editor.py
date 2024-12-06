@@ -154,7 +154,12 @@ class MyTableView(QTableView):
         if(name =="MassflowSetpoint"):
             infos = "{} , Setpoint = {}sccm".format(step.attr["Massflow_ID"],step.attr["SetPoint_sccm"])
         elif name == "VatValve":
-            infos = "Mode : {} , Setpoint = {}mbar".format(step.attr["Mode"],step.attr['Setpoint'])
+            mode = step.attr["Mode"]
+            if mode == "PositionControl":
+                unit = "%"
+            elif mode == "PressureControl":
+                unit = "mbar"
+            infos = "Mode : {} , Setpoint = {}{}".format(mode,step.attr['Setpoint'],unit)
         elif name == "Maxim_PowerOff":
             state = "OFF"
             if bool(step.attr["IsOn"] == "true"):state = "ON"
