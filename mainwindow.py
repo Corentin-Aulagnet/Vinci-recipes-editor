@@ -142,13 +142,19 @@ You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vin
 
         self.setDockOptions(QMainWindow.AnimatedDocks | QMainWindow.ForceTabbedDocks | QMainWindow.AllowNestedDocks)
 
+
         self.libDock = QDockWidget("Library")
         self.libDock.setWidget(self.libraryWidget)
-        self.addDockWidget(Qt.LeftDockWidgetArea,self.libDock)
 
         self.editorDock = QDockWidget("Editor")
         self.editorDock.setWidget(self.recipeEditorWidget)
-        self.addDockWidget(Qt.BottomDockWidgetArea,self.editorDock)
+        self.addDockWidget(Qt.LeftDockWidgetArea,self.libDock)
+
+       
+        self.tabifyDockWidget(self.libDock,self.editorDock)
+
+        
+        
 
         self.actionsDock = QDockWidget("Actions")
         self.actionsDock.setWidget(self.actionsWidget)
