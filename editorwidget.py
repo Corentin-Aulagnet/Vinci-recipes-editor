@@ -171,7 +171,8 @@ class EditorWidget(QTabWidget,MainWidget):
         return self.currentWidget().GetListItemData()
 
     def GetCurrentRecipeName(self):
-        return self.currentWidget().name
+        name = self.currentWidget().name or ""
+        return name
         
                 
                 

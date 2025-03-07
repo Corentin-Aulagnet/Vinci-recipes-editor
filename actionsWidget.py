@@ -104,6 +104,7 @@ class ActionsWidget(MainWidget,QWidget):
 
     @pyqtSlot()
     def ExportRecipe(self):
-        self.exportWindow = ExportWindow(self.editor.GetCurrentRecipeName(),self.editor)
+        currentRecipeName = self.editor.GetCurrentRecipeName()
+        self.exportWindow = ExportWindow(currentRecipeName,self.editor)
         
     

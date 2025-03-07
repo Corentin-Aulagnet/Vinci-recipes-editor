@@ -1,6 +1,7 @@
 from mainwidget import MainWidget
-from PyQt5.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QFileIconProvider,QPushButton,QLineEdit,QFileDialog,QCheckBox 
+from PyQt5.QtWidgets import QApplication,QDialog,QVBoxLayout,QHBoxLayout,QLabel,QStyle,QPushButton,QLineEdit,QFileDialog,QCheckBox 
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIcon
 import xml.etree.ElementTree as ET
 from vincirecipereader import Step,Recipe
 import os
@@ -14,6 +15,7 @@ class ExportWindow(MainWidget,QDialog):
         self.datalogFolderPath = ""
         self.setModal(True)
         self.setWindowTitle("Export Recipe")
+        self.setWindowIcon(QIcon("res/floppy-disk-48.png"))
         #Define the layout
         self.mainLayout = QVBoxLayout(self)
         #Adds an horizontal layout for the recipe file
@@ -24,7 +26,7 @@ class ExportWindow(MainWidget,QDialog):
         textInput = QLineEdit()
         textInput.setReadOnly(True)
         self.filePathWidgets["textEdit"] = textInput
-        button = QPushButton(icon=QFileIconProvider().icon(QFileIconProvider.File))
+        button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_FileIcon))
         button.clicked.connect(self.OpenFilePathWindow)
         self.filePathWidgets["button"] = button
         for key in self.filePathWidgets.keys():
@@ -45,7 +47,7 @@ class ExportWindow(MainWidget,QDialog):
         textInput.setReadOnly(True)
         textInput.setText(self.currentRecipeName)
         self.datalogFolderWidgets["textEdit"] = textInput
-        button = QPushButton(icon=QFileIconProvider().icon(QFileIconProvider.Folder))
+        button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
         button.clicked.connect(self.OpenFolderPathWindow)
         self.datalogFolderWidgets["button"] = button
         for key in self.datalogFolderWidgets.keys():
