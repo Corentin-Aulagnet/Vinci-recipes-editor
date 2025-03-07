@@ -159,6 +159,7 @@ class MyTableView(QTableView):
                 unit = "%"
             elif mode == "PressureControl":
                 unit = "mbar"
+            else : unit = ""
             infos = "Mode : {} , Setpoint = {}{}".format(mode,step.attr['Setpoint'],unit)
         elif name == "Maxim_PowerOff":
             state = "OFF"
