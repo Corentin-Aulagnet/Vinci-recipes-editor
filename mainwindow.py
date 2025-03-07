@@ -9,7 +9,7 @@ import os,sys
 from updateCheck import UpdateCheckThread,start_update
 from json import load,JSONDecodeError
 class MainWindow(QMainWindow):
-    version = "v0.9.5"
+    version = "v0.9.6"
     date= "07th of March, 2025"
     github_user = 'Corentin-Aulagnet'
     github_repo = 'Vinci-recipes-editor'
