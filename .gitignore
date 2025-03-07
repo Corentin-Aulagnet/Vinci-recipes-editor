@@ -1,8 +1,9 @@
 *.dat
 *.RCP
-user.prof
+user.pref
 build.ps1
 PROCESS.INI
+test/
 .vscode/
 # Byte-compiled / optimized / DLL files
 __pycache__/
