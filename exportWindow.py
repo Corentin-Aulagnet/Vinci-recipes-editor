@@ -11,7 +11,7 @@ class ExportWindow(MainWidget,QDialog):
         super().__init__(parent)
         self.editor = editor
         self.currentRecipeName = currentRecipeName
-        self.currentRecipePath= MainWidget.workingDir
+        self.currentRecipePath = MainWidget.workingDir
         self.datalogFolderPath = ""
         self.setModal(True)
         self.setWindowTitle("Export Recipe")
@@ -25,6 +25,7 @@ class ExportWindow(MainWidget,QDialog):
         self.filePathWidgets["label"] = label
         textInput = QLineEdit()
         textInput.setReadOnly(True)
+        textInput.setText(self.currentRecipePath+"/"+self.currentRecipeName)
         self.filePathWidgets["textEdit"] = textInput
         button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_FileIcon))
         button.clicked.connect(self.OpenFilePathWindow)
@@ -45,7 +46,7 @@ class ExportWindow(MainWidget,QDialog):
         self.datalogFolderWidgets["label"] = label
         textInput = QLineEdit()
         textInput.setReadOnly(True)
-        textInput.setText(self.currentRecipeName)
+        textInput.setText(self.currentRecipePath)
         self.datalogFolderWidgets["textEdit"] = textInput
         button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
         button.clicked.connect(self.OpenFolderPathWindow)
@@ -62,7 +63,7 @@ class ExportWindow(MainWidget,QDialog):
         self.setLayout(self.mainLayout)
         self.show()
     def OpenFilePathWindow(self):
-        path,extension = QFileDialog.getSaveFileName(None,'Recipe File',self.currentRecipeName,("Recipe Files (*.RCP)"))
+        path,extension = QFileDialog.getSaveFileName(None,'Recipe File',directory=self.currentRecipePath+"/"+self.currentRecipeName,filter=("Recipe Files (*.RCP)"))
         if path!="":
             l = path.split('/')
             name = l[-1]
