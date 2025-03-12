@@ -5,10 +5,11 @@ from librarywidget import LibraryWidget
 from editorwidget import EditorWidget
 from actionsWidget import ActionsWidget
 from mainwidget import MainWidget
+from manageUsersWindow import ManageUsersWindow
 import os,sys
 from updateCheck import UpdateCheckThread,start_update
-from json import load,JSONDecodeError
-class MainWindow(QMainWindow):
+
+class MainWindow(MainWidget,QMainWindow):
     version = "v0.9.6"
     date= "07th of March, 2025"
     github_user = 'Corentin-Aulagnet'
@@ -25,7 +26,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
         #self.setIcon("res\VinciRecipeEditor.ico")
         self.setWindowIcon(QIcon("res\VinciRecipeEditor.ico"))
-        self.initWorkingDir()
+        MainWidget.loadPrefs()
         self.initMainLayout()
         self.initMenus()
         self.checkForUpdates()
@@ -58,14 +59,7 @@ class MainWindow(QMainWindow):
             if ret == QMessageBox.Yes : 
                 start_update(latest_version,installation_folder,MainWindow.github_user,MainWindow.github_repo,MainWindow.asset_name(latest_version))
                 QApplication.instance().quit()
-    def initWorkingDir(self):
-        try:
-            with open("user.pref",'r') as f:
-                json = load(f)
-                if "WORKING_DIR" in json : MainWidget.SetWorkingDir(json["WORKING_DIR"])
-                if "PROCESS_INI_PATH" in json : MainWidget.SetProcessIniPath(json["PROCESS_INI_PATH"])
-        except (FileNotFoundError,JSONDecodeError) as e:
-            pass
+    
     def initMenus(self):
         
         ##Window Menu
@@ -93,11 +87,21 @@ class MainWindow(QMainWindow):
         self.editprocessini_action = QAction("Choose PROCESS.INI file",self)
         self.editprocessini_action.triggered.connect(self.SetProcessIni)
         self.prefMenu.addAction(self.editprocessini_action)
+
+        ##Users
+        self.usersMenu = self.menuBar().addMenu("&Users")
+        ###Manage Users
+        self.manageUsers_action = QAction("Manage Users",self)
+        self.manageUsers_action.triggered.connect(self.OpenManageUsersWindow)
+        self.usersMenu.addAction(self.manageUsers_action)
         ##About
         self.aboutMenu = self.menuBar().addMenu("&About")
         self.version_action = QAction("Version",self)
         self.version_action.triggered.connect(self.DisplayVersion)
         self.aboutMenu.addAction(self.version_action)
+
+    def OpenManageUsersWindow(self):
+        self.manageUsersWindow = ManageUsersWindow()
 
     def DisplayVersion(self):
         msgBox = QMessageBox(self)
@@ -109,14 +113,14 @@ Details: Developped and maintained by Corentin Aulagnet.\r
 You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vinci-recipes-editor/issues'>GitHub</a>""".format(MainWindow.version,MainWindow.date))
         msgBox.exec()
     def SetWorkingDir(self):
-        dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.workingDir)
+        dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.WORKING_DIR)
         if dir != "":
             MainWidget.SetWorkingDir(dir)
             MainWidget.savePrefs()
-            self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.workingDir))
+            self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.WORKING_DIR))
     
     def SetProcessIni(self):
-            path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = MainWidget.workingDir)[0]
+            path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = MainWidget.WORKING_DIR)[0]
             if path != "":
                 MainWidget.SetProcessIniPath(path)
                 MainWidget.savePrefs()

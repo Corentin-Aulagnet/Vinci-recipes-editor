@@ -1,20 +1,50 @@
 from PyQt5.QtCore import pyqtSignal
-from json import dumps
+from json import dumps,load,JSONDecodeError
 class MainWidget():
+    userPrefs = {}
+    currentUser = ''
     messageChanged = pyqtSignal(str)
-    workingDir = '.'
+    WORKING_DIR = '.'
     PROCESS_INI_PATH = '.'
+    PROCESS_INI_PATH_VAR = "PROCESS_INI_PATH"
+    WORKING_DIR_VAR = "WORKING_DIR"
     target_symbols = [""]*8
     @staticmethod 
     def savePrefs():
         with open("user.pref",'w') as file:
-            json = {"WORKING_DIR" : "{}".format(MainWidget.workingDir),
-                    "PROCESS_INI_PATH": "{}".format(MainWidget.PROCESS_INI_PATH)}
+            json = {"Users":MainWidget.userPrefs,
+                    "lastUser":MainWidget.currentUser,
+                    MainWidget.PROCESS_INI_PATH_VAR:MainWidget.PROCESS_INI_PATH}
             file.write(dumps(json))
+    @staticmethod
+    def loadPrefs():
+        try:
+            with open("user.pref",'r') as f:
+                json = load(f)
+                for user in json["Users"].keys():
+                    MainWidget.loadUser(user,json['Users'][user])
+                #All users loaded from prefs
+                #Load and activate the previous user
+                if "lastUser" in json:
+                    MainWidget.currentUser = json["lastUser"]
+                else:
+                    MainWidget.currentUser = list(json["Users"].keys())[0]
+                MainWidget.activateUser(MainWidget.currentUser)
+                if MainWidget.PROCESS_INI_PATH_VAR in json:MainWidget.SetProcessIniPath(json[MainWidget.PROCESS_INI_PATH_VAR])
+        except (FileNotFoundError,JSONDecodeError) as e:
+            pass
+    @staticmethod
+    def activateUser(user):
+        MainWidget.currentUser = user
+        MainWidget.WORKING_DIR = MainWidget.userPrefs[user][MainWidget.WORKING_DIR_VAR]
+    @staticmethod
+    def loadUser(user,json):
+        MainWidget.userPrefs[user] = json
     
     @staticmethod
     def SetWorkingDir(newDir):
-        MainWidget.workingDir = newDir 
+        MainWidget.WORKING_DIR = newDir
+        MainWidget.userPrefs[MainWidget.currentUser][MainWidget.WORKING_DIR_VAR] = newDir 
         
     @staticmethod
     def SetProcessIniPath(path):
