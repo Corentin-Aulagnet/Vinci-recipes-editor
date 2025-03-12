@@ -10,5 +10,5 @@ if __name__ == "__main__":
         pyi_splash.close()
     except:
         pass
-    app.lastWindowClosed.connect(MainWidget.savePrefs)
+    app.lastWindowClosed.connect(mainWindow.savePrefs)
     sys.exit(app.exec())

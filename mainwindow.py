@@ -26,7 +26,7 @@ class MainWindow(MainWidget,QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
         #self.setIcon("res\VinciRecipeEditor.ico")
         self.setWindowIcon(QIcon("res\VinciRecipeEditor.ico"))
-        MainWidget.loadPrefs()
+        self.loadPrefs()
         self.initMainLayout()
         self.initMenus()
         self.checkForUpdates()
@@ -81,11 +81,11 @@ class MainWindow(MainWidget,QMainWindow):
         self.prefMenu = self.menuBar().addMenu("&Preferences")
         ###Working directory
         self.editWorkingPath_action = QAction("Set Working Directory...",self)
-        self.editWorkingPath_action.triggered.connect(self.SetWorkingDir)
+        self.editWorkingPath_action.triggered.connect(self.ChooseWorkingDir)
         self.prefMenu.addAction(self.editWorkingPath_action)
         ###PROCESS.INI
         self.editprocessini_action = QAction("Choose PROCESS.INI file",self)
-        self.editprocessini_action.triggered.connect(self.SetProcessIni)
+        self.editprocessini_action.triggered.connect(self.ChooseProcessIni)
         self.prefMenu.addAction(self.editprocessini_action)
 
         ##Users
@@ -112,18 +112,18 @@ Date of publication: {}\r
 Details: Developped and maintained by Corentin Aulagnet.\r
 You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vinci-recipes-editor/issues'>GitHub</a>""".format(MainWindow.version,MainWindow.date))
         msgBox.exec()
-    def SetWorkingDir(self):
+    def ChooseWorkingDir(self):
         dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = self.WORKING_DIR)
         if dir != "":
-            MainWidget.SetWorkingDir(dir)
-            MainWidget.savePrefs()
+            self.SetWorkingDir(dir)
+            self.savePrefs()
             self.PrintNormalMessage("Changed working directory to {}".format(self.WORKING_DIR))
     
-    def SetProcessIni(self):
+    def ChooseProcessIni(self):
             path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = self.WORKING_DIR)[0]
             if path != "":
-                MainWidget.SetProcessIniPath(path)
-                MainWidget.savePrefs()
+                self.SetProcessIniPath(path)
+                self.savePrefs()
                 self.PrintNormalMessage("Changed PROCESS.INI to {}".format(MainWidget.PROCESS_INI_PATH))
 
     def initMainLayout(self):

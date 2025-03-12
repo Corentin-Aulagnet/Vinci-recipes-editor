@@ -8,10 +8,10 @@ class ManageUsersWindow(MainWidget,QDialog):
 
         self.currentUserChanged.connect(self.changeCurrentUserText)
         #Current user label
-        self.currentUserLabel = QLabel(f"Current user: {MainWidget.currentUser}")
+        self.currentUserLabel = QLabel(f"Current user: {self.currentUser}")
         #StringListView
         self.model = QStringListModel()
-        self.model.setStringList(MainWidget.GetRegisteredUsers())
+        self.model.setStringList(self.GetRegisteredUsers())
         self.listView = QListView()
         self.listView.setSelectionMode(QListView.SingleSelection)
         self.listView.setModel(self.model)
@@ -91,25 +91,24 @@ class ManageUsersWindow(MainWidget,QDialog):
         if dialog.exec() == QDialog.Accepted:
             userName = dialog.getUserName()
             workingDir = dialog.getWorkingDir()
-            if userName and (not userName in MainWidget.getRegisteredUsers()):
+            if userName and (not userName in self.getRegisteredUsers()):
                 #userName is not null and not yet registered
-                MainWidget.userPrefs[userName] = {MainWidget.WORKING_DIR_VAR : workingDir}  
+                self.userPrefs[userName] = {self.WORKING_DIR_VAR : workingDir}  
                 self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
                 self.model.setStringList(MainWidget.getRegisteredUsers())
-                MainWidget.activateUser(userName)
+                self.activateUser(userName)
     def onRemoveUser(self):
         user = self.listView.selectedIndexes()[0].data()
-        del MainWidget.userPrefs[user]
+        del self.userPrefs[user]
         self.model.setStringList(MainWidget.getRegisteredUsers())
         if user == MainWidget.currentUser:
-            MainWidget.activateUser(MainWidget.getRegisteredUsers()[0])
+            self.activateUser(MainWidget.getRegisteredUsers()[0])
             
-    def changeCurrentUserText(self,userName):
-        self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
+    def changeCurrentUserText(self):
+        self.currentUserLabel.setText(f"Current user: {self.currentUser}")
     def onSelectUser(self):
         #Get the user selected in the listView
         user = self.listView.selectedIndexes()[0].data()
-        MainWidget.activateUser(user)
-        self.currentUserChanged.emit(user)
-        #self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
+        self.activateUser(user)
+        #self.currentUserChanged.emit(user)
 
