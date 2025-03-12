@@ -49,7 +49,7 @@ class LibraryWidget(MainWidget,QWidget):
             self.ReadCustomSubRecipes()
     @pyqtSlot()
     def AddToLibraryAction(self):
-        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',MainWidget.WORKING_DIR,("Recipe Files (*.RCP);;Subrecipe Files (*.uRCP)"))[0]
+        filePath =  QFileDialog.getOpenFileName (None,'Recipe File',self.WORKING_DIR,("Recipe Files (*.RCP);;Subrecipe Files (*.uRCP)"))[0]
         try:
             recipe = XMLReader.ReadRecipe(filePath)
             

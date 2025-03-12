@@ -113,14 +113,14 @@ Details: Developped and maintained by Corentin Aulagnet.\r
 You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vinci-recipes-editor/issues'>GitHub</a>""".format(MainWindow.version,MainWindow.date))
         msgBox.exec()
     def SetWorkingDir(self):
-        dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = MainWidget.WORKING_DIR)
+        dir = QFileDialog.getExistingDirectory(self,caption="Set Working Directory",directory = self.WORKING_DIR)
         if dir != "":
             MainWidget.SetWorkingDir(dir)
             MainWidget.savePrefs()
-            self.PrintNormalMessage("Changed working directory to {}".format(MainWidget.WORKING_DIR))
+            self.PrintNormalMessage("Changed working directory to {}".format(self.WORKING_DIR))
     
     def SetProcessIni(self):
-            path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = MainWidget.WORKING_DIR)[0]
+            path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = self.WORKING_DIR)[0]
             if path != "":
                 MainWidget.SetProcessIniPath(path)
                 MainWidget.savePrefs()

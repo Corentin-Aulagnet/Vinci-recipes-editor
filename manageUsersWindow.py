@@ -6,12 +6,12 @@ class ManageUsersWindow(MainWidget,QDialog):
     def __init__(self,parent=None):
         super().__init__(parent)
 
-
+        self.currentUserChanged.connect(self.changeCurrentUserText)
         #Current user label
         self.currentUserLabel = QLabel(f"Current user: {MainWidget.currentUser}")
         #StringListView
         self.model = QStringListModel()
-        self.model.setStringList(list(MainWidget.userPrefs.keys()))
+        self.model.setStringList(MainWidget.GetRegisteredUsers())
         self.listView = QListView()
         self.listView.setSelectionMode(QListView.SingleSelection)
         self.listView.setModel(self.model)
@@ -80,7 +80,7 @@ class ManageUsersWindow(MainWidget,QDialog):
                 self.layout.addLayout(self.buttons)
                 self.setLayout(self.layout)
             def OpenFolderPathWindow(self):
-                path = QFileDialog.getExistingDirectory(self,caption="Choose Working Directory",directory = MainWidget.WORKING_DIR)
+                path = QFileDialog.getExistingDirectory(self,caption="Choose Working Directory",directory = self.WORKING_DIR)
                 if path!="":
                     self.datalogFolderWidgets["textEdit"].setText(path)
             def getUserName(self):
@@ -91,17 +91,25 @@ class ManageUsersWindow(MainWidget,QDialog):
         if dialog.exec() == QDialog.Accepted:
             userName = dialog.getUserName()
             workingDir = dialog.getWorkingDir()
-            if userName and (not userName in MainWidget.userPrefs.keys()):
+            if userName and (not userName in MainWidget.getRegisteredUsers()):
                 #userName is not null and not yet registered
                 MainWidget.userPrefs[userName] = {MainWidget.WORKING_DIR_VAR : workingDir}  
                 self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
-                self.model.setStringList(list(MainWidget.userPrefs.keys()))
+                self.model.setStringList(MainWidget.getRegisteredUsers())
                 MainWidget.activateUser(userName)
     def onRemoveUser(self):
-        pass
+        user = self.listView.selectedIndexes()[0].data()
+        del MainWidget.userPrefs[user]
+        self.model.setStringList(MainWidget.getRegisteredUsers())
+        if user == MainWidget.currentUser:
+            MainWidget.activateUser(MainWidget.getRegisteredUsers()[0])
+            
+    def changeCurrentUserText(self,userName):
+        self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
     def onSelectUser(self):
         #Get the user selected in the listView
         user = self.listView.selectedIndexes()[0].data()
         MainWidget.activateUser(user)
-        self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
+        self.currentUserChanged.emit(user)
+        #self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
 

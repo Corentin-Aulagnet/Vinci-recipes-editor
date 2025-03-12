@@ -1,9 +1,16 @@
 from PyQt5.QtCore import pyqtSignal
 from json import dumps,load,JSONDecodeError
-class MainWidget():
+class MainWidget(object):
+    _shared_borg_state = {}
+  
+    def __new__(cls, *args, **kwargs):
+        obj = super(MainWidget, cls).__new__(cls, *args, **kwargs)
+        obj.__dict__ = cls._shared_borg_state
+        return obj
     userPrefs = {}
     currentUser = ''
     messageChanged = pyqtSignal(str)
+    currentUserChanged = pyqtSignal(str)
     WORKING_DIR = '.'
     PROCESS_INI_PATH = '.'
     PROCESS_INI_PATH_VAR = "PROCESS_INI_PATH"
@@ -16,13 +23,16 @@ class MainWidget():
                     "lastUser":MainWidget.currentUser,
                     MainWidget.PROCESS_INI_PATH_VAR:MainWidget.PROCESS_INI_PATH}
             file.write(dumps(json))
+    @staticmethod 
+    def GetRegisteredUsers():
+        return list(MainWidget.userPrefs.keys())
     @staticmethod
     def loadPrefs():
         try:
             with open("user.pref",'r') as f:
                 json = load(f)
                 for user in json["Users"].keys():
-                    MainWidget.loadUser(user,json['Users'][user])
+                    MainWidget.userPrefs[user] = json['Users'][user]
                 #All users loaded from prefs
                 #Load and activate the previous user
                 if "lastUser" in json:
@@ -37,10 +47,7 @@ class MainWidget():
     def activateUser(user):
         MainWidget.currentUser = user
         MainWidget.WORKING_DIR = MainWidget.userPrefs[user][MainWidget.WORKING_DIR_VAR]
-    @staticmethod
-    def loadUser(user,json):
-        MainWidget.userPrefs[user] = json
-    
+        MainWidget.currentUserChanged.emit("user")
     @staticmethod
     def SetWorkingDir(newDir):
         MainWidget.WORKING_DIR = newDir
