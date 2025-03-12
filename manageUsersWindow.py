@@ -94,7 +94,6 @@ class ManageUsersWindow(MainWidget,QDialog):
             if userName and (not userName in self.getRegisteredUsers()):
                 #userName is not null and not yet registered
                 self.userPrefs[userName] = {self.WORKING_DIR_VAR : workingDir}  
-                self.currentUserLabel.setText(f"Current user: {MainWidget.currentUser}")
                 self.model.setStringList(MainWidget.getRegisteredUsers())
                 self.activateUser(userName)
     def onRemoveUser(self):
@@ -110,5 +109,4 @@ class ManageUsersWindow(MainWidget,QDialog):
         #Get the user selected in the listView
         user = self.listView.selectedIndexes()[0].data()
         self.activateUser(user)
-        #self.currentUserChanged.emit(user)
 
