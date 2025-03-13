@@ -26,10 +26,11 @@ class MainWindow(MainWidget,QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
         #self.setIcon("res\VinciRecipeEditor.ico")
         self.setWindowIcon(QIcon("res\VinciRecipeEditor.ico"))
+        self.checkForUpdates()
         self.loadPrefs()
         self.initMainLayout()
         self.initMenus()
-        self.checkForUpdates()
+        
         self.show()
 
     def checkForUpdates(self):
