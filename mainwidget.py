@@ -41,7 +41,7 @@ class MainWidget(object):
                     self.currentUser = list(json["Users"].keys())[0]
                 self.activateUser(self.currentUser)
                 if self.PROCESS_INI_PATH_VAR in json:self.SetProcessIniPath(json[self.PROCESS_INI_PATH_VAR])
-        except (FileNotFoundError,JSONDecodeError) as e:
+        except (FileNotFoundError,JSONDecodeError,KeyError) as e:
             open("user.pref",'w').close()
             self.userPrefs = {"Default":{self.WORKING_DIR_VAR:'.'}}
             self.activateUser("Default")
