@@ -64,14 +64,17 @@ class MainWidget(object):
 
     def ReadProcessIni(self):
         path = self.PROCESS_INI_PATH
-        with open(path) as f:
-            lines = f.readlines()
-            i = 0
-            for line in lines:
-                if "_Symb" in line:
-                    #Found a symbol
-                    self.target_symbols[i] = line.split("=")[1][:-1]
-                    i+=1
+        try:
+            with open(path) as f:
+                lines = f.readlines()
+                i = 0
+                for line in lines:
+                    if "_Symb" in line:
+                        #Found a symbol
+                        self.target_symbols[i] = line.split("=")[1][:-1]
+                        i+=1
+        except:
+            self.messageChanged("Could not read PROCESS.INI file at {}".format(path))
 
 
     def __init__(self,*args, **kwargs):
