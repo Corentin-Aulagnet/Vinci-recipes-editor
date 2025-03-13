@@ -10,8 +10,8 @@ import os,sys
 from updateCheck import UpdateCheckThread,start_update
 
 class MainWindow(MainWidget,QMainWindow):
-    version = "v0.10.1"
-    date= "12th of March, 2025"
+    version = "v0.10.2"
+    date= "13th of March, 2025"
     github_user = 'Corentin-Aulagnet'
     github_repo = 'Vinci-recipes-editor'
     asset_name= lambda s : f'VinciRecipeEditor_{s}_python3.8.zip'
