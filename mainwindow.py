@@ -10,7 +10,7 @@ import os,sys
 from updateCheck import UpdateCheckThread,start_update
 
 class MainWindow(MainWidget,QMainWindow):
-    version = "v0.10.2"
+    version = "v0.10.3"
     date= "13th of March, 2025"
     github_user = 'Corentin-Aulagnet'
     github_repo = 'Vinci-recipes-editor'
