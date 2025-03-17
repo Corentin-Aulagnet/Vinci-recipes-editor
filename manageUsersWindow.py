@@ -5,7 +5,9 @@ from PyQt5.QtGui import QIcon
 class ManageUsersWindow(MainWidget,QDialog):
     def __init__(self,parent=None):
         super().__init__(parent)
-
+        #Set Window Title and Icon
+        self.setWindowTitle("Users Management")
+        self.setWindowIcon(QIcon("res\VinciRecipeEditor.ico"))
         self.currentUserChanged.connect(self.changeCurrentUserText)
         #Current user label
         self.currentUserLabel = QLabel(f"Current user: {self.currentUser}")

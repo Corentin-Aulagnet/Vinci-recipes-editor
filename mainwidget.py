@@ -44,7 +44,7 @@ class MainWidget(object):
                 self.activateUser(self.currentUser)
                 if self.PROCESS_INI_PATH_VAR in json:
                     path = json[self.PROCESS_INI_PATH_VAR]
-                    if path == '.' or path == '' or os.path.isfile(path):
+                    if path == '.' or path == '' or not os.path.isfile(path):
                         ret = QMessageBox.warning(self, "Warning","No PROCESS.INI file selected.\nYou will be prompted to locate one",QMessageBox.Ok)
                         self.ChooseProcessIni()
                     else:
