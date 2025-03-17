@@ -80,7 +80,7 @@ class ManageUsersWindow(MainWidget,QDialog):
                 self.layout.addLayout(self.buttons)
                 self.setLayout(self.layout)
             def OpenFolderPathWindow(self):
-                path = QFileDialog.getExistingDirectory(self,caption="Choose Working Directory",directory = self.WORKING_DIR)
+                path = QFileDialog.getExistingDirectory(self,caption="Choose Working Directory",directory = self.parent().WORKING_DIR)
                 if path!="":
                     self.datalogFolderWidgets["textEdit"].setText(path)
             def getUserName(self):
@@ -91,22 +91,23 @@ class ManageUsersWindow(MainWidget,QDialog):
         if dialog.exec() == QDialog.Accepted:
             userName = dialog.getUserName()
             workingDir = dialog.getWorkingDir()
-            if userName and (not userName in self.getRegisteredUsers()):
+            if userName and (not userName in self.GetRegisteredUsers()):
                 #userName is not null and not yet registered
                 self.userPrefs[userName] = {self.WORKING_DIR_VAR : workingDir}  
-                self.model.setStringList(MainWidget.getRegisteredUsers())
+                self.model.setStringList(self.GetRegisteredUsers())
                 self.activateUser(userName)
     def onRemoveUser(self):
         user = self.listView.selectedIndexes()[0].data()
         del self.userPrefs[user]
-        self.model.setStringList(MainWidget.getRegisteredUsers())
-        if user == MainWidget.currentUser:
-            self.activateUser(MainWidget.getRegisteredUsers()[0])
+        self.model.setStringList(self.GetRegisteredUsers())
+        if user == self.currentUser:
+            self.activateUser(self.GetRegisteredUsers()[0])
             
     def changeCurrentUserText(self):
         self.currentUserLabel.setText(f"Current user: {self.currentUser}")
     def onSelectUser(self):
         #Get the user selected in the listView
-        user = self.listView.selectedIndexes()[0].data()
-        self.activateUser(user)
+        if len(self.listView.selectedIndexes())>0:
+            user = self.listView.selectedIndexes()[0].data()
+            self.activateUser(user)
 

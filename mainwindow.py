@@ -125,7 +125,7 @@ You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vin
             if path != "":
                 self.SetProcessIniPath(path)
                 self.savePrefs()
-                self.PrintNormalMessage("Changed PROCESS.INI to {}".format(MainWidget.PROCESS_INI_PATH))
+                self.PrintNormalMessage("Changed PROCESS.INI to {}".format(self.PROCESS_INI_PATH))
 
     def initMainLayout(self):
 

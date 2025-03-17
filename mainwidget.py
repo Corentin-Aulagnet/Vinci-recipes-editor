@@ -1,5 +1,7 @@
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QMessageBox
 from json import dumps,load,JSONDecodeError
+import os.path
 class MainWidget(object):
     _shared_borg_state = {}
   
@@ -30,7 +32,7 @@ class MainWidget(object):
     def loadPrefs(self):
         try:
             with open("user.pref",'r') as f:
-                json = load(f)
+                json = load(f,encoding='utf-8')
                 for user in json["Users"].keys():
                     self.userPrefs[user] = json['Users'][user]
                 #All users loaded from prefs
@@ -40,7 +42,13 @@ class MainWidget(object):
                 else:
                     self.currentUser = list(json["Users"].keys())[0]
                 self.activateUser(self.currentUser)
-                if self.PROCESS_INI_PATH_VAR in json:self.SetProcessIniPath(json[self.PROCESS_INI_PATH_VAR])
+                if self.PROCESS_INI_PATH_VAR in json:
+                    path = json[self.PROCESS_INI_PATH_VAR]
+                    if path == '.' or path == '' or os.path.isfile(path):
+                        ret = QMessageBox.warning(self, "Warning","No PROCESS.INI file selected.\nYou will be prompted to locate one",QMessageBox.Ok)
+                        self.ChooseProcessIni()
+                    else:
+                        self.SetProcessIniPath(json[self.PROCESS_INI_PATH_VAR])
         except (FileNotFoundError,JSONDecodeError,KeyError) as e:
             open("user.pref",'w').close()
             self.userPrefs = {"Default":{self.WORKING_DIR_VAR:'.'}}
@@ -74,7 +82,7 @@ class MainWidget(object):
                         self.target_symbols[i] = line.split("=")[1][:-1]
                         i+=1
         except:
-            self.messageChanged("Could not read PROCESS.INI file at {}".format(path))
+            self.messageChanged.emit("Could not read PROCESS.INI file at {}".format(path))
 
 
     def __init__(self,*args, **kwargs):
