@@ -9,6 +9,7 @@ class MainWidget(object):
         obj = super(MainWidget, cls).__new__(cls, *args, **kwargs)
         obj.__dict__ = cls._shared_borg_state
         return obj
+    
     userPrefs = {}
     currentUser = ''
     messageChanged = pyqtSignal(str)

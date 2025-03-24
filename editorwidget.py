@@ -11,7 +11,7 @@ from mainwidget import MainWidget
 class PasteBinManager():
     copiedItems=[]
             
-class RecipeEditorWidget(MainWidget,QWidget):
+class RecipeEditorWidget(QWidget):
     xsi='{http://www.w3.org/2001/XMLSchema-instance}'
     def __init__(self,parent=None):
         super().__init__(parent)
@@ -29,6 +29,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
         self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
         self.popup = None
+        
 
     
 
@@ -114,7 +115,7 @@ class RecipeEditorWidget(MainWidget,QWidget):
 
 
 class EditorWidget(QTabWidget,MainWidget):
-    #currentWidget = None
+    currentWidget = None
 
 
     def __init__(self,parent=None):
@@ -124,10 +125,17 @@ class EditorWidget(QTabWidget,MainWidget):
         self.setElideMode(Qt.ElideRight)
         self.tabs = []
         self.tabCloseRequested.connect(self.closeTab)
+        #self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Return),self,self.AddStep)
+        #self.copyShortcut = QShortcut(QKeySequence(Qt.Key_Delete),self,self.RemoveStep)
 
+    def AddStep(self):
+        self.tabs[self.currentIndex()].AddStep()
+    def RemoveStep(self):
+        self.tabs[self.currentIndex()].RemoveStep()
     def addTab(self):
-        #EditorWidget.currentWidget = RecipeEditorWidget()
-        super().addTab(RecipeEditorWidget(),'New Recipe*')
+        widget = RecipeEditorWidget()
+        super().addTab(widget,'New Recipe*')
+        self.tabs.append(widget)
         self.setCurrentIndex(self.count()-1)
         self.setTabToolTip (self.currentIndex(), 'New Recipe*')
         #self.setIconSize(QSize(50,50))
@@ -148,7 +156,7 @@ class EditorWidget(QTabWidget,MainWidget):
                 return True
         return False
     def setCurrentIndex(self,index:int):
-        #EditorWidget.currentWidget = self.currentWidget
+        EditorWidget.currentWidget = self.currentWidget
         super().setCurrentIndex(index)
     def switchTo(self,title):
         for i in range(self.count()):
@@ -159,6 +167,7 @@ class EditorWidget(QTabWidget,MainWidget):
     def closeTab (self, currentIndex):
         currentQWidget = self.widget(currentIndex)
         currentQWidget.deleteLater()
+        self.tabs.pop(currentIndex)
         self.removeTab(currentIndex)
     
     def ChangeTitleofTab(self,title):
