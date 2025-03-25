@@ -84,6 +84,10 @@ class MainWindow(MainWidget,QMainWindow):
         self.editWorkingPath_action = QAction("Set Working Directory...",self)
         self.editWorkingPath_action.triggered.connect(self.ChooseWorkingDir)
         self.prefMenu.addAction(self.editWorkingPath_action)
+        ###Datalog base folder
+        self.editDatalogsBasePath_action = QAction("Set Datalogs base folder...",self)
+        self.editDatalogsBasePath_action.triggered.connect(self.ChooseDatalogsBasePath)
+        self.prefMenu.addAction(self.editDatalogsBasePath_action)
         ###PROCESS.INI
         self.editprocessini_action = QAction("Choose PROCESS.INI file",self)
         self.editprocessini_action.triggered.connect(self.ChooseProcessIni)
@@ -119,6 +123,13 @@ You can publish new issues on <a href=\'https://github.com/Corentin-Aulagnet/Vin
             self.SetWorkingDir(dir)
             self.savePrefs()
             self.PrintNormalMessage("Changed working directory to {}".format(self.WORKING_DIR))
+    
+    def ChooseDatalogsBasePath(self):
+        dir = QFileDialog.getExistingDirectory(self,caption="Set datalogs base folder",directory = self.WORKING_DIR)
+        if dir != "":
+            self.SetDatalogDir(dir)
+            self.savePrefs()
+            self.PrintNormalMessage("Changed datalogs base path to {}".format(self.DATALOG_DIR))
     
     def ChooseProcessIni(self):
             path = QFileDialog.getOpenFileName(self,caption="Find PROCESS.INI",directory = self.WORKING_DIR)[0]
