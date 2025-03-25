@@ -12,7 +12,7 @@ class ExportWindow(MainWidget,QDialog):
         self.editor = editor
         self.currentRecipeName = currentRecipeName
         self.currentRecipePath = self.WORKING_DIR
-        self.datalogFolderPath = ""
+        self.datalogFolderPath = self.DATALOG_DIR
         self.setModal(True)
         self.setWindowTitle("Export Recipe")
         self.setWindowIcon(QIcon("res/floppy-disk-48.png"))
@@ -73,7 +73,7 @@ class ExportWindow(MainWidget,QDialog):
             self.filePathWidgets["textEdit"].setText(path+name)
     
     def OpenFolderPathWindow(self):
-        path = QFileDialog.getExistingDirectory(self,caption="Set Datalog Folder",directory = self.WORKING_DIR)
+        path = QFileDialog.getExistingDirectory(self,caption="Set Datalog Folder",directory = self.DATALOG_DIR)
         if path!="":
             self.datalogFolderPath = path
             self.datalogFolderWidgets["textEdit"].setText(path)

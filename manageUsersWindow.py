@@ -49,28 +49,47 @@ class ManageUsersWindow(MainWidget,QDialog):
                 super().__init__(parent)
                 self.setWindowTitle("Add User")
                 self.layout = QVBoxLayout()
-
+                self.height = 230
+                self.width = 560
+                self.setGeometry(100, 100, self.width, self.height)
                 self.label = QLabel("Enter user name:")
                 self.layout.addWidget(self.label)
 
                 self.lineEdit = QLineEdit()
                 self.layout.addWidget(self.lineEdit)
 
-                #Adds an horizontal layout for the recipe file
+                #Adds an horizontal layout for the working directory
                 self.workingDirLayout = QHBoxLayout()
+                self.workingDirWidgets={"textEdit":None,"button":None}
+                
+                textInput = QLineEdit()
+                textInput.setReadOnly(True)
+                self.workingDirWidgets["textEdit"] = textInput
+                button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
+                button.clicked.connect(self.OpenWorkingDirPathWindow)
+                self.workingDirWidgets["button"] = button
+
+                for key in self.workingDirWidgets.keys():
+                    self.workingDirLayout.addWidget(self.workingDirWidgets[key])
+                self.layout.addWidget(QLabel("Choose working directory:"))
+                self.layout.addLayout(self.workingDirLayout)
+
+                #Adds an horizontal layout for the datalog folder
+                self.datalogFolderLayout = QHBoxLayout()
                 self.datalogFolderWidgets={"textEdit":None,"button":None}
                 
                 textInput = QLineEdit()
                 textInput.setReadOnly(True)
                 self.datalogFolderWidgets["textEdit"] = textInput
                 button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
-                button.clicked.connect(self.OpenFolderPathWindow)
+                button.clicked.connect(self.OpenDatalogFolderPathWindow)
                 self.datalogFolderWidgets["button"] = button
 
                 for key in self.datalogFolderWidgets.keys():
-                    self.workingDirLayout.addWidget(self.datalogFolderWidgets[key])
-                self.layout.addWidget(QLabel("Choose working directory:"))
-                self.layout.addLayout(self.workingDirLayout)
+                    self.datalogFolderLayout.addWidget(self.datalogFolderWidgets[key])
+                self.layout.addWidget(QLabel("Choose default datalog folder:"))
+                self.layout.addLayout(self.datalogFolderLayout)
+
                 self.buttons = QHBoxLayout()
                 self.okButton = QPushButton("OK")
                 self.okButton.clicked.connect(self.accept)
@@ -81,23 +100,32 @@ class ManageUsersWindow(MainWidget,QDialog):
 
                 self.layout.addLayout(self.buttons)
                 self.setLayout(self.layout)
-            def OpenFolderPathWindow(self):
+            def OpenWorkingDirPathWindow(self):
                 path = QFileDialog.getExistingDirectory(self,caption="Choose Working Directory",directory = self.parent().WORKING_DIR)
                 if path!="":
+                    self.workingDirWidgets["textEdit"].setText(path)
+            def OpenDatalogFolderPathWindow(self):
+                path = QFileDialog.getExistingDirectory(self,caption="Choose datalogs base folder",directory = self.parent().WORKING_DIR)
+                if path!="":
                     self.datalogFolderWidgets["textEdit"].setText(path)
+
             def getUserName(self):
                 return self.lineEdit.text()
             def getWorkingDir(self):
+                return self.workingDirWidgets["textEdit"].text()
+            def getDatalogFolder(self):
                 return self.datalogFolderWidgets["textEdit"].text()
         dialog = AddUserDialog(self)
         if dialog.exec() == QDialog.Accepted:
             userName = dialog.getUserName()
             workingDir = dialog.getWorkingDir()
+            datalogFolder = dialog.getDatalogFolder()
             if userName and (not userName in self.GetRegisteredUsers()):
                 #userName is not null and not yet registered
-                self.userPrefs[userName] = {self.WORKING_DIR_VAR : workingDir}  
+                self.userPrefs[userName] = {self.WORKING_DIR_VAR : workingDir,self.DATALOG_DIR_VAR : datalogFolder}  
                 self.model.setStringList(self.GetRegisteredUsers())
                 self.activateUser(userName)
+            self.savePrefs()
     def onRemoveUser(self):
         user = self.listView.selectedIndexes()[0].data()
         del self.userPrefs[user]

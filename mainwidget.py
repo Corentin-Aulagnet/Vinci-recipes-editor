@@ -18,6 +18,8 @@ class MainWidget(object):
     PROCESS_INI_PATH = '.'
     PROCESS_INI_PATH_VAR = "PROCESS_INI_PATH"
     WORKING_DIR_VAR = "WORKING_DIR"
+    DATALOG_DIR_VAR = "DATALOG_DIR"
+    DATALOG_DIR = '.'
     target_symbols = [""]*8
 
     def savePrefs(self):
@@ -52,7 +54,7 @@ class MainWidget(object):
                         self.SetProcessIniPath(json[self.PROCESS_INI_PATH_VAR])
         except (FileNotFoundError,JSONDecodeError,KeyError) as e:
             open("user.pref",'w').close()
-            self.userPrefs = {"Default":{self.WORKING_DIR_VAR:'.'}}
+            self.userPrefs = {"Default":{self.WORKING_DIR_VAR:'.',self.DATALOG_DIR_VAR:'.'}}
             self.activateUser("Default")
             self.savePrefs()
 
@@ -60,12 +62,16 @@ class MainWidget(object):
     def activateUser(self,user):
         self.currentUser = user
         self.WORKING_DIR = self.userPrefs[user][self.WORKING_DIR_VAR]
+        self.DATALOG_DIR = self.userPrefs[user][self.DATALOG_DIR_VAR]
         self.currentUserChanged.emit()
 
     def SetWorkingDir(self,newDir):
         self.WORKING_DIR = newDir
         self.userPrefs[self.currentUser][self.WORKING_DIR_VAR] = newDir 
         
+    def SetDatalogDir(self,newDir):
+        self.DATALOG_DIR = newDir
+        self.userPrefs[self.currentUser][self.DATALOG_DIR_VAR] = newDir
 
     def SetProcessIniPath(self,path):
         self.PROCESS_INI_PATH = path
