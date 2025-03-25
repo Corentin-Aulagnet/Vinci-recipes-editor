@@ -46,7 +46,7 @@ class ExportWindow(MainWidget,QDialog):
         self.datalogFolderWidgets["label"] = label
         textInput = QLineEdit()
         textInput.setReadOnly(True)
-        textInput.setText(self.currentRecipePath)
+        textInput.setText(self.datalogFolderPath)
         self.datalogFolderWidgets["textEdit"] = textInput
         button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
         button.clicked.connect(self.OpenFolderPathWindow)
