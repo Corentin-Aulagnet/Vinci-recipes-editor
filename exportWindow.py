@@ -40,6 +40,7 @@ class ExportWindow(MainWidget,QDialog):
         self.mainLayout.addWidget(self.copyCheckBox)
 
         #Adds an horizontal layout for the recipe file
+        self.datalogCopyLayout = QVBoxLayout()
         self.datalogFolderLayout = QHBoxLayout()
         self.datalogFolderWidgets={"label":None,"textEdit":None,"button":None}
         label =  QLabel("Datalog Folder")
@@ -51,10 +52,19 @@ class ExportWindow(MainWidget,QDialog):
         button = QPushButton(icon=QApplication.style().standardIcon(QStyle.SP_DirIcon))
         button.clicked.connect(self.OpenFolderPathWindow)
         self.datalogFolderWidgets["button"] = button
+        
+        self.datalogCopyLayout.addLayout(self.datalogFolderLayout)
+
+        #Adds a CheckBox to ask whether to save PROCESS.INI next to the recipe file
+        self.saveProcessIniCheckBox = QCheckBox("Save PROCESS.INI next to recipe file")
+        self.saveProcessIniCheckBox.setChecked(True)  # Checked by default
+        self.datalogCopyLayout.addWidget(self.saveProcessIniCheckBox)
+
         for key in self.datalogFolderWidgets.keys():
-            self.datalogFolderLayout.addWidget(self.datalogFolderWidgets[key])
-            self.datalogFolderWidgets[key].setEnabled(False)#Disable the widgets at start
-        self.mainLayout.addLayout(self.datalogFolderLayout)
+                    self.datalogFolderLayout.addWidget(self.datalogFolderWidgets[key])
+                    self.datalogFolderWidgets[key].setEnabled(False)#Disable the widgets at start
+        self.saveProcessIniCheckBox.setEnabled(False)
+        self.mainLayout.addLayout(self.datalogCopyLayout)
 
         #Add a button to confirm the export
         self.exportButton = QPushButton("Export")
@@ -81,7 +91,7 @@ class ExportWindow(MainWidget,QDialog):
     def copyLayoutSetActive(self,state):
         for key in self.datalogFolderWidgets.keys():
             self.datalogFolderWidgets[key].setEnabled(state)#Enable/Disable the widgets
-
+        self.saveProcessIniCheckBox.setEnabled(state)
     def export(self):
         if (self.currentRecipeName != ''):
             extension = self.currentRecipeName.split('.')[-1]
@@ -130,4 +140,18 @@ class ExportWindow(MainWidget,QDialog):
             #Tries to create it if it does'nt exist already
             os.makedirs(self.datalogFolderPath, exist_ok=True)
             shutil.copy2(self.currentRecipePath+self.currentRecipeName,self.datalogFolderPath+'/'+self.currentRecipeName)
+        
+        #Save PROCESS.INI next to the recipe file if requested
+        try:
+            if hasattr(self, 'saveProcessIniCheckBox') and self.saveProcessIniCheckBox.isChecked():
+                if os.path.isfile(self.PROCESS_INI_PATH):
+                    dest = os.path.join(self.datalogFolderPath, 'PROCESS.INI')
+                    shutil.copy2(self.PROCESS_INI_PATH, dest)
+                else:
+                    self.messageChanged.emit("PROCESS.INI not found at {}".format(self.PROCESS_INI_PATH))
+        except Exception as e:
+            #Emit a message but don't block export on failure to copy PROCESS.INI
+            self.messageChanged.emit("Failed to copy PROCESS.INI: {}".format(e))
+
+
         self.accept()

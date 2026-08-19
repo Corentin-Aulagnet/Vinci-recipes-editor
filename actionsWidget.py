@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QLabel,QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog
+from PyQt5.QtWidgets import QLabel,QWidget,QListWidget,QVBoxLayout,QListView,QAbstractItemView,QPushButton,QFileDialog,QMessageBox
 from PyQt5.QtCore import pyqtSlot,QObject,QSize,Qt
 from vincirecipereader import XMLReader,Step,Recipe
 from exportWindow import ExportWindow
@@ -104,7 +104,14 @@ class ActionsWidget(MainWidget,QWidget):
 
     @pyqtSlot()
     def ExportRecipe(self):
-        currentRecipeName = self.editor.GetCurrentRecipeName()
+        try:
+            currentRecipeName = self.editor.GetCurrentRecipeName()
+        except IndexError:
+            errorMessage = "Failed to export: No recipe opened"
+            self.messageChanged.emit(errorMessage)
+            QMessageBox.critical(self, "Export Error", errorMessage)
+            
+            return
         self.exportWindow = ExportWindow(currentRecipeName,self.editor)
         
     
